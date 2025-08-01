@@ -8,18 +8,17 @@ import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
 export default function Canvas() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-	const { offset, scale } = useCanvasControls(canvasRef);
+	const { offset, scale, selectionStart, selectionEnd } =
+		useCanvasControls(canvasRef);
 
-	useCanvasRenderer(canvasRef, offset, scale);
+	useCanvasRenderer(canvasRef, offset, scale, selectionStart, selectionEnd);
 
 	return (
 		<div className="flex flex-col items-center justify-center gap-2 h-screen">
 			<Link href="/" className="absolute top-4 left-4">
 				go to home
 			</Link>
-
 			<div className="absolute bottom-4 left-4">scale: {scale.toFixed(2)}</div>
-
 			<canvas ref={canvasRef} className="w-full h-full" />
 		</div>
 	);

@@ -1,9 +1,13 @@
 import { useEffect, RefObject } from 'react';
 
+type Point = { x: number; y: number };
+
 export function useCanvasRenderer(
 	canvasRef: RefObject<HTMLCanvasElement | null>,
-	offset: { x: number; y: number },
-	scale: number
+	offset: Point,
+	scale: number,
+	selectionStart: Point | null,
+	selectionEnd: Point | null
 ) {
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -24,6 +28,20 @@ export function useCanvasRenderer(
 		ctx.fillStyle = 'white';
 		ctx.fillRect(0, 0, 10, 10);
 
+		if (selectionStart && selectionEnd) {
+			const x = Math.min(selectionStart.x, selectionEnd.x);
+			const y = Math.min(selectionStart.y, selectionEnd.y);
+			const width = Math.abs(selectionEnd.x - selectionStart.x);
+			const height = Math.abs(selectionEnd.y - selectionStart.y);
+
+			ctx.fillStyle = 'rgba(0, 120, 215, 0.3)';
+			ctx.fillRect(x, y, width, height);
+
+			ctx.strokeStyle = 'rgba(0, 120, 215, 1)';
+			ctx.lineWidth = 1 / scale;
+			ctx.strokeRect(x, y, width, height);
+		}
+
 		ctx.restore();
-	}, [scale, offset, canvasRef]);
+	}, [scale, offset, canvasRef, selectionStart, selectionEnd]);
 }
