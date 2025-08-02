@@ -1,4 +1,4 @@
-import { useState, useEffect, RefObject } from 'react';
+import { useState, useEffect, useLayoutEffect, RefObject } from 'react';
 
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 10;
@@ -144,10 +144,22 @@ export function useCanvasControls(
 
 	const [selectionStart, setSelectionStart] = useState<Point | null>(null);
 	const [selectionEnd, setSelectionEnd] = useState<Point | null>(null);
+	const [isInitialOffsetSet, isSetInitialOffsetSet] = useState(false);
+
+	useLayoutEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas || isInitialOffsetSet) return;
+
+		const rect = canvas.getBoundingClientRect();
+		if (rect.width > 0 && rect.height > 0) {
+			setOffset({ x: rect.width / 2, y: rect.height / 2 });
+			isSetInitialOffsetSet(true);
+		}
+	}, [canvasRef, isInitialOffsetSet]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas || !isInitialOffsetSet) return;
 
 		const removePanEvents = handlePanEvents(
 			canvas,
@@ -178,7 +190,7 @@ export function useCanvasControls(
 			removeSelectionEvents();
 			removeZoomEvents();
 		};
-	}, [canvasRef, isDragging, lastMousePos, scale, offset]);
+	}, [canvasRef, isDragging, lastMousePos, scale, offset, isInitialOffsetSet]);
 
 	return {
 		offset,
