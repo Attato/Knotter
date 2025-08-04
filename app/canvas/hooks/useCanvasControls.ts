@@ -1,201 +1,56 @@
 import { useState, useEffect, useLayoutEffect, RefObject } from 'react';
 
-const MIN_ZOOM = 0.1;
-const MAX_ZOOM = 10;
-const DEFAULT_ZOOM = 1;
+import { Point } from '@/canvas/canvas.types';
+import { INITIAL_ZOOM } from '@/canvas/constants';
 
-type Point = { x: number; y: number };
+import { setupPan, setupSelect, setupZoom, setupScroll } from '@/canvas/events/canvasEvents';
 
-function getMousePos(
-	e: MouseEvent,
-	canvas: HTMLCanvasElement,
-	offset: Point,
-	scale: number
-): Point {
-	const rect = canvas.getBoundingClientRect();
-	return {
-		x: (e.clientX - rect.left - offset.x) / scale,
-		y: (e.clientY - rect.top - offset.y) / scale,
-	};
-}
+export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
+    const [zoomLevel, setZoomLevel] = useState(INITIAL_ZOOM);
 
-function handlePanEvents(
-	canvas: HTMLCanvasElement,
-	isDragging: boolean,
-	setIsDragging: (val: boolean) => void,
-	lastMousePos: Point | null,
-	setLastMousePos: (val: Point | null) => void,
-	setOffset: React.Dispatch<React.SetStateAction<Point>>
-) {
-	const onMouseDown = (e: MouseEvent) => {
-		if (e.button !== 1) return;
-		e.preventDefault();
-		setIsDragging(true);
-		setLastMousePos({ x: e.clientX, y: e.clientY });
-	};
+    const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
+    const [selectionStart, setSelectionStart] = useState<Point | null>(null);
+    const [selectionEnd, setSelectionEnd] = useState<Point | null>(null);
+    const [lastMousePosition, setLastMousePosition] = useState<Point | null>(null);
 
-	const onMouseMove = (e: MouseEvent) => {
-		if (!isDragging || !lastMousePos) return;
-		const dx = e.clientX - lastMousePos.x;
-		const dy = e.clientY - lastMousePos.y;
+    const [isPanning, setIsPanning] = useState(false);
+    const [isInitialOffsetSet, setInitialOffsetFlag] = useState(false);
 
-		setOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
-		setLastMousePos({ x: e.clientX, y: e.clientY });
-	};
+    useLayoutEffect(() => {
+        const canvas = canvasRef.current;
 
-	const onMouseUpOrLeave = (e: MouseEvent) => {
-		if (e.button === 1 || e.type === 'mouseleave') {
-			setIsDragging(false);
-			setLastMousePos(null);
-		}
-	};
+        if (!canvas || isInitialOffsetSet) return;
 
-	canvas.addEventListener('mousedown', onMouseDown);
-	canvas.addEventListener('mousemove', onMouseMove);
-	canvas.addEventListener('mouseup', onMouseUpOrLeave);
-	canvas.addEventListener('mouseleave', onMouseUpOrLeave);
+        const rect = canvas.getBoundingClientRect();
 
-	return () => {
-		canvas.removeEventListener('mousedown', onMouseDown);
-		canvas.removeEventListener('mousemove', onMouseMove);
-		canvas.removeEventListener('mouseup', onMouseUpOrLeave);
-		canvas.removeEventListener('mouseleave', onMouseUpOrLeave);
-	};
-}
+        if (rect.width > 0 && rect.height > 0) {
+            setOffset({ x: rect.width / 2, y: rect.height / 2 });
+            setInitialOffsetFlag(true);
+        }
+    }, [canvasRef, isInitialOffsetSet]);
 
-function handleSelectionEvents(
-	canvas: HTMLCanvasElement,
-	offset: Point,
-	scale: number,
-	setSelectionStart: (val: Point | null) => void,
-	setSelectionEnd: (val: Point | null) => void
-) {
-	const onMouseDown = (e: MouseEvent) => {
-		if (e.button !== 0) return;
-		const pos = getMousePos(e, canvas, offset, scale);
-		setSelectionStart(pos);
-		setSelectionEnd(pos);
-	};
+    useEffect(() => {
+        const canvas = canvasRef.current;
 
-	const onMouseMove = (e: MouseEvent) => {
-		if (e.buttons !== 1) return;
-		const pos = getMousePos(e, canvas, offset, scale);
-		setSelectionEnd(pos);
-	};
+        if (!canvas || !isInitialOffsetSet) return;
 
-	const onMouseUp = (e: MouseEvent) => {
-		if (e.button === 0) {
-			setSelectionStart(null);
-			setSelectionEnd(null);
-		}
-	};
+        const cleanupPan = setupPan(canvas, isPanning, setIsPanning, lastMousePosition, setLastMousePosition, setOffset);
+        const cleanupSelect = setupSelect(canvas, offset, zoomLevel, setSelectionStart, setSelectionEnd);
+        const cleanupZoom = setupZoom(canvas, zoomLevel, setZoomLevel, setOffset);
+        const cleanupScroll = setupScroll(canvas, setOffset);
 
-	canvas.addEventListener('mousedown', onMouseDown);
-	canvas.addEventListener('mousemove', onMouseMove);
-	canvas.addEventListener('mouseup', onMouseUp);
+        return () => {
+            cleanupPan();
+            cleanupSelect();
+            cleanupZoom();
+            cleanupScroll();
+        };
+    }, [canvasRef, isPanning, lastMousePosition, offset, zoomLevel, isInitialOffsetSet]);
 
-	return () => {
-		canvas.removeEventListener('mousedown', onMouseDown);
-		canvas.removeEventListener('mousemove', onMouseMove);
-		canvas.removeEventListener('mouseup', onMouseUp);
-	};
-}
-
-function handleZoomEvents(
-	canvas: HTMLCanvasElement,
-	scale: number,
-	setScale: (val: number) => void,
-	setOffset: React.Dispatch<React.SetStateAction<Point>>
-) {
-	const onWheel = (e: WheelEvent) => {
-		e.preventDefault();
-
-		const scaleFactor = 1.1;
-		const rect = canvas.getBoundingClientRect();
-		const mouseX = e.clientX - rect.left;
-		const mouseY = e.clientY - rect.top;
-
-		const zoom = e.deltaY < 0 ? scaleFactor : 1 / scaleFactor;
-		let newScale = scale * zoom;
-		newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newScale));
-
-		setOffset((prev) => ({
-			x: mouseX - (mouseX - prev.x) * (newScale / scale),
-			y: mouseY - (mouseY - prev.y) * (newScale / scale),
-		}));
-
-		setScale(newScale);
-	};
-
-	canvas.addEventListener('wheel', onWheel, { passive: false });
-
-	return () => {
-		canvas.removeEventListener('wheel', onWheel);
-	};
-}
-
-export function useCanvasControls(
-	canvasRef: RefObject<HTMLCanvasElement | null>
-) {
-	const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
-	const [scale, setScale] = useState(DEFAULT_ZOOM);
-	const [isDragging, setIsDragging] = useState(false);
-	const [lastMousePos, setLastMousePos] = useState<Point | null>(null);
-
-	const [selectionStart, setSelectionStart] = useState<Point | null>(null);
-	const [selectionEnd, setSelectionEnd] = useState<Point | null>(null);
-	const [isInitialOffsetSet, isSetInitialOffsetSet] = useState(false);
-
-	useLayoutEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas || isInitialOffsetSet) return;
-
-		const rect = canvas.getBoundingClientRect();
-		if (rect.width > 0 && rect.height > 0) {
-			setOffset({ x: rect.width / 2, y: rect.height / 2 });
-			isSetInitialOffsetSet(true);
-		}
-	}, [canvasRef, isInitialOffsetSet]);
-
-	useEffect(() => {
-		const canvas = canvasRef.current;
-		if (!canvas || !isInitialOffsetSet) return;
-
-		const removePanEvents = handlePanEvents(
-			canvas,
-			isDragging,
-			setIsDragging,
-			lastMousePos,
-			setLastMousePos,
-			setOffset
-		);
-
-		const removeSelectionEvents = handleSelectionEvents(
-			canvas,
-			offset,
-			scale,
-			setSelectionStart,
-			setSelectionEnd
-		);
-
-		const removeZoomEvents = handleZoomEvents(
-			canvas,
-			scale,
-			setScale,
-			setOffset
-		);
-
-		return () => {
-			removePanEvents();
-			removeSelectionEvents();
-			removeZoomEvents();
-		};
-	}, [canvasRef, isDragging, lastMousePos, scale, offset, isInitialOffsetSet]);
-
-	return {
-		offset,
-		scale,
-		selectionStart,
-		selectionEnd,
-	};
+    return {
+        offset,
+        zoomLevel,
+        selectionStart,
+        selectionEnd,
+    };
 }
