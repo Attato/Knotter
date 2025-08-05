@@ -9,12 +9,12 @@ import { Node } from '@/canvas/canvas.types';
 
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef);
-
     const [nodes, setNodes] = useState<Node[]>([]);
+    const [selectedNodeIds, setSelectedNodeIds] = useState<number[]>([]);
 
-    useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes);
+    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef, nodes, setSelectedNodeIds);
+
+    useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
 
     const handleAddNode = () => {
         const step = 10;
