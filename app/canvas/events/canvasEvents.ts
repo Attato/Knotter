@@ -115,29 +115,31 @@ export function setupSelect(
     zoomLevel: number,
     setSelectionStart: (val: Point | null) => void,
     setSelectionEnd: (val: Point | null) => void,
+    onSelectionComplete?: (start: Point, end: Point) => void,
 ) {
+    let selectionStart: Point | null = null;
+
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0) return;
-
         const position = getCanvasCoordinates(e, canvas, offset, zoomLevel);
-
+        selectionStart = position;
         setSelectionStart(position);
         setSelectionEnd(position);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-        if ((e.buttons & 1) !== 1) return;
-
+        if (!selectionStart || (e.buttons & 1) !== 1) return;
         const position = getCanvasCoordinates(e, canvas, offset, zoomLevel);
-
         setSelectionEnd(position);
     };
 
     const handleMouseUp = (e: MouseEvent) => {
-        if (e.button === 0) {
-            setSelectionStart(null);
-            setSelectionEnd(null);
-        }
+        if (e.button !== 0 || !selectionStart) return;
+        const position = getCanvasCoordinates(e, canvas, offset, zoomLevel);
+        onSelectionComplete?.(selectionStart, position);
+        setSelectionStart(null);
+        setSelectionEnd(null);
+        selectionStart = null;
     };
 
     canvas.addEventListener('mousedown', handleMouseDown);
