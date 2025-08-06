@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, RefObject } from 'react';
 import { Point, Node } from '@/canvas/canvas.types';
 import { INITIAL_ZOOM } from '@/canvas/constants';
 import { setupPan, setupSelect, setupZoom, setupScroll } from '@/canvas/events/canvasEvents';
+import { getNodesInSelectionArea } from '@/canvas/utils/getNodesInSelectionArea';
 
 export function useCanvasControls(
     canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -32,22 +33,12 @@ export function useCanvasControls(
         if (!canvas || !isInitialOffsetSet) return;
 
         const cleanupPan = setupPan(canvas, isPanning, setIsPanning, lastMousePosition, setLastMousePosition, setOffset);
+
         const cleanupSelect = setupSelect(canvas, offset, zoomLevel, setSelectionStart, setSelectionEnd, (start, end) => {
-            const x1 = Math.min(start.x, end.x);
-            const y1 = Math.min(start.y, end.y);
-            const x2 = Math.max(start.x, end.x);
-            const y2 = Math.max(start.y, end.y);
-
-            const selected = nodes
-                .filter((node) => {
-                    const size = 10;
-                    const { x, y } = node.position;
-                    return x + size >= x1 && x <= x2 && y + size >= y1 && y <= y2;
-                })
-                .map((node) => node.id);
-
+            const selected = getNodesInSelectionArea(nodes, start, end);
             setSelectedNodeIds(selected);
         });
+
         const cleanupZoom = setupZoom(canvas, zoomLevel, setZoomLevel, setOffset);
         const cleanupScroll = setupScroll(canvas, setOffset);
 
