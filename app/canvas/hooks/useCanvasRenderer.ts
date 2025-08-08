@@ -1,5 +1,6 @@
 import { useEffect, RefObject } from 'react';
 import { Point, Node } from '@/canvas/canvas.types';
+import { NODE_SIZE } from '@/canvas/constants';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -35,17 +36,16 @@ export function useCanvasRenderer(
                     ctx.lineWidth = 1 / scale;
 
                     const { x, y } = node.position;
-                    const size = 10;
 
                     ctx.strokeStyle = 'white';
                     ctx.lineWidth = 1 / scale;
-                    ctx.strokeRect(x, y, size, size);
+                    ctx.strokeRect(x, y, NODE_SIZE, NODE_SIZE);
 
                     if (isSelected) {
                         const padding = 4;
                         ctx.strokeStyle = '#ffc107';
                         ctx.lineWidth = 2 / scale;
-                        ctx.strokeRect(x - padding, y - padding, size + 2 * padding, size + 2 * padding);
+                        ctx.strokeRect(x - padding, y - padding, NODE_SIZE + 2 * padding, NODE_SIZE + 2 * padding);
                     }
 
                     break;
