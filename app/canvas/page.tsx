@@ -13,7 +13,13 @@ export default function Canvas() {
     const [nodes, setNodes] = useState<Node[]>([]);
     const [selectedNodeIds, setSelectedNodeIds] = useState<number[]>([]);
 
-    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef, nodes, setSelectedNodeIds);
+    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(
+        canvasRef,
+        nodes,
+        selectedNodeIds,
+        setSelectedNodeIds,
+        setNodes,
+    );
 
     useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
 
