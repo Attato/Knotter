@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
@@ -23,6 +23,17 @@ export default function Canvas() {
 
     useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
+                setSelectedNodeIds([]);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedNodeIds]);
+
     return (
         <div className="flex flex-col items-center justify-center gap-2 h-screen relative">
             <Link href="/" className="absolute top-4 left-4">
@@ -30,12 +41,24 @@ export default function Canvas() {
             </Link>
             <div className="absolute bottom-4 left-4">{zoomLevel.toFixed(2)}x</div>
 
-            <button
-                onClick={() => handleAddNode(nodes, setNodes)}
-                className="absolute w-10 h-10 top-4 p-2 bg-black border rounded cursor-pointer"
-            >
-                +
-            </button>
+            <div className="absolute flex gap-2 top-4 p-2">
+                <button
+                    onClick={() => handleAddNode(nodes, setNodes)}
+                    className="relative w-10 h-10 p-2 bg-black border rounded cursor-pointer"
+                >
+                    +
+                </button>
+
+                <button
+                    onClick={() => {
+                        setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
+                        setSelectedNodeIds([]);
+                    }}
+                    className="relative w-10 h-10 p-2 bg-black border rounded cursor-pointer"
+                >
+                    -
+                </button>
+            </div>
 
             <canvas ref={canvasRef} className="w-full h-full" />
         </div>
