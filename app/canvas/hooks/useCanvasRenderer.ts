@@ -1,11 +1,12 @@
 import { useEffect, RefObject } from 'react';
 import { Point, Node } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
+import { drawOctagon } from '@/canvas/utils/drawOctagon';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
     offset: Point,
-    scale: number,
+    zoomLevel: number,
     selectionStart: Point | null,
     selectionEnd: Point | null,
     nodes: Node[],
@@ -23,32 +24,30 @@ export function useCanvasRenderer(
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.save();
-        ctx.translate(offset.x, offset.y);
-        ctx.scale(scale, scale);
+        ctx.setTransform(zoomLevel, 0, 0, zoomLevel, offset.x, offset.y);
+
+        const padding = 4;
 
         for (const node of nodes) {
             const isSelected = selectedNodeIds.includes(node.id);
+            const { x, y } = node.position;
 
-            switch (node.type) {
-                case 'square':
-                    ctx.strokeStyle = isSelected ? 'yellow' : 'white';
-                    ctx.lineWidth = 1 / scale;
+            ctx.save();
+            ctx.beginPath();
+            drawOctagon(ctx, x, y, NODE_SIZE);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+            ctx.restore();
 
-                    const { x, y } = node.position;
-
-                    ctx.strokeStyle = 'white';
-                    ctx.lineWidth = 1 / scale;
-                    ctx.strokeRect(x, y, NODE_SIZE, NODE_SIZE);
-
-                    if (isSelected) {
-                        const padding = 4;
-                        ctx.strokeStyle = '#ffc107';
-                        ctx.lineWidth = 2 / scale;
-                        ctx.strokeRect(x - padding, y - padding, NODE_SIZE + 2 * padding, NODE_SIZE + 2 * padding);
-                    }
-
-                    break;
+            if (isSelected) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(x - padding, y - padding, NODE_SIZE + 2 * padding, NODE_SIZE + 2 * padding);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffc107';
+                ctx.stroke();
+                ctx.restore();
             }
         }
 
@@ -58,14 +57,13 @@ export function useCanvasRenderer(
             const width = Math.abs(selectionEnd.x - selectionStart.x);
             const height = Math.abs(selectionEnd.y - selectionStart.y);
 
+            ctx.save();
             ctx.fillStyle = 'rgba(0, 120, 215, 0.3)';
             ctx.fillRect(x, y, width, height);
-
             ctx.strokeStyle = 'rgba(0, 120, 215, 1)';
-            ctx.lineWidth = 1 / scale;
+            ctx.lineWidth = 1;
             ctx.strokeRect(x, y, width, height);
+            ctx.restore();
         }
-
-        ctx.restore();
-    }, [scale, offset, canvasRef, selectionStart, selectionEnd, nodes, selectedNodeIds]);
+    }, [offset, canvasRef, selectionStart, selectionEnd, nodes, selectedNodeIds, zoomLevel]);
 }
