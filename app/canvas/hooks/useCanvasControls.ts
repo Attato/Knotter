@@ -33,7 +33,7 @@ export function useCanvasControls(
             const mouseX = (e.clientX - rect.left - offset.x) / zoomLevel;
             const mouseY = (e.clientY - rect.top - offset.y) / zoomLevel;
 
-            const clickedNode = nodes.find((node) => {
+            const clickedNode = [...nodes].reverse().find((node) => {
                 const { x, y } = node.position;
                 return mouseX >= x && mouseX <= x + NODE_SIZE && mouseY >= y && mouseY <= y + NODE_SIZE;
             });
