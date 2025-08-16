@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
@@ -22,17 +22,6 @@ export default function Canvas() {
     );
 
     useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Delete' || e.key === 'Backspace') {
-                setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
-                setSelectedNodeIds([]);
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedNodeIds]);
 
     return (
         <div className="flex flex-col items-center justify-center gap-2 h-screen relative">

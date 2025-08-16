@@ -139,6 +139,20 @@ export function useCanvasControls(
         setNodes,
     ]);
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
+                setSelectedNodeIds([]);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [selectedNodeIds, setNodes, setSelectedNodeIds]);
+
     return {
         offset,
         zoomLevel,
