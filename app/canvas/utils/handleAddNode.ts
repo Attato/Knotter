@@ -13,7 +13,7 @@ export function handleAddNode(nodes: Node[], setNodes: Dispatch<SetStateAction<N
 
     const newNode: Node = {
         id: nodes.length > 0 ? nodes[nodes.length - 1].id + 1 : 1,
-        type: 'square',
+        type: 'octagon',
         position: { x, y },
     };
 

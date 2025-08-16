@@ -2,6 +2,6 @@ export type Point = { x: number; y: number };
 
 export interface Node {
     id: number;
-    type: 'square';
+    type: 'octagon';
     position: Point;
 }
