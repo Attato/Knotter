@@ -19,7 +19,8 @@ export function useCanvasHotkeys(
                     break;
                 }
 
-                case 'a': {
+                case 'a':
+                case 'ф': {
                     if (e.ctrlKey) {
                         e.preventDefault();
                         setSelectedNodeIds(nodes.map((n) => n.id));
