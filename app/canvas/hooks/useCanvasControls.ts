@@ -1,9 +1,10 @@
-import { useState, useEffect, RefObject, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect, useCallback, RefObject, Dispatch, SetStateAction } from 'react';
 import { Point, Node } from '@/canvas/canvas.types';
 import { INITIAL_ZOOM, NODE_SIZE } from '@/canvas/constants';
 import { setupPan, setupSelect, setupZoom, setupScroll } from '@/canvas/events/canvasEvents';
 import { getNodesInSelectionArea } from '@/canvas/utils/getNodesInSelectionArea';
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
+import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 
 export function useCanvasControls(
     canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -24,47 +25,54 @@ export function useCanvasControls(
     const [dragStartMouse, setDragStartMouse] = useState<Point | null>(null);
     const [initialNodePositions, setInitialNodePositions] = useState<Map<number, Point>>(new Map());
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas || !isInitialOffsetSet) return;
+    useCanvasHotkeys(nodes, selectedNodeIds, setSelectedNodeIds, setNodes);
 
-        const handleMouseDown = (e: MouseEvent) => {
+    const handleMouseDown = useCallback(
+        (e: MouseEvent) => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+
             const rect = canvas.getBoundingClientRect();
             const mouseX = (e.clientX - rect.left - offset.x) / zoomLevel;
             const mouseY = (e.clientY - rect.top - offset.y) / zoomLevel;
 
-            const clickedNode = [...nodes].reverse().find((node) => {
+            const clickedNode = nodes.find((node) => {
                 const { x, y } = node.position;
                 return mouseX >= x && mouseX <= x + NODE_SIZE && mouseY >= y && mouseY <= y + NODE_SIZE;
             });
 
-            if (clickedNode) {
-                if (e.ctrlKey) {
-                    setSelectedNodeIds((prev: number[]) =>
-                        prev.includes(clickedNode.id)
-                            ? prev.filter((id) => id !== clickedNode.id)
-                            : [...prev, clickedNode.id],
-                    );
-                } else {
-                    if (!selectedNodeIds.includes(clickedNode.id)) {
-                        setSelectedNodeIds([clickedNode.id]);
-                    }
-                }
+            if (!clickedNode) return;
 
-                setIsDraggingNodes(true);
-                setDragStartMouse({ x: mouseX, y: mouseY });
-                const positions = new Map<number, Point>();
-                for (const node of nodes) {
-                    if (selectedNodeIds.includes(node.id) || node.id === clickedNode.id) {
-                        positions.set(node.id, { ...node.position });
-                    }
+            if (e.ctrlKey) {
+                setSelectedNodeIds((prev) =>
+                    prev.includes(clickedNode.id) ? prev.filter((id) => id !== clickedNode.id) : [...prev, clickedNode.id],
+                );
+            } else {
+                if (!selectedNodeIds.includes(clickedNode.id)) {
+                    setSelectedNodeIds([clickedNode.id]);
                 }
-                setInitialNodePositions(positions);
             }
-        };
 
-        const handleMouseMove = (e: MouseEvent) => {
+            setIsDraggingNodes(true);
+            setDragStartMouse({ x: mouseX, y: mouseY });
+
+            const positions = new Map<number, Point>();
+            for (const node of nodes) {
+                if (selectedNodeIds.includes(node.id) || node.id === clickedNode.id) {
+                    positions.set(node.id, { ...node.position });
+                }
+            }
+            setInitialNodePositions(positions);
+        },
+        [canvasRef, offset, zoomLevel, nodes, selectedNodeIds, setSelectedNodeIds],
+    );
+
+    const handleMouseMove = useCallback(
+        (e: MouseEvent) => {
             if (!isDraggingNodes || !dragStartMouse) return;
+
+            const canvas = canvasRef.current;
+            if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
             const mouseX = (e.clientX - rect.left - offset.x) / zoomLevel;
@@ -89,15 +97,21 @@ export function useCanvasControls(
                     return node;
                 }),
             );
-        };
+        },
+        [isDraggingNodes, dragStartMouse, offset, zoomLevel, selectedNodeIds, initialNodePositions, setNodes, canvasRef],
+    );
 
-        const handleMouseUp = () => {
-            if (isDraggingNodes) {
-                setIsDraggingNodes(false);
-                setDragStartMouse(null);
-                setInitialNodePositions(new Map());
-            }
-        };
+    const handleMouseUp = useCallback(() => {
+        if (isDraggingNodes) {
+            setIsDraggingNodes(false);
+            setDragStartMouse(null);
+            setInitialNodePositions(new Map());
+        }
+    }, [isDraggingNodes]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas || !isInitialOffsetSet) return;
 
         canvas.addEventListener('mousedown', handleMouseDown);
         canvas.addEventListener('mousemove', handleMouseMove);
@@ -124,34 +138,18 @@ export function useCanvasControls(
         };
     }, [
         canvasRef,
+        isInitialOffsetSet,
+        handleMouseDown,
+        handleMouseMove,
+        handleMouseUp,
         isPanning,
         lastMousePosition,
         offset,
         zoomLevel,
-        isInitialOffsetSet,
         nodes,
-        selectedNodeIds,
         setSelectedNodeIds,
         setOffset,
-        isDraggingNodes,
-        dragStartMouse,
-        initialNodePositions,
-        setNodes,
     ]);
-
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Delete' || e.key === 'Backspace') {
-                setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
-                setSelectedNodeIds([]);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [selectedNodeIds, setNodes, setSelectedNodeIds]);
 
     return {
         offset,
