@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { Node } from '@/canvas/canvas.types';
 
 export function useCanvasHotkeys(
@@ -8,12 +8,14 @@ export function useCanvasHotkeys(
     setNodes: (updater: (prev: Node[]) => Node[]) => void,
 ) {
     const clipboardRef = useRef<Node[]>([]);
+    const historyRef = useRef<Node[][]>([]);
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
 
             if (key === 'delete' || key === 'backspace') {
+                historyRef.current.push(nodes);
                 setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
                 setSelectedNodeIds([]);
                 return;
@@ -35,6 +37,8 @@ export function useCanvasHotkeys(
                 e.preventDefault();
                 if (clipboardRef.current.length === 0) return;
 
+                historyRef.current.push(nodes);
+
                 setNodes((prev) => {
                     const maxId = prev.length > 0 ? Math.max(...prev.map((n) => n.id)) : 0;
                     const offset = 50;
@@ -52,6 +56,18 @@ export function useCanvasHotkeys(
 
                     return [...prev, ...newNodes];
                 });
+
+                return;
+            }
+
+            if ((key === 'z' || key === 'я') && e.ctrlKey) {
+                e.preventDefault();
+                const lastState = historyRef.current.pop();
+
+                if (lastState) {
+                    setNodes(() => lastState);
+                    setSelectedNodeIds([]);
+                }
 
                 return;
             }
