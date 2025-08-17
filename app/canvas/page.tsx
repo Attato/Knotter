@@ -3,10 +3,16 @@
 import { useRef, useState } from 'react';
 import Link from 'next/link';
 
+import { Node } from '@/canvas/canvas.types';
+
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
-import { Node } from '@/canvas/canvas.types';
+import { useContextMenu } from '@/canvas/hooks/useContextMenu';
+
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
+
+import { ContextMenu } from '@/canvas/components/ContextMenu';
+import { ContextMenuItem } from '@/canvas/components/ContextMenuItem';
 
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -23,33 +29,39 @@ export default function Canvas() {
 
     useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
 
+    const { isOpen, position, handleContextMenu, closeMenu } = useContextMenu();
+
     return (
-        <div className="flex flex-col items-center justify-center gap-2 h-screen relative">
+        <div className="flex flex-col items-center justify-center gap-2 h-screen relative" onClick={closeMenu}>
             <Link href="/" className="absolute top-4 left-4">
-                go to home
+                На главную
             </Link>
+
             <div className="absolute bottom-4 left-4">{zoomLevel.toFixed(2)}x</div>
 
-            <div className="absolute flex gap-2 top-4 p-2">
-                <button
-                    onClick={() => handleAddNode(nodes, setNodes)}
-                    className="relative w-10 h-10 p-2 bg-black border rounded cursor-pointer"
+            <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
+                <ContextMenuItem
+                    onClick={() => {
+                        handleAddNode(nodes, setNodes);
+                        closeMenu();
+                    }}
                 >
-                    +
-                </button>
+                    Добавить узел
+                </ContextMenuItem>
 
-                <button
+                <ContextMenuItem
                     onClick={() => {
                         setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
                         setSelectedNodeIds([]);
+                        closeMenu();
                     }}
-                    className="relative w-10 h-10 p-2 bg-black border rounded cursor-pointer"
+                    disabled={selectedNodeIds.length === 0}
                 >
-                    -
-                </button>
-            </div>
+                    Удалить выбранное
+                </ContextMenuItem>
+            </ContextMenu>
 
-            <canvas ref={canvasRef} className="w-full h-full" />
+            <canvas ref={canvasRef} className="w-full h-full" onContextMenu={handleContextMenu} />
         </div>
     );
 }
