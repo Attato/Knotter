@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { Node } from '@/canvas/canvas.types';
 
 export function useCanvasHotkeys(
@@ -7,29 +7,53 @@ export function useCanvasHotkeys(
     setSelectedNodeIds: React.Dispatch<React.SetStateAction<number[]>>,
     setNodes: (updater: (prev: Node[]) => Node[]) => void,
 ) {
+    const clipboardRef = useRef<Node[]>([]);
+
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
 
-            switch (key) {
-                case 'delete':
-                case 'backspace': {
-                    setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
-                    setSelectedNodeIds([]);
-                    break;
-                }
+            if (key === 'delete' || key === 'backspace') {
+                setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
+                setSelectedNodeIds([]);
+                return;
+            }
 
-                case 'a':
-                case 'ф': {
-                    if (e.ctrlKey) {
-                        e.preventDefault();
-                        setSelectedNodeIds(nodes.map((n) => n.id));
-                    }
-                    break;
-                }
+            if ((key === 'a' || key === 'ф') && e.ctrlKey) {
+                e.preventDefault();
+                setSelectedNodeIds(nodes.map((n) => n.id));
+                return;
+            }
 
-                default:
-                    break;
+            if ((key === 'c' || key === 'с') && e.ctrlKey) {
+                e.preventDefault();
+                clipboardRef.current = nodes.filter((n) => selectedNodeIds.includes(n.id));
+                return;
+            }
+
+            if ((key === 'v' || key === 'м') && e.ctrlKey) {
+                e.preventDefault();
+                if (clipboardRef.current.length === 0) return;
+
+                setNodes((prev) => {
+                    const maxId = prev.length > 0 ? Math.max(...prev.map((n) => n.id)) : 0;
+                    const offset = 50;
+
+                    const newNodes: Node[] = clipboardRef.current.map((node, index) => ({
+                        ...node,
+                        id: maxId + index + 1,
+                        position: {
+                            x: node.position.x + offset,
+                            y: node.position.y + offset,
+                        },
+                    }));
+
+                    setSelectedNodeIds(newNodes.map((n) => n.id));
+
+                    return [...prev, ...newNodes];
+                });
+
+                return;
             }
         },
         [nodes, selectedNodeIds, setNodes, setSelectedNodeIds],
