@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, useState } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { Node } from '@/canvas/canvas.types';
 
 export function useCanvasHotkeys(
