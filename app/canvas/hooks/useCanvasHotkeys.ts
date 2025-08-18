@@ -1,12 +1,10 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { Node } from '@/canvas/canvas.types';
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
-export function useCanvasHotkeys(
-    nodes: Node[],
-    selectedNodeIds: number[],
-    setSelectedNodeIds: React.Dispatch<React.SetStateAction<number[]>>,
-    setNodes: (updater: (prev: Node[]) => Node[]) => void,
-) {
+export function useCanvasHotkeys() {
+    const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+
     const clipboardRef = useRef<Node[]>([]);
     const historyRef = useRef<Node[][]>([]);
 
@@ -16,7 +14,7 @@ export function useCanvasHotkeys(
 
             if (key === 'delete' || key === 'backspace') {
                 historyRef.current.push(nodes);
-                setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
+                setNodes(nodes.filter((node) => !selectedNodeIds.includes(node.id)));
                 setSelectedNodeIds([]);
                 return;
             }
@@ -39,24 +37,20 @@ export function useCanvasHotkeys(
 
                 historyRef.current.push(nodes);
 
-                setNodes((prev) => {
-                    const maxId = prev.length > 0 ? Math.max(...prev.map((n) => n.id)) : 0;
-                    const offset = 50;
+                const maxId = nodes.length > 0 ? Math.max(...nodes.map((n) => n.id)) : 0;
+                const offset = 50;
 
-                    const newNodes: Node[] = clipboardRef.current.map((node, index) => ({
-                        ...node,
-                        id: maxId + index + 1,
-                        position: {
-                            x: node.position.x + offset,
-                            y: node.position.y + offset,
-                        },
-                    }));
+                const newNodes: Node[] = clipboardRef.current.map((node, index) => ({
+                    ...node,
+                    id: maxId + index + 1,
+                    position: {
+                        x: node.position.x + offset,
+                        y: node.position.y + offset,
+                    },
+                }));
 
-                    setSelectedNodeIds(newNodes.map((n) => n.id));
-
-                    return [...prev, ...newNodes];
-                });
-
+                setNodes([...nodes, ...newNodes]);
+                setSelectedNodeIds(newNodes.map((n) => n.id));
                 return;
             }
 
@@ -65,10 +59,9 @@ export function useCanvasHotkeys(
                 const lastState = historyRef.current.pop();
 
                 if (lastState) {
-                    setNodes(() => lastState);
+                    setNodes(lastState);
                     setSelectedNodeIds([]);
                 }
-
                 return;
             }
         },

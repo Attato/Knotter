@@ -1,9 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import Link from 'next/link';
-
-import { Node } from '@/canvas/canvas.types';
 
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
@@ -14,18 +12,14 @@ import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { ContextMenu } from '@/canvas/components/ContextMenu';
 import { ContextMenuItem } from '@/canvas/components/ContextMenuItem';
 
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [nodes, setNodes] = useState<Node[]>([]);
-    const [selectedNodeIds, setSelectedNodeIds] = useState<number[]>([]);
 
-    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(
-        canvasRef,
-        nodes,
-        selectedNodeIds,
-        setSelectedNodeIds,
-        setNodes,
-    );
+    const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+
+    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef);
 
     useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
 
@@ -42,7 +36,7 @@ export default function Canvas() {
             <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
                 <ContextMenuItem
                     onClick={() => {
-                        handleAddNode(nodes, setNodes);
+                        setNodes(handleAddNode(nodes));
                         closeMenu();
                     }}
                 >
@@ -51,7 +45,7 @@ export default function Canvas() {
 
                 <ContextMenuItem
                     onClick={() => {
-                        setNodes((prev) => prev.filter((node) => !selectedNodeIds.includes(node.id)));
+                        setNodes(nodes.filter((node) => !selectedNodeIds.includes(node.id)));
                         setSelectedNodeIds([]);
                         closeMenu();
                     }}

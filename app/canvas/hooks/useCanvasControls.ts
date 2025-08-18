@@ -1,18 +1,21 @@
-import { useState, useEffect, useCallback, RefObject, Dispatch, SetStateAction } from 'react';
-import { Point, Node } from '@/canvas/canvas.types';
+import { useState, useEffect, useCallback, RefObject } from 'react';
+
+import { Point } from '@/canvas/canvas.types';
+
 import { INITIAL_ZOOM, NODE_SIZE } from '@/canvas/constants';
+
 import { setupPan, setupSelect, setupZoom, setupScroll } from '@/canvas/events/canvasEvents';
+
 import { getNodesInSelectionArea } from '@/canvas/utils/getNodesInSelectionArea';
+
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
 import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 
-export function useCanvasControls(
-    canvasRef: RefObject<HTMLCanvasElement | null>,
-    nodes: Node[],
-    selectedNodeIds: number[],
-    setSelectedNodeIds: Dispatch<SetStateAction<number[]>>,
-    setNodes: (updater: (prev: Node[]) => Node[]) => void,
-) {
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
+export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
+    const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+
     const { offset, setOffset, isInitialOffsetSet } = useInitialCanvasOffset(canvasRef);
 
     const [zoomLevel, setZoomLevel] = useState(INITIAL_ZOOM);
@@ -25,7 +28,7 @@ export function useCanvasControls(
     const [dragStartMouse, setDragStartMouse] = useState<Point | null>(null);
     const [initialNodePositions, setInitialNodePositions] = useState<Map<number, Point>>(new Map());
 
-    useCanvasHotkeys(nodes, selectedNodeIds, setSelectedNodeIds, setNodes);
+    useCanvasHotkeys();
 
     const handleMouseDown = useCallback(
         (e: MouseEvent) => {
@@ -44,8 +47,10 @@ export function useCanvasControls(
             if (!clickedNode) return;
 
             if (e.ctrlKey) {
-                setSelectedNodeIds((prev) =>
-                    prev.includes(clickedNode.id) ? prev.filter((id) => id !== clickedNode.id) : [...prev, clickedNode.id],
+                setSelectedNodeIds(
+                    selectedNodeIds.includes(clickedNode.id)
+                        ? selectedNodeIds.filter((id) => id !== clickedNode.id)
+                        : [...selectedNodeIds, clickedNode.id],
                 );
             } else {
                 if (!selectedNodeIds.includes(clickedNode.id)) {
@@ -81,8 +86,8 @@ export function useCanvasControls(
             const dx = mouseX - dragStartMouse.x;
             const dy = mouseY - dragStartMouse.y;
 
-            setNodes((prev) =>
-                prev.map((node) => {
+            setNodes(
+                nodes.map((node) => {
                     if (selectedNodeIds.includes(node.id)) {
                         const initialPos = initialNodePositions.get(node.id);
                         if (!initialPos) return node;
@@ -98,7 +103,17 @@ export function useCanvasControls(
                 }),
             );
         },
-        [isDraggingNodes, dragStartMouse, offset, zoomLevel, selectedNodeIds, initialNodePositions, setNodes, canvasRef],
+        [
+            isDraggingNodes,
+            dragStartMouse,
+            offset,
+            zoomLevel,
+            selectedNodeIds,
+            initialNodePositions,
+            nodes,
+            setNodes,
+            canvasRef,
+        ],
     );
 
     const handleMouseUp = useCallback(() => {

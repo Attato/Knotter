@@ -1,7 +1,6 @@
 import { Node } from '@/canvas/canvas.types';
-import { Dispatch, SetStateAction } from 'react';
 
-export function handleAddNode(nodes: Node[], setNodes: Dispatch<SetStateAction<Node[]>>) {
+export function handleAddNode(nodes: Node[]): Node[] {
     const step = 10;
     let x = 0;
     let y = 0;
@@ -17,5 +16,5 @@ export function handleAddNode(nodes: Node[], setNodes: Dispatch<SetStateAction<N
         position: { x, y },
     };
 
-    setNodes((prev) => [...prev, newNode]);
+    return [...nodes, newNode];
 }
