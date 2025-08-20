@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, RefObject } from 'react';
 
 import { Point } from '@/canvas/canvas.types';
 
-import { INITIAL_ZOOM, NODE_SIZE } from '@/canvas/constants';
+import { INITIAL_ZOOM } from '@/canvas/constants';
 
 import { setupPan, setupSelect, setupZoom, setupScroll } from '@/canvas/events/canvasEvents';
 
@@ -12,6 +12,9 @@ import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
 import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
+import { getMousePosition } from '@/canvas/utils/getMousePosition';
+import { getNodeAtPosition } from '@/canvas/utils/getNodeAtPosition';
 
 export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
@@ -36,13 +39,9 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
-            const mouseX = (e.clientX - rect.left - offset.x) / zoomLevel;
-            const mouseY = (e.clientY - rect.top - offset.y) / zoomLevel;
+            const mousePos = getMousePosition(e, rect, offset, zoomLevel);
 
-            const clickedNode = nodes.find((node) => {
-                const { x, y } = node.position;
-                return mouseX >= x && mouseX <= x + NODE_SIZE && mouseY >= y && mouseY <= y + NODE_SIZE;
-            });
+            const clickedNode = getNodeAtPosition(nodes, mousePos);
 
             if (!clickedNode) return;
 
@@ -59,7 +58,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             }
 
             setIsDraggingNodes(true);
-            setDragStartMouse({ x: mouseX, y: mouseY });
+            setDragStartMouse(mousePos);
 
             const positions = new Map<number, Point>();
             for (const node of nodes) {
@@ -80,11 +79,10 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
-            const mouseX = (e.clientX - rect.left - offset.x) / zoomLevel;
-            const mouseY = (e.clientY - rect.top - offset.y) / zoomLevel;
+            const mousePos = getMousePosition(e, rect, offset, zoomLevel);
 
-            const dx = mouseX - dragStartMouse.x;
-            const dy = mouseY - dragStartMouse.y;
+            const dx = mousePos.x - dragStartMouse.x;
+            const dy = mousePos.y - dragStartMouse.y;
 
             setNodes(
                 nodes.map((node) => {
