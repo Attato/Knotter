@@ -1,21 +1,19 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { useCanvasStore } from './store/сanvasStore';
+
 import { Node } from '@/canvas/canvas.types';
+
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
+import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
 
 export default function CanvasLayout({ children }: { children: ReactNode }) {
     const { nodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
 
     const handleNodeClick = (nodeId: number, e: React.MouseEvent) => {
-        if (e.ctrlKey || e.metaKey) {
-            const newSelectedIds = selectedNodeIds.includes(nodeId)
-                ? selectedNodeIds.filter((id) => id !== nodeId)
-                : [...selectedNodeIds, nodeId];
-            setSelectedNodeIds(newSelectedIds);
-        } else {
-            setSelectedNodeIds([nodeId]);
-        }
+        const newSelectedIds = updateNodeSelection(nodes, selectedNodeIds, nodeId, e);
+        setSelectedNodeIds(newSelectedIds);
     };
 
     return (

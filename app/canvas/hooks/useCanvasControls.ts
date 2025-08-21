@@ -15,6 +15,7 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { getNodeAtPosition } from '@/canvas/utils/getNodeAtPosition';
+import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
 
 export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
@@ -36,6 +37,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
     const handleMouseDown = useCallback(
         (e: MouseEvent) => {
             const canvas = canvasRef.current;
+
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
@@ -45,24 +47,16 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
             if (!clickedNode) return;
 
-            if (e.ctrlKey) {
-                setSelectedNodeIds(
-                    selectedNodeIds.includes(clickedNode.id)
-                        ? selectedNodeIds.filter((id) => id !== clickedNode.id)
-                        : [...selectedNodeIds, clickedNode.id],
-                );
-            } else {
-                if (!selectedNodeIds.includes(clickedNode.id)) {
-                    setSelectedNodeIds([clickedNode.id]);
-                }
-            }
+            const newSelectedIds = updateNodeSelection(nodes, selectedNodeIds, clickedNode.id, e);
+            setSelectedNodeIds(newSelectedIds);
 
             setIsDraggingNodes(true);
             setDragStartMouse(mousePos);
 
             const positions = new Map<number, Point>();
+
             for (const node of nodes) {
-                if (selectedNodeIds.includes(node.id) || node.id === clickedNode.id) {
+                if (newSelectedIds.includes(node.id)) {
                     positions.set(node.id, { ...node.position });
                 }
             }
