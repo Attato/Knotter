@@ -1,4 +1,3 @@
-// utils/updateNodeSelection.ts
 import { Node } from '@/canvas/canvas.types';
 import { selectRangeNodes } from '@/canvas/utils/selectRangeNodes';
 
