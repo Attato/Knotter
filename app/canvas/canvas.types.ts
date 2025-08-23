@@ -1,5 +1,10 @@
 export type Point = { x: number; y: number };
 
+export interface CanvasState {
+    nodes: Node[];
+    edges: Edge[];
+}
+
 export interface Node {
     id: number;
     type: 'octagon';
