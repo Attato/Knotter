@@ -46,7 +46,12 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
             if (!clickedNode) return;
 
-            const newSelectedIds = updateNodeSelection(nodes, selectedNodeIds, clickedNode.id, e);
+            let newSelectedIds = selectedNodeIds;
+
+            if (!selectedNodeIds.includes(clickedNode.id)) {
+                newSelectedIds = updateNodeSelection(nodes, selectedNodeIds, clickedNode.id, e);
+            }
+
             setSelectedNodeIds(newSelectedIds);
 
             setIsDraggingNodes(true);
