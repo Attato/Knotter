@@ -3,6 +3,8 @@ import { Point, Node } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
 import { drawNodes } from '@/canvas/utils/drawNodes';
 import { drawSelectionBox } from '@/canvas/utils/drawSelectionBox';
+import { drawEdges } from '@/canvas/utils/drawEdges';
+import { Edge } from '@/canvas/canvas.types';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -12,6 +14,8 @@ export function useCanvasRenderer(
     selectionEnd: Point | null,
     nodes: Node[],
     selectedNodeIds: number[],
+    edges: Edge[],
+    tempEdge: { from: number; toPos: Point } | null,
 ) {
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -27,10 +31,23 @@ export function useCanvasRenderer(
 
         ctx.setTransform(zoomLevel, 0, 0, zoomLevel, offset.x, offset.y);
 
+        drawEdges(ctx, nodes, edges);
         drawNodes(ctx, nodes, selectedNodeIds, NODE_SIZE);
 
         if (selectionStart && selectionEnd) {
             drawSelectionBox(ctx, selectionStart, selectionEnd);
         }
-    }, [offset, canvasRef, selectionStart, selectionEnd, nodes, selectedNodeIds, zoomLevel]);
+
+        if (tempEdge) {
+            const fromNode = nodes.find((n) => n.id === tempEdge.from);
+            if (fromNode) {
+                ctx.strokeStyle = '#ccc';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(fromNode.position.x + NODE_SIZE / 2, fromNode.position.y + NODE_SIZE / 2);
+                ctx.lineTo(tempEdge.toPos.x, tempEdge.toPos.y);
+                ctx.stroke();
+            }
+        }
+    }, [canvasRef, offset, zoomLevel, nodes, selectedNodeIds, edges, selectionStart, selectionEnd, tempEdge]);
 }
