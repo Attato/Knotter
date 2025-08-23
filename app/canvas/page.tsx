@@ -8,7 +8,8 @@ import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
 import { useContextMenu } from '@/canvas/hooks/useContextMenu';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
-
+import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
+import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { ContextMenu } from '@/canvas/components/ContextMenu';
 import { ContextMenuItem } from '@/canvas/components/ContextMenuItem';
 
@@ -17,11 +18,12 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+    const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds, edges, setEdges, tempEdge, setTempEdge } =
+        useCanvasStore();
 
     const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef);
 
-    useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds);
+    useCanvasRenderer(canvasRef, offset, zoomLevel, selectionStart, selectionEnd, nodes, selectedNodeIds, edges, tempEdge);
 
     const { isOpen, position, handleContextMenu, closeMenu } = useContextMenu();
 
@@ -35,8 +37,14 @@ export default function Canvas() {
 
             <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
                 <ContextMenuItem
-                    onClick={() => {
-                        setNodes(handleAddNode(nodes));
+                    onClick={(e) => {
+                        if (!e || !canvasRef.current) return;
+
+                        const rect = canvasRef.current.getBoundingClientRect();
+                        const mousePos = getMousePosition(e.nativeEvent, rect, offset, zoomLevel);
+
+                        setNodes(handleAddNode(nodes, { x: mousePos.x, y: mousePos.y }));
+
                         closeMenu();
                     }}
                 >
@@ -44,8 +52,29 @@ export default function Canvas() {
                 </ContextMenuItem>
 
                 <ContextMenuItem
+                    onClick={(e) => {
+                        if (!e || selectedNodeIds.length !== 1 || !canvasRef.current) return;
+
+                        const rect = canvasRef.current.getBoundingClientRect();
+                        const mousePos = getMousePosition(e.nativeEvent, rect, offset, zoomLevel);
+
+                        const fromNodeId = selectedNodeIds[0];
+                        setTempEdge({ from: fromNodeId, toPos: mousePos });
+
+                        closeMenu();
+                    }}
+                    disabled={selectedNodeIds.length !== 1}
+                >
+                    Добавить связь
+                </ContextMenuItem>
+
+                <ContextMenuItem
                     onClick={() => {
-                        setNodes(nodes.filter((node) => !selectedNodeIds.includes(node.id)));
+                        if (selectedNodeIds.length === 0) return;
+
+                        const { nodes: newNodes, edges: newEdges } = handleDeleteNode(nodes, edges, selectedNodeIds);
+                        setNodes(newNodes);
+                        setEdges(newEdges);
                         setSelectedNodeIds([]);
                         closeMenu();
                     }}
