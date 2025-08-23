@@ -3,7 +3,7 @@
 import React from 'react';
 
 interface ContextMenuItemProps {
-    onClick: () => void;
+    onClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
     children: React.ReactNode;
     disabled?: boolean;
 }
@@ -11,8 +11,8 @@ interface ContextMenuItemProps {
 export const ContextMenuItem: React.FC<ContextMenuItemProps> = ({ onClick, children, disabled = false }) => {
     return (
         <button
-            className={`block px-3 py-1 hover:bg-[#1d1d1d] w-full text-left cursor-pointer ${disabled && 'text-[#6c6c6c]'}`}
-            onClick={onClick}
+            className={`block px-3 py-1 hover:bg-[#1d1d1d] w-full text-left cursor-pointer ${disabled ? 'text-[#6c6c6c]' : ''}`}
+            onClick={(e) => onClick?.(e)}
             disabled={disabled}
         >
             {children}
