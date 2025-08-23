@@ -1,20 +1,30 @@
 import { useEffect, useCallback, useRef } from 'react';
-import { Node } from '@/canvas/canvas.types';
+import { Node, Edge, CanvasState } from '@/canvas/canvas.types';
+
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
-export function useCanvasHotkeys() {
-    const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+import { handleAddNode } from '@/canvas/utils/handleAddNode';
+import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
 
-    const clipboardRef = useRef<Node[]>([]);
-    const historyRef = useRef<Node[][]>([]);
+export function useCanvasHotkeys() {
+    const { nodes, setNodes, edges, setEdges, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+
+    const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
+    const historyRef = useRef<CanvasState[]>([]);
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
+            const pushHistory = () => {
+                historyRef.current.push({ nodes, edges });
+            };
+
             const key = e.key.toLowerCase();
 
             if (key === 'delete' || key === 'backspace') {
-                historyRef.current.push(nodes);
-                setNodes(nodes.filter((node) => !selectedNodeIds.includes(node.id)));
+                pushHistory();
+                const { nodes: newNodes, edges: newEdges } = handleDeleteNode(nodes, edges, selectedNodeIds);
+                setNodes(newNodes);
+                setEdges(newEdges);
                 setSelectedNodeIds([]);
                 return;
             }
@@ -27,20 +37,23 @@ export function useCanvasHotkeys() {
 
             if ((key === 'c' || key === 'с') && e.ctrlKey) {
                 e.preventDefault();
-                clipboardRef.current = nodes.filter((n) => selectedNodeIds.includes(n.id));
+                clipboardRef.current = {
+                    nodes: nodes.filter((n) => selectedNodeIds.includes(n.id)),
+                    edges: edges.filter((edge) => selectedNodeIds.includes(edge.from) && selectedNodeIds.includes(edge.to)),
+                };
                 return;
             }
 
             if ((key === 'v' || key === 'м') && e.ctrlKey) {
                 e.preventDefault();
-                if (clipboardRef.current.length === 0) return;
+                if (clipboardRef.current.nodes.length === 0) return;
 
-                historyRef.current.push(nodes);
+                pushHistory();
 
                 const maxId = nodes.length > 0 ? Math.max(...nodes.map((n) => n.id)) : 0;
                 const offset = 50;
 
-                const newNodes: Node[] = clipboardRef.current.map((node, index) => ({
+                const newNodes: Node[] = clipboardRef.current.nodes.map((node, index) => ({
                     ...node,
                     id: maxId + index + 1,
                     position: {
@@ -49,23 +62,44 @@ export function useCanvasHotkeys() {
                     },
                 }));
 
+                const nodeIdMap = new Map<number, number>();
+                clipboardRef.current.nodes.forEach((node, index) => {
+                    nodeIdMap.set(node.id, newNodes[index].id);
+                });
+
+                const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((e) => e.id)) : 0;
+
+                const newEdges: Edge[] = clipboardRef.current.edges.map((edge, index) => ({
+                    id: maxEdgeId + index + 1,
+                    from: nodeIdMap.get(edge.from)!,
+                    to: nodeIdMap.get(edge.to)!,
+                }));
+
                 setNodes([...nodes, ...newNodes]);
+                setEdges([...edges, ...newEdges]);
                 setSelectedNodeIds(newNodes.map((n) => n.id));
-                return;
             }
 
             if ((key === 'z' || key === 'я') && e.ctrlKey) {
                 e.preventDefault();
                 const lastState = historyRef.current.pop();
-
                 if (lastState) {
-                    setNodes(lastState);
+                    setNodes(lastState.nodes);
+                    setEdges(lastState.edges);
                     setSelectedNodeIds([]);
                 }
                 return;
             }
+
+            if ((key === 'a' || key === 'ф') && e.shiftKey) {
+                e.preventDefault();
+                const newNodes = handleAddNode(nodes);
+                setNodes(newNodes);
+                setSelectedNodeIds([newNodes[newNodes.length - 1].id]);
+                return;
+            }
         },
-        [nodes, selectedNodeIds, setNodes, setSelectedNodeIds],
+        [nodes, edges, selectedNodeIds, setNodes, setEdges, setSelectedNodeIds],
     );
 
     useEffect(() => {
