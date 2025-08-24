@@ -84,6 +84,14 @@ export default function Canvas() {
                 </ContextMenuItem>
             </ContextMenu>
 
+            {nodes.length === 0 && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="flex items-center text-[#aaa]">
+                        Нажмите <strong className="pl-1"> ПКМ </strong>, чтобы начать творить.
+                    </div>
+                </div>
+            )}
+
             <canvas ref={canvasRef} className="w-full h-full" onContextMenu={handleContextMenu} />
         </div>
     );
