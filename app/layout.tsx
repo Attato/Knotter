@@ -4,8 +4,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 
 export const metadata: Metadata = {
-    title: 'Sequoia',
-    description: 'Designed to create many different trees',
+    title: 'Knotter',
+    description: 'Визуальный редактор для проектирования сложных систем в наглядном виде.',
 };
 
 const inter = Inter({ subsets: ['latin'], weight: ['100', '400', '700'] });
