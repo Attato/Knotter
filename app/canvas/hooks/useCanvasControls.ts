@@ -156,6 +156,21 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
         [isDraggingNodes, nodes, edges, setEdges, tempEdge, setTempEdge, canvasRef, offset, zoomLevel],
     );
 
+    const handleSelectionArea = useCallback(
+        (start: Position, end: Position) => {
+            const selected = getNodesInSelectionArea(nodes, start, end);
+            setSelectedNodeIds(selected);
+        },
+        [nodes, setSelectedNodeIds],
+    );
+
+    const initializeSelection = useCallback(
+        (canvas: HTMLCanvasElement) => {
+            return setupSelect(canvas, offset, zoomLevel, setSelectionStart, setSelectionEnd, handleSelectionArea);
+        },
+        [offset, zoomLevel, handleSelectionArea],
+    );
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas || !isInitialOffsetSet) return;
@@ -165,10 +180,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
         window.addEventListener('mouseup', handleMouseUp);
 
         const cleanupPan = setupPan(canvas, isPanning, setIsPanning, lastMousePosition, setLastMousePosition, setOffset);
-        const cleanupSelect = setupSelect(canvas, offset, zoomLevel, setSelectionStart, setSelectionEnd, (start, end) => {
-            const selected = getNodesInSelectionArea(nodes, start, end);
-            setSelectedNodeIds(selected);
-        });
+        const cleanupSelect = initializeSelection(canvas);
         const cleanupZoom = setupZoom(canvas, zoomLevel, setZoomLevel, setOffset);
         const cleanupScroll = setupScroll(canvas, setOffset);
 
@@ -194,6 +206,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
         nodes,
         setSelectedNodeIds,
         setOffset,
+        initializeSelection,
     ]);
 
     return {
