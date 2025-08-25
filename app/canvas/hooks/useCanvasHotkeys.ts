@@ -7,7 +7,7 @@ import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
 
 export function useCanvasHotkeys() {
-    const { nodes, setNodes, edges, setEdges, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+    const { nodes, setNodes, edges, setEdges, setTempEdge, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
     const historyRef = useRef<CanvasState[]>([]);
@@ -98,8 +98,26 @@ export function useCanvasHotkeys() {
                 setSelectedNodeIds([newNodes[newNodes.length - 1].id]);
                 return;
             }
+
+            if ((key === 'e' || key === 'у') && e.shiftKey) {
+                e.preventDefault();
+
+                if (selectedNodeIds.length === 0) return;
+
+                const fromNodeId = selectedNodeIds[0];
+                const fromNode = nodes.find((n) => n.id === fromNodeId);
+
+                if (!fromNode) return;
+
+                setTempEdge({
+                    from: fromNodeId,
+                    toPos: { ...fromNode.position },
+                });
+
+                return;
+            }
         },
-        [nodes, edges, selectedNodeIds, setNodes, setEdges, setSelectedNodeIds],
+        [nodes, edges, selectedNodeIds, setNodes, setEdges, setTempEdge, setSelectedNodeIds],
     );
 
     useEffect(() => {
