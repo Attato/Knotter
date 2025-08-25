@@ -37,6 +37,19 @@ export default function Canvas() {
 
             <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
                 <ContextMenuItem
+                    onClick={() => {
+                        setSelectedNodeIds(nodes.map((n) => n.id));
+                        closeMenu();
+                    }}
+                    disabled={nodes.length === 0}
+                    shortcut="Ctrl + A"
+                >
+                    Выбрать всё
+                </ContextMenuItem>
+
+                <hr className="border-b-0 border-[#2d2d2d]" />
+
+                <ContextMenuItem
                     onClick={(e) => {
                         if (!e || !canvasRef.current) return;
 
@@ -70,11 +83,14 @@ export default function Canvas() {
                     Добавить связь
                 </ContextMenuItem>
 
+                <hr className="border-b-0 border-[#2d2d2d]" />
+
                 <ContextMenuItem
                     onClick={() => {
                         if (selectedNodeIds.length === 0) return;
 
                         const { nodes: newNodes, edges: newEdges } = handleDeleteNode(nodes, edges, selectedNodeIds);
+
                         setNodes(newNodes);
                         setEdges(newEdges);
                         setSelectedNodeIds([]);
