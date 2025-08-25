@@ -131,12 +131,16 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
                 const targetNode = getNodeAtPosition(nodes, mousePos);
 
                 if (targetNode && targetNode.id !== tempEdge.from) {
-                    const newEdge: Edge = {
-                        id: edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) + 1 : 1,
-                        from: tempEdge.from,
-                        to: targetNode.id,
-                    };
-                    setEdges([...edges, newEdge]);
+                    const exists = edges.some((edge) => edge.from === tempEdge.from && edge.to === targetNode.id);
+
+                    if (!exists) {
+                        const newEdge: Edge = {
+                            id: edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) + 1 : 1,
+                            from: tempEdge.from,
+                            to: targetNode.id,
+                        };
+                        setEdges([...edges, newEdge]);
+                    }
                 }
                 setTempEdge(null);
             }
