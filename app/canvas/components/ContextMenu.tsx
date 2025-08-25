@@ -14,7 +14,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, position, chil
 
     return (
         <div
-            className="absolute bg-[#0f0f0f] border border-[#2d2d2d] rounded shadow-md py-1 z-50"
+            className="min-w-56 absolute bg-[#0f0f0f] border border-[#2d2d2d] rounded shadow-md py-1 z-50"
             style={{ top: position.y, left: position.x }}
         >
             {children}
