@@ -130,26 +130,28 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             if (tempEdge) {
                 const targetNode = getNodeAtPosition(nodes, mousePos);
 
-                if (targetNode && targetNode.id !== tempEdge.from) {
-                    const exists = edges.some((edge) => edge.from === tempEdge.from && edge.to === targetNode.id);
+                const edgeExists = targetNode
+                    ? edges.some((edge) => edge.from === tempEdge.from && edge.to === targetNode.id)
+                    : true;
 
-                    if (!exists) {
-                        const newEdge: Edge = {
-                            id: edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) + 1 : 1,
-                            from: tempEdge.from,
-                            to: targetNode.id,
-                        };
-                        setEdges([...edges, newEdge]);
-                    }
+                if (targetNode && targetNode.id !== tempEdge.from && !edgeExists) {
+                    const newEdge: Edge = {
+                        id: edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) + 1 : 1,
+                        from: tempEdge.from,
+                        to: targetNode.id,
+                    };
+
+                    setEdges([...edges, newEdge]);
                 }
+
                 setTempEdge(null);
             }
 
-            if (isDraggingNodes) {
-                setIsDraggingNodes(false);
-                setDragStartMouse(null);
-                setInitialNodePositions(new Map());
-            }
+            if (!isDraggingNodes) return;
+
+            setIsDraggingNodes(false);
+            setDragStartMouse(null);
+            setInitialNodePositions(new Map());
         },
         [isDraggingNodes, nodes, edges, setEdges, tempEdge, setTempEdge, canvasRef, offset, zoomLevel],
     );
