@@ -33,7 +33,7 @@ export default function Canvas() {
                 На главную
             </Link>
 
-            <div className="absolute bottom-4 left-4">{zoomLevel.toFixed(2)}x</div>
+            <div className="absolute bottom-4 left-4 select-none">{zoomLevel.toFixed(2)}x</div>
 
             <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
                 <ContextMenuItem
