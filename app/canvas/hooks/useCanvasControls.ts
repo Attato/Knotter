@@ -13,7 +13,7 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { getNodeAtPosition } from '@/canvas/utils/getNodeAtPosition';
 import { getNodesInSelectionArea } from '@/canvas/utils/getNodesInSelectionArea';
-import { updateNodeSelection } from '../utils/updateNodeSelection';
+import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
 
 export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { nodes, setNodes, edges, setEdges, tempEdge, setTempEdge, selectedNodeIds, setSelectedNodeIds } =
