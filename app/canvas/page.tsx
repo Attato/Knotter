@@ -47,6 +47,7 @@ export default function Canvas() {
 
                         closeMenu();
                     }}
+                    shortcut="Shift + A"
                 >
                     Добавить узел
                 </ContextMenuItem>
@@ -64,6 +65,7 @@ export default function Canvas() {
                         closeMenu();
                     }}
                     disabled={selectedNodeIds.length !== 1}
+                    shortcut="Shift + E"
                 >
                     Добавить связь
                 </ContextMenuItem>
@@ -79,6 +81,7 @@ export default function Canvas() {
                         closeMenu();
                     }}
                     disabled={selectedNodeIds.length === 0}
+                    shortcut="Del"
                 >
                     Удалить выбранное
                 </ContextMenuItem>
