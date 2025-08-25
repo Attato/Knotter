@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import { Point } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
 
 import { getCanvasCoordinates } from '@/canvas/utils/getCanvasCoordinates';
@@ -9,9 +9,9 @@ export function setupPan(
     canvas: HTMLCanvasElement,
     isPanning: boolean,
     setIsPanning: (val: boolean) => void,
-    lastMousePosition: Point | null,
-    setLastMousePosition: (val: Point | null) => void,
-    setOffset: Dispatch<SetStateAction<Point>>,
+    lastMousePosition: Position | null,
+    setLastMousePosition: (val: Position | null) => void,
+    setOffset: Dispatch<SetStateAction<Position>>,
 ) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
@@ -53,7 +53,7 @@ export function setupPan(
     };
 }
 
-export function setupScroll(canvas: HTMLCanvasElement, setOffset: Dispatch<SetStateAction<Point>>) {
+export function setupScroll(canvas: HTMLCanvasElement, setOffset: Dispatch<SetStateAction<Position>>) {
     const handleScroll = (e: WheelEvent) => {
         if (e.ctrlKey) return;
 
@@ -79,7 +79,7 @@ export function setupZoom(
     canvas: HTMLCanvasElement,
     zoomLevel: number,
     setZoomLevel: (val: number) => void,
-    setOffset: Dispatch<SetStateAction<Point>>,
+    setOffset: Dispatch<SetStateAction<Position>>,
 ) {
     const handleZoom = (e: WheelEvent) => {
         if (!e.ctrlKey) return;
@@ -111,13 +111,13 @@ export function setupZoom(
 
 export function setupSelect(
     canvas: HTMLCanvasElement,
-    offset: Point,
+    offset: Position,
     zoomLevel: number,
-    setSelectionStart: (val: Point | null) => void,
-    setSelectionEnd: (val: Point | null) => void,
-    onSelectionComplete?: (start: Point, end: Point) => void,
+    setSelectionStart: (val: Position | null) => void,
+    setSelectionEnd: (val: Position | null) => void,
+    onSelectionComplete?: (start: Position, end: Position) => void,
 ) {
-    let selectionStart: Point | null = null;
+    let selectionStart: Position | null = null;
 
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0) return;

@@ -1,4 +1,4 @@
-export type Point = { x: number; y: number };
+export type Position = { x: number; y: number };
 
 export interface CanvasState {
     nodes: Node[];
@@ -8,7 +8,7 @@ export interface CanvasState {
 export interface Node {
     id: number;
     type: 'octagon';
-    position: Point;
+    position: Position;
 }
 
 export interface Edge {

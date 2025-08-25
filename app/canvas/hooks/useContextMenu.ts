@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
-import { Point } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 
 export const useContextMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [position, setPosition] = useState<Point>({ x: 0, y: 0 });
+    const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 
     const openMenu = useCallback((x: number, y: number) => {
         setPosition({ x, y });

@@ -1,7 +1,7 @@
 import { Node } from '@/canvas/canvas.types';
-import { Point } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 
-export function handleAddNode(nodes: Node[], position?: Point): Node[] {
+export function handleAddNode(nodes: Node[], position?: Position): Node[] {
     const step = 10;
     let x = position?.x ?? 0;
     let y = position?.y ?? 0;

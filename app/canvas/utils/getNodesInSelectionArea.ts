@@ -1,6 +1,6 @@
-import { Node, Point } from '@/canvas/canvas.types';
+import { Node, Position } from '@/canvas/canvas.types';
 
-export function getNodesInSelectionArea(nodes: Node[], selectionStart: Point, selectionEnd: Point): number[] {
+export function getNodesInSelectionArea(nodes: Node[], selectionStart: Position, selectionEnd: Position): number[] {
     const x1 = Math.min(selectionStart.x, selectionEnd.x);
     const y1 = Math.min(selectionStart.y, selectionEnd.y);
     const x2 = Math.max(selectionStart.x, selectionEnd.x);

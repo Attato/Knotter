@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, RefObject } from 'react';
 
-import { Point, Edge } from '@/canvas/canvas.types';
+import { Position, Edge } from '@/canvas/canvas.types';
 
 import { INITIAL_ZOOM } from '@/canvas/constants';
 
@@ -22,14 +22,14 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
     const { offset, setOffset, isInitialOffsetSet } = useInitialCanvasOffset(canvasRef);
 
     const [zoomLevel, setZoomLevel] = useState(INITIAL_ZOOM);
-    const [selectionStart, setSelectionStart] = useState<Point | null>(null);
-    const [selectionEnd, setSelectionEnd] = useState<Point | null>(null);
-    const [lastMousePosition, setLastMousePosition] = useState<Point | null>(null);
+    const [selectionStart, setSelectionStart] = useState<Position | null>(null);
+    const [selectionEnd, setSelectionEnd] = useState<Position | null>(null);
+    const [lastMousePosition, setLastMousePosition] = useState<Position | null>(null);
     const [isPanning, setIsPanning] = useState(false);
 
     const [isDraggingNodes, setIsDraggingNodes] = useState(false);
-    const [dragStartMouse, setDragStartMouse] = useState<Point | null>(null);
-    const [initialNodePositions, setInitialNodePositions] = useState<Map<number, Point>>(new Map());
+    const [dragStartMouse, setDragStartMouse] = useState<Position | null>(null);
+    const [initialNodePositions, setInitialNodePositions] = useState<Map<number, Position>>(new Map());
 
     useCanvasHotkeys();
 
@@ -57,7 +57,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             setIsDraggingNodes(true);
             setDragStartMouse(mousePos);
 
-            const positions = new Map<number, Point>();
+            const positions = new Map<number, Position>();
 
             for (const node of nodes) {
                 if (newSelectedIds.includes(node.id)) {

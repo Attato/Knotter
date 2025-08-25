@@ -1,6 +1,11 @@
-import { Point } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 
-export function getCanvasCoordinates(event: MouseEvent, canvas: HTMLCanvasElement, offset: Point, zoomLevel: number): Point {
+export function getCanvasCoordinates(
+    event: MouseEvent,
+    canvas: HTMLCanvasElement,
+    offset: Position,
+    zoomLevel: number,
+): Position {
     const rect = canvas.getBoundingClientRect();
 
     return {

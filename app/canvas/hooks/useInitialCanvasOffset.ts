@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState, RefObject } from 'react';
-import { Point } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 
 export function useInitialCanvasOffset(canvasRef: RefObject<HTMLCanvasElement | null>) {
-    const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
+    const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
     const [isInitialOffsetSet, setInitialOffsetFlag] = useState(false);
 
     useLayoutEffect(() => {

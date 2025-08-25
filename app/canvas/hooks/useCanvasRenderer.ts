@@ -1,5 +1,5 @@
 import { useEffect, RefObject } from 'react';
-import { Point, Node } from '@/canvas/canvas.types';
+import { Position, Node } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
 import { drawNodes } from '@/canvas/utils/drawNodes';
 import { drawSelectionBox } from '@/canvas/utils/drawSelectionBox';
@@ -8,14 +8,14 @@ import { Edge } from '@/canvas/canvas.types';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
-    offset: Point,
+    offset: Position,
     zoomLevel: number,
-    selectionStart: Point | null,
-    selectionEnd: Point | null,
+    selectionStart: Position | null,
+    selectionEnd: Position | null,
     nodes: Node[],
     selectedNodeIds: number[],
     edges: Edge[],
-    tempEdge: { from: number; toPos: Point } | null,
+    tempEdge: { from: number; toPos: Position } | null,
 ) {
     useEffect(() => {
         const canvas = canvasRef.current;

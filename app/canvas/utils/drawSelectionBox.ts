@@ -1,6 +1,6 @@
-import { Point } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 
-export function drawSelectionBox(ctx: CanvasRenderingContext2D, start: Point, end: Point) {
+export function drawSelectionBox(ctx: CanvasRenderingContext2D, start: Position, end: Position) {
     const x = Math.min(start.x, end.x);
     const y = Math.min(start.y, end.y);
     const width = Math.abs(end.x - start.x);

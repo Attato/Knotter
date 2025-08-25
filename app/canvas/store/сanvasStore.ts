@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Point, Node, Edge } from '@/canvas/canvas.types';
+import { Position, Node, Edge } from '@/canvas/canvas.types';
 
 interface CanvasState {
     nodes: Node[];
@@ -8,8 +8,8 @@ interface CanvasState {
     setNodes: (nodes: Node[]) => void;
     setSelectedNodeIds: (ids: number[]) => void;
     setEdges: (edges: Edge[]) => void;
-    tempEdge: { from: number; toPos: Point } | null;
-    setTempEdge: (edge: { from: number; toPos: Point } | null) => void;
+    tempEdge: { from: number; toPos: Position } | null;
+    setTempEdge: (edge: { from: number; toPos: Position } | null) => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({
