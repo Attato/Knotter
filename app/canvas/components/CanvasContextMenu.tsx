@@ -1,7 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
-
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
@@ -10,15 +8,18 @@ import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
-import { useContextMenu } from '@/canvas/hooks/useContextMenu';
-import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 
-export function CanvasContextMenu() {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+type CanvasContextMenuProps = {
+    isOpen: boolean;
+    position: { x: number; y: number };
+    closeMenu: () => void;
+    offset: { x: number; y: number };
+    zoomLevel: number;
+    canvasRef: React.RefObject<HTMLCanvasElement | null>;
+};
 
+export function CanvasContextMenu({ isOpen, position, closeMenu, offset, zoomLevel, canvasRef }: CanvasContextMenuProps) {
     const { nodes, setNodes, selectedNodeIds, setSelectedNodeIds, edges, setEdges, setTempEdge } = useCanvasStore();
-    const { isOpen, position, closeMenu } = useContextMenu();
-    const { offset, zoomLevel } = useCanvasControls(canvasRef);
 
     return (
         <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
