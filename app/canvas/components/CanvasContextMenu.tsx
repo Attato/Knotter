@@ -34,7 +34,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, offset, zoomLev
                 Выбрать всё
             </ContextMenuItem>
 
-            <hr className="border-b-0 border-[#2d2d2d]" />
+            <hr className="border-b-0 border-[#2d2d2d] my-1" />
 
             <ContextMenuItem
                 onClick={(e) => {
@@ -70,7 +70,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, offset, zoomLev
                 Добавить связь
             </ContextMenuItem>
 
-            <hr className="border-b-0 border-[#2d2d2d]" />
+            <hr className="border-b-0 border-[#2d2d2d] my-1" />
 
             <ContextMenuItem
                 onClick={() => {

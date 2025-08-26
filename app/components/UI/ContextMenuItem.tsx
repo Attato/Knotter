@@ -18,7 +18,7 @@ export const ContextMenuItem: React.FC<ContextMenuItemProps> = ({ onClick, child
         >
             <span>{children}</span>
             {shortcut && (
-                <span className={` ${disabled ? 'opacity-40' : 'text-[#999]'} ml-2 text-sm select-none`}>{shortcut}</span>
+                <span className={` ${disabled ? 'opacity-40' : 'text-[#999]'} ml-2 text-xs select-none`}>{shortcut}</span>
             )}
         </button>
     );

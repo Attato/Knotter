@@ -40,7 +40,7 @@ export default function Canvas() {
 
             {nodes.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="flex items-center text-[#aaa]">
+                    <div className="flex items-center text-[#aaa] text-sm">
                         Нажмите <strong className="pl-1"> ПКМ </strong>, чтобы начать творить.
                     </div>
                 </div>
