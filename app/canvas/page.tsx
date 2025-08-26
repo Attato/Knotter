@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef } from 'react';
-import Link from 'next/link';
 
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
@@ -23,10 +22,6 @@ export default function Canvas() {
 
     return (
         <div className="flex flex-col items-center justify-center gap-2 h-screen relative" onClick={closeMenu}>
-            <Link href="/" className="absolute top-4 left-4">
-                На главную
-            </Link>
-
             <div className="absolute bottom-4 left-4 select-none">{zoomLevel.toFixed(2)}x</div>
 
             <CanvasContextMenu
