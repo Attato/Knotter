@@ -43,7 +43,10 @@ export default function CanvasSidebar() {
 
             <div className="flex flex-col h-full overflow-hidden">
                 <div className="m-1">
-                    <button onClick={addNode} className="w-fit bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer">
+                    <button
+                        onClick={addNode}
+                        className="w-fit bg-[#151515] hover:bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer"
+                    >
                         <Plus size={16} />
                     </button>
                 </div>
@@ -92,7 +95,10 @@ export default function CanvasSidebar() {
                 <hr className="border-b-0 border-[#1a1a1a] mt-1" />
 
                 <div className="flex justify-end m-1">
-                    <Link href="/" className="w-fit bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer">
+                    <Link
+                        href="/"
+                        className="w-fit bg-[#151515] hover:bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer"
+                    >
                         <Home size={20} />
                     </Link>
                 </div>
