@@ -6,6 +6,8 @@ import Link from 'next/link';
 
 import { Node, Edge } from '@/canvas/canvas.types';
 
+import { EditableName } from '@/canvas/components/EditableName';
+
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
@@ -58,12 +60,21 @@ export default function CanvasSidebar() {
                                 key={node.id}
                                 onClick={(e) => handleNodeClick(node.id, e)}
                                 className={`px-4 py-2 m-1 rounded-md cursor-pointer ${
-                                    isSelected ? 'bg-[#388bfd1a]' : 'hover:bg-[#1a1a1a]'
+                                    isSelected ? 'bg-[#388bfd1a]' : 'bg-[#151515] hover:bg-[#1a1a1a]'
                                 }`}
                             >
                                 <div className="flex justify-between items-start gap-2">
-                                    <span className={isSelected ? 'text-[#4493f8]' : ''}>Узел</span>
-                                    <span className="text-[#ccc] text-[12px]">ID: {node.id}</span>
+                                    <EditableName
+                                        name={node.name}
+                                        isSelected={isSelected}
+                                        onChange={(newName) =>
+                                            setNodes(nodes.map((n) => (n.id === node.id ? { ...n, name: newName } : n)))
+                                        }
+                                    />
+
+                                    <span className="text-[#999] text-[12px] w-[60px] flex-shrink-0 whitespace-nowrap text-right">
+                                        ID: {node.id}
+                                    </span>
                                 </div>
 
                                 {nodeEdges.length > 0 && (
