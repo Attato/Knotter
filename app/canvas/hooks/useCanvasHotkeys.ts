@@ -20,7 +20,7 @@ export function useCanvasHotkeys() {
 
             const key = e.key.toLowerCase();
 
-            if (key === 'delete' || key === 'backspace') {
+            if (key === 'delete') {
                 pushHistory();
                 const { nodes: newNodes, edges: newEdges } = handleDeleteNode(nodes, edges, selectedNodeIds);
                 setNodes(newNodes);
