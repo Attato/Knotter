@@ -7,6 +7,7 @@ export interface CanvasState {
 
 export interface Node {
     id: number;
+    name: string;
     type: 'octagon';
     position: Position;
 }

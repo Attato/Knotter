@@ -15,6 +15,7 @@ export function handleAddNode(nodes: Node[], position?: Position): Node[] {
 
     const newNode: Node = {
         id: nodes.length > 0 ? nodes[nodes.length - 1].id + 1 : 1,
+        name: 'Узел',
         type: 'octagon',
         position: { x, y },
     };
