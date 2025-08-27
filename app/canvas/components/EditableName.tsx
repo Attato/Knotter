@@ -50,9 +50,8 @@ export function EditableName({ name, isSelected, onChange }: EditableNameProps) 
         />
     ) : (
         <span
-            className={`text-sm cursor-pointer transition-colors ${
-                isSelected ? 'text-[#388bfd]' : 'text-[#fff]'
-            } hover:text-[#4493f8]`}
+            className={`text-sm cursor-pointer transition-colors ${isSelected ? 'text-[#388bfd]' : 'text-[#fff]'}`}
+            onDoubleClick={() => setEditing(true)}
         >
             {name}
         </span>
