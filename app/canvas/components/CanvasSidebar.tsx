@@ -12,7 +12,7 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 
-import { PanelLeft, Plus, Home } from 'lucide-react';
+import { PanelRight, Plus, Home } from 'lucide-react';
 
 export default function CanvasSidebar() {
     const { nodes, edges, selectedNodeIds, setSelectedNodeIds, setNodes } = useCanvasStore();
@@ -30,15 +30,15 @@ export default function CanvasSidebar() {
 
     return (
         <aside
-            className={`absolute top-0 left-0 h-full w-120 border-r border-[#1a1a1a] bg-[#0f0f0f] select-none transform transition-transform duration-300 ease-in-out ${
-                isOpen ? 'translate-x-0' : '-translate-x-full'
+            className={`absolute top-0 right-0 h-full w-120 border-l border-[#1a1a1a] bg-[#0f0f0f] select-none transform transition-transform duration-300 ease-in-out ${
+                isOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
         >
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="absolute -right-[38px] top-4 z-20 border border-l-0 border-[#1a1a1a] bg-[#0f0f0f] hover:bg-[#1a1a1a] text-white p-2 rounded-r-lg shadow-md transition-all cursor-pointer"
+                className="absolute -left-[38px] top-4 z-20 border border-r-0 border-[#1a1a1a] bg-[#0f0f0f] hover:bg-[#1a1a1a] text-white p-2 rounded-l-lg shadow-md transition-all cursor-pointer"
             >
-                <PanelLeft size={20} />
+                <PanelRight size={20} />
             </button>
 
             <div className="flex flex-col h-full overflow-hidden">
