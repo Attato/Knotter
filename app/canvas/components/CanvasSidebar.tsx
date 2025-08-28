@@ -51,7 +51,7 @@ export default function CanvasSidebar() {
                     </button>
                 </div>
 
-                <hr className="border-b-0 border-[#1a1a1a] mb-1" />
+                <hr className="border-b-0 border-[#1a1a1a]" />
 
                 <ul className="flex-1 overflow-y-auto">
                     {nodes.map((node: Node) => {
@@ -92,7 +92,7 @@ export default function CanvasSidebar() {
                     })}
                 </ul>
 
-                <hr className="border-b-0 border-[#1a1a1a] mt-1" />
+                <hr className="border-b-0 border-[#1a1a1a]" />
 
                 <div className="flex justify-end m-1">
                     <Link
