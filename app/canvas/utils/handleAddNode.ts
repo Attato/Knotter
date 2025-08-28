@@ -1,5 +1,4 @@
-import { Node } from '@/canvas/canvas.types';
-import { Position } from '@/canvas/canvas.types';
+import { Node, Position } from '@/canvas/canvas.types';
 
 export function handleAddNode(nodes: Node[], position?: Position): Node[] {
     const step = 10;
@@ -13,9 +12,20 @@ export function handleAddNode(nodes: Node[], position?: Position): Node[] {
         }
     }
 
+    const baseName = 'Узел';
+    let name = baseName;
+    let counter = 0;
+
+    const existingNames = new Set(nodes.map((n) => n.name));
+
+    while (existingNames.has(name)) {
+        counter++;
+        name = `${baseName} (${counter})`;
+    }
+
     const newNode: Node = {
         id: nodes.length > 0 ? nodes[nodes.length - 1].id + 1 : 1,
-        name: 'Узел',
+        name,
         type: 'octagon',
         position: { x, y },
     };
