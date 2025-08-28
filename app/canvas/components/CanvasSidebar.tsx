@@ -62,7 +62,7 @@ export default function CanvasSidebar() {
                             <li
                                 key={node.id}
                                 onClick={(e) => handleNodeClick(node.id, e)}
-                                className={`px-4 py-2 m-1 rounded-md cursor-pointer ${
+                                className={`px-4 py-2 m-1 rounded-md cursor-pointer tabular-nums ${
                                     isSelected ? 'bg-[#388bfd1a]' : 'bg-[#151515] hover:bg-[#1a1a1a]'
                                 }`}
                             >
