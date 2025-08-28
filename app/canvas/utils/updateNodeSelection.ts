@@ -3,10 +3,10 @@ import { selectRangeNodes } from '@/canvas/utils/selectRangeNodes';
 
 export function updateNodeSelection(
     nodes: Node[],
-    selectedIds: number[],
-    nodeId: number,
+    selectedIds: string[],
+    nodeId: string,
     e: Pick<MouseEvent, 'ctrlKey' | 'metaKey' | 'shiftKey'>,
-): number[] {
+): string[] {
     if (e.shiftKey && selectedIds.length > 0) {
         const lastSelectedId = selectedIds[selectedIds.length - 1];
         return selectRangeNodes(nodes, lastSelectedId, nodeId);

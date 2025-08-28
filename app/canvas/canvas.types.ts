@@ -6,14 +6,14 @@ export interface CanvasState {
 }
 
 export interface Node {
-    id: number;
+    id: string;
     name: string;
     type: 'octagon';
     position: Position;
 }
 
 export interface Edge {
-    id: number;
-    from: number;
-    to: number;
+    id: string;
+    from: string;
+    to: string;
 }

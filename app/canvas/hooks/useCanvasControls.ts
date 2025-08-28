@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, RefObject } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Position, Edge } from '@/canvas/canvas.types';
 
@@ -29,7 +30,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
     const [isDraggingNodes, setIsDraggingNodes] = useState(false);
     const [dragStartMouse, setDragStartMouse] = useState<Position | null>(null);
-    const [initialNodePositions, setInitialNodePositions] = useState<Map<number, Position>>(new Map());
+    const [initialNodePositions, setInitialNodePositions] = useState<Map<string, Position>>(new Map());
 
     useCanvasHotkeys();
 
@@ -41,7 +42,6 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
             const rect = canvas.getBoundingClientRect();
             const mousePos = getMousePosition(e, rect, offset, zoomLevel);
-
             const clickedNode = getNodeAtPosition(nodes, mousePos);
 
             if (!clickedNode) return;
@@ -53,11 +53,10 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             }
 
             setSelectedNodeIds(newSelectedIds);
-
             setIsDraggingNodes(true);
             setDragStartMouse(mousePos);
 
-            const positions = new Map<number, Position>();
+            const positions = new Map<string, Position>();
 
             for (const node of nodes) {
                 if (newSelectedIds.includes(node.id)) {
@@ -136,7 +135,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
                 if (targetNode && targetNode.id !== tempEdge.from && !edgeExists) {
                     const newEdge: Edge = {
-                        id: edges.length > 0 ? Math.max(...edges.map((edge) => edge.id)) + 1 : 1,
+                        id: uuidv4(),
                         from: tempEdge.from,
                         to: targetNode.id,
                     };

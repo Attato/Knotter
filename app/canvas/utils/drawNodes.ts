@@ -1,7 +1,7 @@
 import { Node } from '@/canvas/canvas.types';
 import { drawOctagon } from '@/canvas/utils/drawOctagon';
 
-export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selectedNodeIds: number[], nodeSize: number) {
+export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selectedNodeIds: string[], nodeSize: number) {
     const padding = 4;
 
     for (const node of nodes) {

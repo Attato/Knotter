@@ -1,6 +1,6 @@
 import { Node } from '@/canvas/canvas.types';
 
-export const selectRangeNodes = (nodes: Node[], lastSelectedId: number, currentId: number): number[] => {
+export const selectRangeNodes = (nodes: Node[], lastSelectedId: string, currentId: string): string[] => {
     const ids = nodes.map((n) => n.id);
     const start = ids.indexOf(lastSelectedId);
     const end = ids.indexOf(currentId);

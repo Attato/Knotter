@@ -3,13 +3,13 @@ import { Position, Node, Edge } from '@/canvas/canvas.types';
 
 interface CanvasState {
     nodes: Node[];
-    selectedNodeIds: number[];
+    selectedNodeIds: string[];
     edges: Edge[];
     setNodes: (nodes: Node[]) => void;
-    setSelectedNodeIds: (ids: number[]) => void;
+    setSelectedNodeIds: (ids: string[]) => void;
     setEdges: (edges: Edge[]) => void;
-    tempEdge: { from: number; toPos: Position } | null;
-    setTempEdge: (edge: { from: number; toPos: Position } | null) => void;
+    tempEdge: { from: string; toPos: Position } | null;
+    setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({

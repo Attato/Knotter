@@ -6,6 +6,8 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
 
+import { v4 as uuidv4 } from 'uuid';
+
 export function useCanvasHotkeys() {
     const { nodes, setNodes, edges, setEdges, setTempEdge, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
 
@@ -50,27 +52,24 @@ export function useCanvasHotkeys() {
 
                 pushHistory();
 
-                const maxId = nodes.length > 0 ? Math.max(...nodes.map((n) => n.id)) : 0;
                 const offset = 50;
 
-                const newNodes: Node[] = clipboardRef.current.nodes.map((node, index) => ({
+                const newNodes: Node[] = clipboardRef.current.nodes.map((node) => ({
                     ...node,
-                    id: maxId + index + 1,
+                    id: uuidv4(),
                     position: {
                         x: node.position.x + offset,
                         y: node.position.y + offset,
                     },
                 }));
 
-                const nodeIdMap = new Map<number, number>();
+                const nodeIdMap = new Map<string, string>();
                 clipboardRef.current.nodes.forEach((node, index) => {
                     nodeIdMap.set(node.id, newNodes[index].id);
                 });
 
-                const maxEdgeId = edges.length > 0 ? Math.max(...edges.map((e) => e.id)) : 0;
-
-                const newEdges: Edge[] = clipboardRef.current.edges.map((edge, index) => ({
-                    id: maxEdgeId + index + 1,
+                const newEdges: Edge[] = clipboardRef.current.edges.map((edge) => ({
+                    id: uuidv4(),
                     from: nodeIdMap.get(edge.from)!,
                     to: nodeIdMap.get(edge.to)!,
                 }));

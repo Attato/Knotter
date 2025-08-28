@@ -13,9 +13,9 @@ export function useCanvasRenderer(
     selectionStart: Position | null,
     selectionEnd: Position | null,
     nodes: Node[],
-    selectedNodeIds: number[],
+    selectedNodeIds: string[],
     edges: Edge[],
-    tempEdge: { from: number; toPos: Position } | null,
+    tempEdge: { from: string; toPos: Position } | null,
 ) {
     useEffect(() => {
         const canvas = canvasRef.current;

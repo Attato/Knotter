@@ -1,4 +1,5 @@
 import { Node, Position } from '@/canvas/canvas.types';
+import { v4 as uuidv4 } from 'uuid';
 
 export function handleAddNode(nodes: Node[], position?: Position): Node[] {
     const step = 10;
@@ -24,7 +25,7 @@ export function handleAddNode(nodes: Node[], position?: Position): Node[] {
     }
 
     const newNode: Node = {
-        id: nodes.length > 0 ? nodes[nodes.length - 1].id + 1 : 1,
+        id: uuidv4(),
         name,
         type: 'octagon',
         position: { x, y },
