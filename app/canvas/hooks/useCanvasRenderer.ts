@@ -1,10 +1,12 @@
 import { useEffect, RefObject } from 'react';
-import { Position, Node } from '@/canvas/canvas.types';
+
+import { Position, Node, Edge } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
+
 import { drawNodes } from '@/canvas/utils/drawNodes';
 import { drawSelectionBox } from '@/canvas/utils/drawSelectionBox';
 import { drawEdges } from '@/canvas/utils/drawEdges';
-import { Edge } from '@/canvas/canvas.types';
+import { drawGrid } from '@/canvas/utils/drawGrid';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -16,6 +18,8 @@ export function useCanvasRenderer(
     selectedNodeIds: string[],
     edges: Edge[],
     tempEdge: { from: string; toPos: Position } | null,
+    showGrid: boolean,
+    showAxes: boolean,
 ) {
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -28,6 +32,8 @@ export function useCanvasRenderer(
         canvas.height = canvas.clientHeight;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawGrid(ctx, canvas.width, canvas.height, zoomLevel, offset, 50, showGrid, showAxes);
 
         ctx.setTransform(zoomLevel, 0, 0, zoomLevel, offset.x, offset.y);
 
@@ -44,10 +50,22 @@ export function useCanvasRenderer(
                 ctx.strokeStyle = '#ccc';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                ctx.moveTo(fromNode.position.x + NODE_SIZE / 2, fromNode.position.y + NODE_SIZE / 2);
+                ctx.moveTo(fromNode.position.x, fromNode.position.y);
                 ctx.lineTo(tempEdge.toPos.x, tempEdge.toPos.y);
                 ctx.stroke();
             }
         }
-    }, [canvasRef, offset, zoomLevel, nodes, selectedNodeIds, edges, selectionStart, selectionEnd, tempEdge]);
+    }, [
+        canvasRef,
+        offset,
+        zoomLevel,
+        nodes,
+        selectedNodeIds,
+        edges,
+        selectionStart,
+        selectionEnd,
+        tempEdge,
+        showAxes,
+        showGrid,
+    ]);
 }
