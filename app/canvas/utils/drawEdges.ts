@@ -1,5 +1,4 @@
 import { Node, Edge } from '@/canvas/canvas.types';
-import { NODE_SIZE } from '@/canvas/constants';
 
 export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], edges: Edge[]) {
     ctx.strokeStyle = '#fff';
@@ -11,10 +10,10 @@ export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], edges: E
 
         if (!fromNode || !toNode) continue;
 
-        const fromX = fromNode.position.x + NODE_SIZE / 2;
-        const fromY = fromNode.position.y + NODE_SIZE / 2;
-        const toX = toNode.position.x + NODE_SIZE / 2;
-        const toY = toNode.position.y + NODE_SIZE / 2;
+        const fromX = fromNode.position.x;
+        const fromY = fromNode.position.y;
+        const toX = toNode.position.x;
+        const toY = toNode.position.y;
 
         ctx.beginPath();
         ctx.moveTo(fromX, fromY);

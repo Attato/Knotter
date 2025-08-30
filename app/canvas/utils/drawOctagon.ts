@@ -1,23 +1,26 @@
 export function drawOctagon(
     ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
+    cx: number,
+    cy: number,
     size: number,
     fillStyle: string = '#0d0d0d',
 ) {
-    const right = x + size;
-    const bottom = y + size;
-    const cut = 8;
+    const r = size / 2;
+    const cut = r / 2.5;
+    const left = cx - r;
+    const right = cx + r;
+    const top = cy - r;
+    const bottom = cy + r;
 
     ctx.beginPath();
-    ctx.moveTo(x + cut, y);
-    ctx.lineTo(right - cut, y);
-    ctx.lineTo(right, y + cut);
+    ctx.moveTo(left + cut, top);
+    ctx.lineTo(right - cut, top);
+    ctx.lineTo(right, top + cut);
     ctx.lineTo(right, bottom - cut);
     ctx.lineTo(right - cut, bottom);
-    ctx.lineTo(x + cut, bottom);
-    ctx.lineTo(x, bottom - cut);
-    ctx.lineTo(x, y + cut);
+    ctx.lineTo(left + cut, bottom);
+    ctx.lineTo(left, bottom - cut);
+    ctx.lineTo(left, top + cut);
     ctx.closePath();
 
     ctx.fillStyle = fillStyle;

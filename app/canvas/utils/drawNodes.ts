@@ -19,7 +19,7 @@ export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selected
         if (isSelected) {
             ctx.save();
             ctx.beginPath();
-            ctx.rect(x - padding, y - padding, nodeSize + 2 * padding, nodeSize + 2 * padding);
+            ctx.rect(x - nodeSize / 2 - padding, y - nodeSize / 2 - padding, nodeSize + 2 * padding, nodeSize + 2 * padding);
             ctx.lineWidth = 2;
             ctx.strokeStyle = '#ffc107';
             ctx.stroke();
