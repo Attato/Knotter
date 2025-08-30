@@ -17,7 +17,7 @@ import { getNodesInSelectionArea } from '@/canvas/utils/getNodesInSelectionArea'
 import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
 
 export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
-    const { nodes, setNodes, edges, setEdges, tempEdge, setTempEdge, selectedNodeIds, setSelectedNodeIds } =
+    const { nodes, setNodes, nodeMoveStep, edges, setEdges, tempEdge, setTempEdge, selectedNodeIds, setSelectedNodeIds } =
         useCanvasStore();
 
     const { offset, setOffset, isInitialOffsetSet } = useInitialCanvasOffset(canvasRef);
@@ -91,11 +91,15 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
                     if (selectedNodeIds.includes(node.id)) {
                         const initialPos = initialNodePositions.get(node.id);
                         if (!initialPos) return node;
+
+                        const newX = initialPos.x + dx;
+                        const newY = initialPos.y + dy;
+
                         return {
                             ...node,
                             position: {
-                                x: initialPos.x + dx,
-                                y: initialPos.y + dy,
+                                x: Math.round(newX / nodeMoveStep) * nodeMoveStep,
+                                y: Math.round(newY / nodeMoveStep) * nodeMoveStep,
                             },
                         };
                     }
@@ -115,6 +119,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             tempEdge,
             setTempEdge,
             canvasRef,
+            nodeMoveStep,
         ],
     );
 
