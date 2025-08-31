@@ -1,10 +1,14 @@
 import { useEffect, useCallback, useRef } from 'react';
-import { Node, Edge, CanvasState } from '@/canvas/canvas.types';
+
+import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
+
+import { Position, Node, Edge, CanvasState } from '@/canvas/canvas.types';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
+import { moveNodes } from '@/canvas/utils/moveNodes';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -115,8 +119,46 @@ export function useCanvasHotkeys() {
 
                 return;
             }
+
+            if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+                e.preventDefault();
+
+                const step = NODE_MOVE_MAX_STEP;
+
+                let dx = 0;
+                let dy = 0;
+
+                switch (key) {
+                    case 'arrowup':
+                        dy = -step;
+                        break;
+                    case 'arrowdown':
+                        dy = step;
+                        break;
+                    case 'arrowleft':
+                        dx = -step;
+                        break;
+                    case 'arrowright':
+                        dx = step;
+                        break;
+                }
+
+                if (selectedNodeIds.length > 0) {
+                    const initialPositions = new Map<string, Position>();
+                    nodes.forEach((node) => {
+                        if (selectedNodeIds.includes(node.id)) {
+                            initialPositions.set(node.id, { ...node.position });
+                        }
+                    });
+
+                    const newNodes = moveNodes(nodes, selectedNodeIds, initialPositions, { x: dx, y: dy }, 1);
+                    setNodes(newNodes);
+                }
+
+                return;
+            }
         },
-        [nodes, edges, selectedNodeIds, setNodes, setEdges, setTempEdge, setSelectedNodeIds],
+        [nodes, setNodes, selectedNodeIds, setSelectedNodeIds, edges, setEdges, setTempEdge],
     );
 
     useEffect(() => {
