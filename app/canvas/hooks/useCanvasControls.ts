@@ -15,6 +15,7 @@ import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { getNodeAtPosition } from '@/canvas/utils/getNodeAtPosition';
 import { getNodesInSelectionArea } from '@/canvas/utils/getNodesInSelectionArea';
 import { updateNodeSelection } from '@/canvas/utils/updateNodeSelection';
+import { moveNodes } from '@/canvas/utils/moveNodes';
 
 export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { nodes, setNodes, nodeMoveStep, edges, setEdges, tempEdge, setTempEdge, selectedNodeIds, setSelectedNodeIds } =
@@ -86,26 +87,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             const dx = mousePos.x - dragStartMouse.x;
             const dy = mousePos.y - dragStartMouse.y;
 
-            setNodes(
-                nodes.map((node) => {
-                    if (selectedNodeIds.includes(node.id)) {
-                        const initialPos = initialNodePositions.get(node.id);
-                        if (!initialPos) return node;
-
-                        const newX = initialPos.x + dx;
-                        const newY = initialPos.y + dy;
-
-                        return {
-                            ...node,
-                            position: {
-                                x: Math.round(newX / nodeMoveStep) * nodeMoveStep,
-                                y: Math.round(newY / nodeMoveStep) * nodeMoveStep,
-                            },
-                        };
-                    }
-                    return node;
-                }),
-            );
+            setNodes(moveNodes(nodes, selectedNodeIds, initialNodePositions, { x: dx, y: dy }, nodeMoveStep));
         },
         [
             isDraggingNodes,
