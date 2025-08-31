@@ -77,6 +77,9 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             const rect = canvas.getBoundingClientRect();
             const mousePos = getMousePosition(e, rect, offset, zoomLevel);
 
+            const hoveredNode = getNodeAtPosition(nodes, mousePos);
+            canvas.style.cursor = hoveredNode ? 'move' : 'default';
+
             if (tempEdge) {
                 setTempEdge({ ...tempEdge, toPos: mousePos });
                 return;
