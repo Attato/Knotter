@@ -1,28 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import Link from 'next/link';
 
 import CanvasSidebarList from '@/canvas/components/CanvasSidebarList';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 
 import { Plus, Home, Search } from 'lucide-react';
 
+const SIDEBAR_MIN_WIDTH = 320;
+const SIDEBAR_BASE_WIDTH = 480;
+
 export default function CanvasSidebar() {
     const { nodes, setNodes } = useCanvasStore();
     const [filterText, setFilterText] = useState('');
+    const [width, setWidth] = useState(SIDEBAR_BASE_WIDTH);
+    const isResizing = useRef(false);
 
     const addNode = () => {
         const newNodes = handleAddNode(nodes);
         setNodes(newNodes);
     };
 
+    const startResize = (e: React.MouseEvent) => {
+        e.preventDefault();
+        isResizing.current = true;
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (isResizing.current) {
+                const newWidth = Math.max(SIDEBAR_MIN_WIDTH, window.innerWidth - e.clientX);
+                setWidth(newWidth);
+            }
+        };
+
+        const handleMouseUp = () => {
+            isResizing.current = false;
+
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
     return (
-        <aside className={`h-screen w-120 border-l border-[#1a1a1a] bg-[#0f0f0f] select-none duration-300 ease-in-out`}>
-            <div className="flex flex-col h-full overflow-hidden">
+        <aside style={{ width }} className="h-screen border-l border-[#1a1a1a] bg-[#0f0f0f] select-none flex-shrink-0">
+            <div className="flex flex-col h-full overflow-hidden relative">
                 <div className="flex items-center gap-2 m-1">
                     <button
                         onClick={addNode}
@@ -56,9 +84,14 @@ export default function CanvasSidebar() {
                         href="/"
                         className="w-fit bg-[#151515] hover:bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer"
                     >
-                        <Home size={20} />
+                        <Home size={16} />
                     </Link>
                 </div>
+
+                <div
+                    onMouseDown={startResize}
+                    className="absolute top-0 left-0 h-full w-1 cursor-ew-resize hover:bg-[#333]"
+                />
             </div>
         </aside>
     );
