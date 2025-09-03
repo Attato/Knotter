@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import useSidebarResize from '@/canvas/hooks/useSidebarResize';
+import useSidebarResize from '@/hooks/useSidebarResize';
 
 type SidebarProps = {
     minWidth?: number;

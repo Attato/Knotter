@@ -4,7 +4,7 @@ import { useRef } from 'react';
 
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
-import { useContextMenu } from '@/canvas/hooks/useContextMenu';
+import { useContextMenu } from '@/hooks/useContextMenu';
 
 import { NODE_MOVE_MIN_STEP, NODE_MOVE_MAX_STEP } from '@/canvas/constants';
 
