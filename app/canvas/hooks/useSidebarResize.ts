@@ -1,11 +1,9 @@
 import { useState, useRef } from 'react';
 
-export default function useSidebarResize(baseWidth: number, compactThreshold: number) {
+export default function useSidebarResize(minWidth: number, baseWidth: number, maxWidth: number) {
     const [width, setWidth] = useState(baseWidth);
     const [isResizing, setIsResizing] = useState(false);
     const resizeRef = useRef(false);
-
-    const isCompact = width <= compactThreshold;
 
     const startResize = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -16,8 +14,12 @@ export default function useSidebarResize(baseWidth: number, compactThreshold: nu
 
         const handleMouseMove = (e: MouseEvent) => {
             if (!resizeRef.current) return;
+
             let newWidth = window.innerWidth - e.clientX;
-            if (newWidth <= compactThreshold + 120) newWidth = compactThreshold;
+
+            if (newWidth < minWidth) newWidth = minWidth;
+            if (newWidth > maxWidth) newWidth = maxWidth;
+
             setWidth(newWidth);
         };
 
@@ -34,5 +36,5 @@ export default function useSidebarResize(baseWidth: number, compactThreshold: nu
         document.addEventListener('mouseup', handleMouseUp);
     };
 
-    return { width, isCompact, isResizing, startResize };
+    return { width, isResizing, startResize };
 }
