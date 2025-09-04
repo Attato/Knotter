@@ -23,7 +23,7 @@ export default function Sidebar({
     const { width, isResizing, startResize } = useSidebarResize(minWidth, baseWidth, maxWidth);
 
     return (
-        <aside style={{ width }} className="h-screen border-l border-[#1a1a1a] bg-[#0f0f0f] select-none flex-shrink-0">
+        <aside style={{ width }} className="h-screen border-l border-[#1a1a1a] bg-[#0f0f0f] select-none flex-shrink-0 z-50">
             <div className="flex flex-col h-full overflow-hidden relative">
                 {children}
 
