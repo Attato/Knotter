@@ -40,7 +40,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     tempEdge: null,
     setTempEdge: (tempEdge) => set({ tempEdge }),
 
-    showGrid: false,
+    showGrid: true,
     showAxes: false,
     setShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
     setShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
