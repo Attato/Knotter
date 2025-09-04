@@ -52,7 +52,7 @@ export default function Canvas() {
         <div className="flex flex-col items-center justify-center gap-2 h-screen relative" onClick={closeMenu}>
             <div className="absolute bottom-4 left-4 select-none">{zoomLevel.toFixed(2)}x</div>
 
-            <div className="absolute top-4 right-4 flex gap-2">
+            <div className="absolute top-4 right-4 flex gap-2 z-50">
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
@@ -102,7 +102,7 @@ export default function Canvas() {
                 </div>
             )}
 
-            <canvas ref={canvasRef} className="w-full h-full" onContextMenu={handleContextMenu} />
+            <canvas ref={canvasRef} className="fixed w-full h-full" onContextMenu={handleContextMenu} />
         </div>
     );
 }
