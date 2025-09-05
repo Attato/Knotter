@@ -5,8 +5,8 @@ interface CanvasState {
     nodes: Node[];
     setNodes: (nodes: Node[]) => void;
 
-    nodeMoveStep: number;
-    setNodeMoveStep: (step: number) => void;
+    isMagnet: boolean;
+    setIsMagnet: () => void;
 
     selectedNodeIds: string[];
     setSelectedNodeIds: (ids: string[]) => void;
@@ -18,18 +18,18 @@ interface CanvasState {
     setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
 
     showGrid: boolean;
-    setShowGrid: (value: boolean) => void;
+    setShowGrid: () => void;
 
     showAxes: boolean;
-    setShowAxes: (value: boolean) => void;
+    setShowAxes: () => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({
     nodes: [],
     setNodes: (nodes) => set({ nodes }),
 
-    nodeMoveStep: 1,
-    setNodeMoveStep: (step: number) => set({ nodeMoveStep: step }),
+    isMagnet: false,
+    setIsMagnet: () => set((s) => ({ isMagnet: !s.isMagnet })),
 
     selectedNodeIds: [],
     setSelectedNodeIds: (ids) => set({ selectedNodeIds: ids }),
@@ -41,7 +41,8 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     setTempEdge: (tempEdge) => set({ tempEdge }),
 
     showGrid: true,
-    showAxes: false,
     setShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
+
+    showAxes: false,
     setShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
 }));
