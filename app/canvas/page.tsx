@@ -40,7 +40,7 @@ export default function Canvas() {
 
     return (
         <div className="flex flex-col items-center justify-center gap-2 h-screen relative" onClick={closeMenu}>
-            <div className="absolute bottom-4 left-4 select-none">{zoomLevel.toFixed(2)}x</div>
+            <div className="absolute bottom-4 left-4 select-none z-50">{zoomLevel.toFixed(2)}x</div>
 
             <div className="absolute top-4 right-4 flex gap-2 z-50">
                 <button
@@ -81,14 +81,6 @@ export default function Canvas() {
                 zoomLevel={zoomLevel}
                 canvasRef={canvasRef}
             />
-
-            {nodes.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="flex items-center text-[#aaa] text-sm">
-                        Не знаете с чего начать? Начните с <strong className="pl-1"> ПКМ </strong>.
-                    </div>
-                </div>
-            )}
 
             <canvas ref={canvasRef} className="fixed w-full h-full" onContextMenu={handleContextMenu} />
         </div>
