@@ -7,116 +7,124 @@ import { Position, Node, Edge, CanvasState } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
-import { handleDeleteNode } from '@/canvas/utils/handleDeleteNode';
+import { handleAddEdge } from '@/canvas/utils/handleAddEdge';
+import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
 import { moveNodes } from '@/canvas/utils/moveNodes';
+import { getNodes } from '@/canvas/utils/getNodes';
+import { getEdges } from '@/canvas/utils/getEdges';
 
 import { v4 as uuidv4 } from 'uuid';
 
 export function useCanvasHotkeys() {
-    const { nodes, setNodes, edges, setEdges, setTempEdge, selectedNodeIds, setSelectedNodeIds } = useCanvasStore();
+    const { selectedItemIds, setSelectedItemIds } = useCanvasStore();
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
     const historyRef = useRef<CanvasState[]>([]);
 
+    const pushHistory = useCallback(() => {
+        const state = useCanvasStore.getState();
+        const nodesOnly = state.items.filter((i): i is Node => i.kind === 'node');
+        const edgesOnly = state.items.filter((i): i is Edge => i.kind === 'edge');
+        historyRef.current.push({ nodes: nodesOnly, edges: edgesOnly });
+    }, []);
+
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
-            const pushHistory = () => {
-                historyRef.current.push({ nodes, edges });
-            };
-
             const key = e.key.toLowerCase();
+            const state = useCanvasStore.getState();
+            const currentItems = state.items;
 
             if (key === 'delete') {
-                pushHistory();
-                const { nodes: newNodes, edges: newEdges } = handleDeleteNode(nodes, edges, selectedNodeIds);
-                setNodes(newNodes);
-                setEdges(newEdges);
-                setSelectedNodeIds([]);
-                return;
+                e.preventDefault();
+                const state = useCanvasStore.getState();
+                const newItems = handleDeleteItems(state.items, selectedItemIds);
+                state.setItems(newItems);
+                state.setSelectedItemIds([]);
             }
 
             if ((key === 'a' || key === 'ф') && e.ctrlKey) {
                 e.preventDefault();
-                setSelectedNodeIds(nodes.map((n) => n.id));
+                const nodeIds = currentItems.filter((i) => i.kind === 'node').map((n) => n.id);
+                setSelectedItemIds(nodeIds);
                 return;
             }
 
             if ((key === 'c' || key === 'с') && e.ctrlKey) {
                 e.preventDefault();
-                clipboardRef.current = {
-                    nodes: nodes.filter((n) => selectedNodeIds.includes(n.id)),
-                    edges: edges.filter((edge) => selectedNodeIds.includes(edge.from) && selectedNodeIds.includes(edge.to)),
-                };
+                const selectedNodes = currentItems.filter(
+                    (i) => i.kind === 'node' && selectedItemIds.includes(i.id),
+                ) as Node[];
+                const selectedEdges = currentItems.filter(
+                    (i) => i.kind === 'edge' && selectedItemIds.includes(i.from) && selectedItemIds.includes(i.to),
+                ) as Edge[];
+                clipboardRef.current = { nodes: selectedNodes, edges: selectedEdges };
                 return;
             }
 
             if ((key === 'v' || key === 'м') && e.ctrlKey) {
                 e.preventDefault();
-                if (clipboardRef.current.nodes.length === 0) return;
+                const { nodes: clipboardNodes, edges: clipboardEdges } = clipboardRef.current;
+                if (!clipboardNodes.length) return;
 
                 pushHistory();
 
                 const offset = 50;
-
-                const newNodes: Node[] = clipboardRef.current.nodes.map((node) => ({
+                const newNodes: Node[] = clipboardNodes.map((node) => ({
                     ...node,
                     id: uuidv4(),
-                    position: {
-                        x: node.position.x + offset,
-                        y: node.position.y + offset,
-                    },
+                    position: { x: node.position.x + offset, y: node.position.y + offset },
                 }));
 
-                const nodeIdMap = new Map<string, string>();
-                clipboardRef.current.nodes.forEach((node, index) => {
-                    nodeIdMap.set(node.id, newNodes[index].id);
+                const nodeIdMap = new Map(clipboardNodes.map((node, i) => [node.id, newNodes[i].id]));
+
+                const newEdges: Edge[] = clipboardEdges.flatMap((edge) => {
+                    const fromNode = newNodes.find((n) => n.id === nodeIdMap.get(edge.from));
+                    const toNode = newNodes.find((n) => n.id === nodeIdMap.get(edge.to));
+                    if (!fromNode || !toNode) return [];
+                    return handleAddEdge([], fromNode, toNode);
                 });
 
-                const newEdges: Edge[] = clipboardRef.current.edges.map((edge) => ({
-                    id: uuidv4(),
-                    from: nodeIdMap.get(edge.from)!,
-                    to: nodeIdMap.get(edge.to)!,
-                }));
-
-                setNodes([...nodes, ...newNodes]);
-                setEdges([...edges, ...newEdges]);
-                setSelectedNodeIds(newNodes.map((n) => n.id));
+                state.setItems([...currentItems, ...newNodes, ...newEdges]);
+                state.setSelectedItemIds(newNodes.map((n) => n.id));
+                return;
             }
 
             if ((key === 'z' || key === 'я') && e.ctrlKey) {
                 e.preventDefault();
                 const lastState = historyRef.current.pop();
                 if (lastState) {
-                    setNodes(lastState.nodes);
-                    setEdges(lastState.edges);
-                    setSelectedNodeIds([]);
+                    state.setItems([...lastState.nodes, ...lastState.edges]);
+                    state.setSelectedItemIds([]);
                 }
                 return;
             }
 
             if ((key === 'a' || key === 'ф') && e.shiftKey) {
                 e.preventDefault();
-                const newNodes = handleAddNode(nodes);
-                setNodes(newNodes);
-                setSelectedNodeIds([newNodes[newNodes.length - 1].id]);
+                if (e.repeat) return;
+
+                pushHistory();
+
+                const nodesOnly: Node[] = getNodes(currentItems);
+                const newNode: Node = handleAddNode(nodesOnly);
+
+                state.setItems([...currentItems, newNode]);
+                state.setSelectedItemIds([newNode.id]);
+
                 return;
             }
 
             if ((key === 'e' || key === 'у') && e.shiftKey) {
                 e.preventDefault();
+                if (selectedItemIds.length === 0) return;
 
-                if (selectedNodeIds.length === 0) return;
-
-                const fromNodeId = selectedNodeIds[0];
-                const fromNode = nodes.find((n) => n.id === fromNodeId);
+                const nodesOnly: Node[] = getNodes(currentItems);
+                const fromNodeId = selectedItemIds[0];
+                const fromNode = nodesOnly.find((n) => n.id === fromNodeId);
 
                 if (!fromNode) return;
 
-                setTempEdge({
-                    from: fromNodeId,
-                    toPos: { ...fromNode.position },
-                });
-
+                state.setTempEdge({ from: fromNodeId, toPos: { ...fromNode.position } });
                 return;
             }
 
@@ -124,41 +132,32 @@ export function useCanvasHotkeys() {
                 e.preventDefault();
 
                 const step = NODE_MOVE_MAX_STEP;
+                let dx = 0,
+                    dy = 0;
 
-                let dx = 0;
-                let dy = 0;
+                if (key === 'arrowup') dy = -step;
+                if (key === 'arrowdown') dy = step;
+                if (key === 'arrowleft') dx = -step;
+                if (key === 'arrowright') dx = step;
 
-                switch (key) {
-                    case 'arrowup':
-                        dy = -step;
-                        break;
-                    case 'arrowdown':
-                        dy = step;
-                        break;
-                    case 'arrowleft':
-                        dx = -step;
-                        break;
-                    case 'arrowright':
-                        dx = step;
-                        break;
-                }
+                if (selectedItemIds.length > 0) {
+                    pushHistory();
 
-                if (selectedNodeIds.length > 0) {
+                    const nodesOnly = getNodes(currentItems);
+                    const edgesOnly = getEdges(currentItems);
+
                     const initialPositions = new Map<string, Position>();
-                    nodes.forEach((node) => {
-                        if (selectedNodeIds.includes(node.id)) {
-                            initialPositions.set(node.id, { ...node.position });
-                        }
+                    nodesOnly.forEach((node) => {
+                        if (selectedItemIds.includes(node.id)) initialPositions.set(node.id, { ...node.position });
                     });
 
-                    const newNodes = moveNodes(nodes, selectedNodeIds, initialPositions, { x: dx, y: dy }, 1);
-                    setNodes(newNodes);
+                    const movedNodes = moveNodes(nodesOnly, selectedItemIds, initialPositions, { x: dx, y: dy }, 1);
+                    state.setItems([...movedNodes, ...edgesOnly]);
                 }
-
                 return;
             }
         },
-        [nodes, setNodes, selectedNodeIds, setSelectedNodeIds, edges, setEdges, setTempEdge],
+        [selectedItemIds, setSelectedItemIds, pushHistory],
     );
 
     useEffect(() => {
