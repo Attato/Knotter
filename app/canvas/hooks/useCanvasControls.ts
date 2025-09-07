@@ -146,9 +146,10 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
                 if (targetNode && targetNode.id !== tempEdge.from && !edgeExists) {
                     const fromNode = nodes.find((n) => n.id === tempEdge.from);
+
                     if (fromNode) {
-                        const newEdge = handleAddEdge(edges, fromNode, targetNode);
-                        setItems([...nodes, newEdge]);
+                        const newEdge = handleAddEdge(getEdges(items), fromNode, targetNode);
+                        setItems([...items, newEdge]);
                     }
                 }
 
