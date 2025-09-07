@@ -1,7 +1,6 @@
 import { Node, Edge } from '@/canvas/canvas.types';
 
-export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], edges: Edge[]) {
-    ctx.strokeStyle = '#fff';
+export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], selectedItemIds: string[] = [], edges: Edge[]) {
     ctx.lineWidth = 2;
 
     for (const edge of edges) {
@@ -15,9 +14,12 @@ export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], edges: E
         const toX = toNode.position.x;
         const toY = toNode.position.y;
 
+        const isSelected = selectedItemIds.includes(edge.id);
+
         ctx.beginPath();
         ctx.moveTo(fromX, fromY);
         ctx.lineTo(toX, toY);
+        ctx.strokeStyle = isSelected ? '#ffc107' : '#fff';
         ctx.stroke();
     }
 }
