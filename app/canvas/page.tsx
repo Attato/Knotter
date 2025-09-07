@@ -17,7 +17,7 @@ import { Grid2x2, Move3d, Magnet } from 'lucide-react';
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const { nodes, selectedNodeIds, edges, tempEdge, isMagnet, showGrid, setShowGrid, showAxes, setShowAxes } =
+    const { items, selectedItemIds, tempEdge, isMagnet, showGrid, toggleShowGrid, showAxes, toggleShowAxes } =
         useCanvasStore();
 
     const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef);
@@ -28,9 +28,8 @@ export default function Canvas() {
         zoomLevel,
         selectionStart,
         selectionEnd,
-        nodes,
-        selectedNodeIds,
-        edges,
+        items,
+        selectedItemIds,
         tempEdge,
         showGrid,
         showAxes,
@@ -56,7 +55,7 @@ export default function Canvas() {
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
-                        setShowGrid(!showGrid);
+                        toggleShowGrid();
                     }}
                     className={`p-2 rounded-md w-fit cursor-pointer ${showGrid ? 'bg-[#1f6feb]' : 'bg-[#151515] hover:bg-[#1a1a1a]'}`}
                 >
@@ -65,7 +64,7 @@ export default function Canvas() {
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
-                        setShowAxes(!showAxes);
+                        toggleShowAxes();
                     }}
                     className={`p-2 rounded-md w-fit cursor-pointer ${showAxes ? 'bg-[#1f6feb]' : 'bg-[#151515] hover:bg-[#1a1a1a]'}`}
                 >
