@@ -1,15 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { FC, ReactNode, MouseEvent } from 'react';
 
 interface ContextMenuItemProps {
-    onClick: (e?: React.MouseEvent<HTMLButtonElement>) => void;
-    children: React.ReactNode;
+    onClick: (e?: MouseEvent<HTMLButtonElement>) => void;
+    children: ReactNode;
     disabled?: boolean;
     shortcut?: string;
 }
 
-export const ContextMenuItem: React.FC<ContextMenuItemProps> = ({ onClick, children, disabled = false, shortcut }) => {
+export const ContextMenuItem: FC<ContextMenuItemProps> = ({ onClick, children, disabled = false, shortcut }) => {
     return (
         <button
             className={`flex justify-between items-center px-3 py-1 hover:bg-[#1d1d1d] w-full text-left cursor-pointer ${disabled ? 'opacity-40' : ''}`}
