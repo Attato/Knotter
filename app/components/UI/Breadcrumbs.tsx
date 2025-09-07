@@ -2,7 +2,7 @@
 
 import { ChevronRight } from 'lucide-react';
 
-export type Breadcrumb = { label: string; nodeId?: string };
+export type Breadcrumb = { label: string; itemId?: string };
 
 interface BreadcrumbsProps {
     items: Breadcrumb[];
