@@ -1,45 +1,39 @@
 import { create } from 'zustand';
-import { Position, Node, Edge } from '@/canvas/canvas.types';
+import { CanvasItem } from '@/canvas/canvas.types';
 import { NODE_MOVE_MIN_STEP } from '@/canvas/constants';
 
 interface CanvasState {
-    nodes: Node[];
-    setNodes: (nodes: Node[]) => void;
+    items: CanvasItem[];
+    setItems: (items: CanvasItem[]) => void;
 
     nodeMoveStep: number;
     setNodeMoveStep: (step: number) => void;
 
-    selectedNodeIds: string[];
-    setSelectedNodeIds: (ids: string[]) => void;
+    selectedItemIds: string[];
+    setSelectedItemIds: (ids: string[]) => void;
 
-    edges: Edge[];
-    setEdges: (edges: Edge[]) => void;
-
-    tempEdge: { from: string; toPos: Position } | null;
-    setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
+    tempEdge: { from: string; toPos: { x: number; y: number } } | null;
+    setTempEdge: (edge: { from: string; toPos: { x: number; y: number } } | null) => void;
 
     isMagnet: boolean;
     setIsMagnet: (value: boolean) => void;
 
     showGrid: boolean;
-    setShowGrid: (value: boolean) => void;
+    toggleShowGrid: () => void;
 
     showAxes: boolean;
-    setShowAxes: (value: boolean) => void;
+    toggleShowAxes: () => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({
-    nodes: [],
-    setNodes: (nodes) => set({ nodes }),
+    items: [],
+    setItems: (items: CanvasItem[]) => set({ items }),
 
     nodeMoveStep: NODE_MOVE_MIN_STEP,
     setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
 
-    selectedNodeIds: [],
-    setSelectedNodeIds: (ids) => set({ selectedNodeIds: ids }),
-
-    edges: [],
-    setEdges: (edges) => set({ edges }),
+    selectedItemIds: [],
+    setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
 
     tempEdge: null,
     setTempEdge: (tempEdge) => set({ tempEdge }),
@@ -48,8 +42,8 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     setIsMagnet: (value) => set({ isMagnet: value }),
 
     showGrid: true,
-    setShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
+    toggleShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
 
     showAxes: false,
-    setShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
+    toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
 }));
