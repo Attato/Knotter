@@ -1,7 +1,7 @@
-import { Position } from '@/canvas/canvas.types';
+import { Position, Node } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
 
-export function getNodeAtPosition(nodes: { id: string; position: Position }[], pos: Position) {
+export function getNodeAtPosition(nodes: Node[], pos: Position): Node | undefined {
     const halfSize = NODE_SIZE / 2;
 
     return nodes.find((node) => {
