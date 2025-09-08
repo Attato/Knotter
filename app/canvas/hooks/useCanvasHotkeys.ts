@@ -20,12 +20,15 @@ export function useCanvasHotkeys() {
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
     const historyRef = useRef<CanvasState[]>([]);
+    const redoRef = useRef<CanvasState[]>([]);
 
     const pushHistory = useCallback(() => {
         const state = useCanvasStore.getState();
         const nodesOnly = state.items.filter((i): i is Node => i.kind === 'node');
         const edgesOnly = state.items.filter((i): i is Edge => i.kind === 'edge');
         historyRef.current.push({ nodes: nodesOnly, edges: edgesOnly });
+
+        redoRef.current = [];
     }, []);
 
     const handleKeyDown = useCallback(
@@ -89,11 +92,29 @@ export function useCanvasHotkeys() {
                 return;
             }
 
-            if ((key === 'z' || key === 'я') && e.ctrlKey) {
+            if ((key === 'z' || key === 'я') && e.ctrlKey && !e.shiftKey) {
                 e.preventDefault();
                 const lastState = historyRef.current.pop();
                 if (lastState) {
+                    redoRef.current.push({
+                        nodes: getNodes(state.items),
+                        edges: getEdges(state.items),
+                    });
                     state.setItems([...lastState.nodes, ...lastState.edges]);
+                    state.setSelectedItemIds([]);
+                }
+                return;
+            }
+
+            if ((key === 'z' || key === 'я') && e.ctrlKey && e.shiftKey) {
+                e.preventDefault();
+                const redoState = redoRef.current.pop();
+                if (redoState) {
+                    historyRef.current.push({
+                        nodes: getNodes(state.items),
+                        edges: getEdges(state.items),
+                    });
+                    state.setItems([...redoState.nodes, ...redoState.edges]);
                     state.setSelectedItemIds([]);
                 }
                 return;
