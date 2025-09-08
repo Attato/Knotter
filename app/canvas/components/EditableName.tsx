@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 
 interface EditableNameProps {
@@ -47,11 +49,15 @@ export function EditableName({ name, isSelected, onChange }: EditableNameProps) 
             onBlur={finishEditing}
             onKeyDown={handleInputKeyDown}
             className="bg-[#1a1a1a] border border-[#388bfd] rounded px-1 py-0.5 text-[#fff] text-sm outline-none w-full transition-all"
+            onDoubleClick={(e) => e.stopPropagation()}
         />
     ) : (
         <span
             className={`text-sm cursor-pointer transition-colors ${isSelected ? 'text-[#388bfd]' : 'text-[#fff]'}`}
-            onDoubleClick={() => setEditing(true)}
+            onDoubleClick={(e) => {
+                e.stopPropagation();
+                setEditing(true);
+            }}
         >
             {name}
         </span>
