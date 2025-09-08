@@ -1,8 +1,10 @@
 'use client';
-
 import { MouseEvent } from 'react';
+
 import { CanvasItem } from '@/canvas/canvas.types';
+
 import { EditableName } from '@/canvas/components/EditableName';
+
 import { GripVertical, ChevronRight } from 'lucide-react';
 
 interface CanvasSidebarItemProps {
@@ -11,6 +13,7 @@ interface CanvasSidebarItemProps {
     onSelect: (e: MouseEvent<HTMLButtonElement>) => void;
     onChange?: (updatedItem: CanvasItem) => void;
     onMouseDown?: () => void;
+    onDoubleClick?: () => void;
 }
 
 export default function CanvasSidebarItem({
@@ -19,6 +22,7 @@ export default function CanvasSidebarItem({
     onSelect,
     onChange,
     onMouseDown,
+    onDoubleClick,
 }: CanvasSidebarItemProps) {
     return (
         <button
@@ -29,6 +33,10 @@ export default function CanvasSidebarItem({
             onClick={(e) => {
                 e.stopPropagation();
                 onSelect(e);
+            }}
+            onDoubleClick={(e) => {
+                e.stopPropagation();
+                onDoubleClick?.();
             }}
         >
             <div className="flex items-center justify-between">

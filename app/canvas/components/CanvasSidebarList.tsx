@@ -7,9 +7,10 @@ import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 
 type CanvasSidebarListProps = {
     filterText: string;
+    onItemDoubleClick?: (item: CanvasItem) => void;
 };
 
-export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps) {
+export default function CanvasSidebarList({ filterText, onItemDoubleClick }: CanvasSidebarListProps) {
     const { selectedItemIds, setSelectedItemIds, setItems } = useCanvasStore();
     const canvasItems = useCanvasStore((state) => state.items);
 
@@ -29,7 +30,7 @@ export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps
         <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2">
             <ul className="flex flex-col gap-1">
                 {filteredItems.length === 0 ? (
-                    <li className="p-2 text-gray-400 text-sm">Ничего не найдено.</li>
+                    <li className="p-2 text-[#999] text-sm text-center">Ничего не найдено.</li>
                 ) : (
                     filteredItems.map((item) => (
                         <CanvasSidebarItem
@@ -38,6 +39,7 @@ export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps
                             isSelected={selectedItemIds.includes(item.id)}
                             onSelect={(e) => handleSelect(e, item.id)}
                             onChange={handleChange}
+                            onDoubleClick={() => onItemDoubleClick?.(item)}
                         />
                     ))
                 )}
