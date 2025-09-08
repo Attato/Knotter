@@ -5,6 +5,7 @@ import { NODE_SIZE } from '@/canvas/constants';
 import { drawNodes } from '@/canvas/utils/drawNodes';
 import { drawSelectionBox } from '@/canvas/utils/drawSelectionBox';
 import { drawEdges } from '@/canvas/utils/drawEdges';
+import { drawTempEdge } from '@/canvas/utils/drawTempEdge';
 import { drawGrid } from '@/canvas/utils/drawGrid';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
@@ -46,16 +47,6 @@ export function useCanvasRenderer(
             drawSelectionBox(ctx, selectionStart, selectionEnd);
         }
 
-        if (tempEdge) {
-            const fromNode = nodes.find((n) => n.id === tempEdge.from);
-            if (fromNode) {
-                ctx.strokeStyle = '#ccc';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(fromNode.position.x, fromNode.position.y);
-                ctx.lineTo(tempEdge.toPos.x, tempEdge.toPos.y);
-                ctx.stroke();
-            }
-        }
+        drawTempEdge(ctx, nodes, tempEdge);
     }, [canvasRef, offset, zoomLevel, items, selectedItemIds, selectionStart, selectionEnd, tempEdge, showAxes, showGrid]);
 }
