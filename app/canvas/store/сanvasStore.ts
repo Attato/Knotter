@@ -6,14 +6,14 @@ interface CanvasState {
     items: CanvasItem[];
     setItems: (items: CanvasItem[]) => void;
 
-    nodeMoveStep: number;
-    setNodeMoveStep: (step: number) => void;
-
     selectedItemIds: string[];
     setSelectedItemIds: (ids: string[]) => void;
 
     tempEdge: { from: string; toPos: { x: number; y: number } } | null;
     setTempEdge: (edge: { from: string; toPos: { x: number; y: number } } | null) => void;
+
+    nodeMoveStep: number;
+    setNodeMoveStep: (step: number) => void;
 
     isMagnet: boolean;
     setIsMagnet: (value: boolean) => void;
@@ -29,14 +29,14 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     items: [],
     setItems: (items: CanvasItem[]) => set({ items }),
 
-    nodeMoveStep: NODE_MOVE_MIN_STEP,
-    setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
-
     selectedItemIds: [],
     setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
 
     tempEdge: null,
     setTempEdge: (tempEdge) => set({ tempEdge }),
+
+    nodeMoveStep: NODE_MOVE_MIN_STEP,
+    setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
 
     isMagnet: false,
     setIsMagnet: (value) => set({ isMagnet: value }),
