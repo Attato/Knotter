@@ -1,5 +1,6 @@
 'use client';
 
+import { MouseEvent } from 'react';
 import { CanvasItem } from '@/canvas/canvas.types';
 import { EditableName } from '@/canvas/components/EditableName';
 import { GripVertical, ChevronRight } from 'lucide-react';
@@ -7,7 +8,7 @@ import { GripVertical, ChevronRight } from 'lucide-react';
 interface CanvasSidebarItemProps {
     canvasItem: CanvasItem;
     isSelected: boolean;
-    onSelect: () => void;
+    onSelect: (e: MouseEvent<HTMLButtonElement>) => void;
     onChange?: (updatedItem: CanvasItem) => void;
     onMouseDown?: () => void;
 }
@@ -22,12 +23,12 @@ export default function CanvasSidebarItem({
     return (
         <button
             onMouseDown={onMouseDown}
-            className={`w-full px-4 py-2 rounded-md tabular-nums transition-all duration-150 cursor-pointer ${
+            className={`w-full px-4 py-2 rounded-md focus-visible:outline-2 outline-[#388bfd] tabular-nums transition-all duration-150 cursor-pointer ${
                 isSelected ? 'bg-[#388bfd1a]' : 'bg-[#151515] hover:bg-[#1a1a1a]'
             }`}
             onClick={(e) => {
                 e.stopPropagation();
-                onSelect();
+                onSelect(e);
             }}
         >
             <div className="flex items-center justify-between">

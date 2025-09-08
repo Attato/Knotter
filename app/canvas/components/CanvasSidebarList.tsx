@@ -3,6 +3,7 @@
 import { CanvasItem } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import CanvasSidebarItem from '@/canvas/components/CanvasSidebarItem';
+import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 
 type CanvasSidebarListProps = {
     filterText: string;
@@ -19,6 +20,11 @@ export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps
         setItems(updatedItems);
     };
 
+    const handleSelect = (e: React.MouseEvent, itemId: string) => {
+        const newSelectedIds = selectCanvasItem(canvasItems, selectedItemIds, itemId, e);
+        setSelectedItemIds(newSelectedIds);
+    };
+
     return (
         <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2">
             <ul className="flex flex-col gap-1">
@@ -30,7 +36,7 @@ export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps
                             key={item.id}
                             canvasItem={item}
                             isSelected={selectedItemIds.includes(item.id)}
-                            onSelect={() => setSelectedItemIds([item.id])}
+                            onSelect={(e) => handleSelect(e, item.id)}
                             onChange={handleChange}
                         />
                     ))
