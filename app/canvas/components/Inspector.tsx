@@ -28,7 +28,6 @@ export default function Inspector({ item, onNameChange }: InspectorProps) {
 
     return (
         <div className="flex flex-col gap-1 m-2">
-            <label className="text-gray-300 text-sm">Name</label>
             <input
                 type="text"
                 value={name}
