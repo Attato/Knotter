@@ -1,5 +1,5 @@
 'use client';
-import { MouseEvent } from 'react';
+import { MouseEvent, KeyboardEvent } from 'react';
 
 import { CanvasItem } from '@/canvas/canvas.types';
 
@@ -14,6 +14,7 @@ interface CanvasSidebarItemProps {
     onChange?: (updatedItem: CanvasItem) => void;
     onMouseDown?: () => void;
     onDoubleClick?: () => void;
+    onKeyDown?: (e: KeyboardEvent<HTMLButtonElement>) => void;
 }
 
 export default function CanvasSidebarItem({
@@ -23,12 +24,15 @@ export default function CanvasSidebarItem({
     onChange,
     onMouseDown,
     onDoubleClick,
+    onKeyDown,
 }: CanvasSidebarItemProps) {
     return (
         <button
             onMouseDown={onMouseDown}
-            className={`w-full px-4 py-2 rounded-md focus-visible:outline-2 outline-[#388bfd] tabular-nums transition-all duration-150 cursor-pointer ${
-                isSelected ? 'bg-[#388bfd1a]' : 'bg-[#151515] hover:bg-[#1a1a1a]'
+            className={`w-full px-4 py-2 rounded-md outline-none tabular-nums transition-all duration-150 cursor-pointer ${
+                isSelected
+                    ? 'bg-[#388bfd1a] focus-visible:bg-[#388bfd26]'
+                    : 'bg-[#151515] hover:bg-[#1a1a1a] focus-visible:bg-[#1a1a1a]'
             }`}
             onClick={(e) => {
                 e.stopPropagation();
@@ -38,6 +42,7 @@ export default function CanvasSidebarItem({
                 e.stopPropagation();
                 onDoubleClick?.();
             }}
+            onKeyDown={onKeyDown}
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">

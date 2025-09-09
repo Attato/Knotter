@@ -7,10 +7,10 @@ import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 
 type CanvasSidebarListProps = {
     filterText: string;
-    onItemDoubleClick?: (item: CanvasItem) => void;
+    openInspectorForItem?: (item: CanvasItem) => void;
 };
 
-export default function CanvasSidebarList({ filterText, onItemDoubleClick }: CanvasSidebarListProps) {
+export default function CanvasSidebarList({ filterText, openInspectorForItem }: CanvasSidebarListProps) {
     const { selectedItemIds, setSelectedItemIds, setItems } = useCanvasStore();
     const canvasItems = useCanvasStore((state) => state.items);
 
@@ -39,7 +39,12 @@ export default function CanvasSidebarList({ filterText, onItemDoubleClick }: Can
                             isSelected={selectedItemIds.includes(item.id)}
                             onSelect={(e) => handleSelect(e, item.id)}
                             onChange={handleChange}
-                            onDoubleClick={() => onItemDoubleClick?.(item)}
+                            onDoubleClick={() => openInspectorForItem?.(item)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    openInspectorForItem?.(item);
+                                }
+                            }}
                         />
                     ))
                 )}
