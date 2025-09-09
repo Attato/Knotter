@@ -171,7 +171,12 @@ export function useCanvasHotkeys() {
                 return;
             }
 
-            if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+            if (
+                ['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key) &&
+                !e.ctrlKey &&
+                !e.shiftKey &&
+                !e.altKey
+            ) {
                 e.preventDefault();
 
                 const step = NODE_MOVE_MAX_STEP;
