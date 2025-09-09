@@ -37,7 +37,7 @@ export default function CanvasSidebar() {
         });
     };
 
-    const handleItemDoubleClick = (item: CanvasItem) => {
+    const openInspectorForItem = (item: CanvasItem) => {
         setBreadcrumbs([{ label: 'Канвас' }, { label: item.name }]);
         setInspectorItem(item);
     };
@@ -87,7 +87,7 @@ export default function CanvasSidebar() {
                 {inspectorItem ? (
                     <Inspector item={inspectorItem} onNameChange={handleNameChange} />
                 ) : (
-                    <CanvasSidebarList filterText={filterText} onItemDoubleClick={handleItemDoubleClick} />
+                    <CanvasSidebarList filterText={filterText} openInspectorForItem={openInspectorForItem} />
                 )}
             </div>
 
