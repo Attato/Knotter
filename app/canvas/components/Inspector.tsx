@@ -32,7 +32,7 @@ export default function Inspector({ item, onNameChange }: InspectorProps) {
                 type="text"
                 value={name}
                 onChange={(e) => handleChange(e.target.value)}
-                className="w-full px-4 py-2 rounded-md focus-visible:outline-2 outline-[#388bfd] tabular-nums transition-all duration-150 cursor-pointer bg-[#151515] hover:bg-[#1a1a1a] text-sm text-white"
+                className="w-full px-4 py-2 rounded-md tabular-nums transition-all duration-150 cursor-pointer bg-[#151515] hover:bg-[#1a1a1a] outline-0 focus-visible:bg-[#1a1a1a] text-sm text-white"
             />
         </div>
     );
