@@ -12,6 +12,7 @@ import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
 import { moveNodes } from '@/canvas/utils/moveNodes';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
+import { toggleMagnetMode } from '../utils/toggleMagnetMode';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -37,9 +38,30 @@ export function useCanvasHotkeys() {
             const state = useCanvasStore.getState();
             const currentItems = state.items;
 
+            const target = e.target as HTMLElement;
+
+            if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+
+            if ((key === 'm' || key === 'ь') && !e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
+                toggleMagnetMode();
+                return;
+            }
+
+            if ((key === 'g' || key === 'п') && !e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
+                state.toggleShowGrid();
+                return;
+            }
+
+            if ((key === 'a' || key === 'ф') && !e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
+                state.toggleShowAxes();
+                return;
+            }
+
             if (key === 'delete') {
                 e.preventDefault();
-                const state = useCanvasStore.getState();
                 const newItems = handleDeleteItems(state.items, selectedItemIds);
                 state.setItems(newItems);
                 state.setSelectedItemIds([]);
