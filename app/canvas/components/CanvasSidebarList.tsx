@@ -41,9 +41,16 @@ export default function CanvasSidebarList({ filterText, openInspectorForItem }: 
                             onChange={handleChange}
                             onDoubleClick={() => openInspectorForItem?.(item)}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    openInspectorForItem?.(item);
+                                if (e.key !== 'Enter') return;
+
+                                const isSelected = selectedItemIds.includes(item.id);
+
+                                if (!isSelected) {
+                                    setSelectedItemIds([...selectedItemIds, item.id]);
+                                    return;
                                 }
+
+                                openInspectorForItem?.(item);
                             }}
                         />
                     ))
