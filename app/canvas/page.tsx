@@ -9,6 +9,7 @@ import { useContextMenu } from '@/hooks/useContextMenu';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu';
+import { Tooltip } from '@/components/UI/Tooltip';
 
 import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
@@ -37,33 +38,29 @@ export default function Canvas() {
 
     const { isOpen, position, handleContextMenu, closeMenu } = useContextMenu();
 
+    const canvasControls = [
+        { active: isMagnet, onClick: toggleMagnetMode, Icon: Magnet, label: 'Магнит (M)' },
+        { active: showGrid, onClick: toggleShowGrid, Icon: Grid2x2, label: 'Сетка (G)' },
+        { active: showAxes, onClick: toggleShowAxes, Icon: Move3d, label: 'Оси (A)' },
+    ];
+
     return (
         <div className="flex flex-col items-center justify-center gap-2 h-screen relative" onClick={closeMenu}>
             <div className="absolute bottom-4 left-4 select-none z-50">{zoomLevel.toFixed(2)}x</div>
 
             <div className="absolute top-4 right-4 flex gap-2 z-60">
-                {[
-                    { active: isMagnet, onClick: toggleMagnetMode, Icon: Magnet, label: 'Магнит (M)' },
-                    { active: showGrid, onClick: toggleShowGrid, Icon: Grid2x2, label: 'Сетка (G)' },
-                    { active: showAxes, onClick: toggleShowAxes, Icon: Move3d, label: 'Оси (A)' },
-                ].map(({ active, onClick, Icon, label }, id) => (
-                    <div key={id} className="relative group">
+                {canvasControls.map(({ active, onClick, Icon, label }, index) => (
+                    <Tooltip key={index} label={label}>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onClick();
                             }}
-                            className={`p-2 rounded-md w-fit cursor-pointer ${
-                                active ? 'bg-[#1f6feb]' : 'bg-[#151515] hover:bg-[#1a1a1a]'
-                            }`}
+                            className={`p-2 rounded-md w-fit cursor-pointer ${active ? 'bg-[#1f6feb]' : 'bg-[#151515] hover:bg-[#1a1a1a]'}`}
                         >
                             <Icon size={16} />
                         </button>
-
-                        <span className="absolute top-10 right-1/2 translate-x-1/2 px-2 py-1 text-xs text-white bg-[#0f0f0f] border border-[#1a1a1a] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                            {label}
-                        </span>
-                    </div>
+                    </Tooltip>
                 ))}
             </div>
 
