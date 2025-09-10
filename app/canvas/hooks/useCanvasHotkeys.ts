@@ -25,9 +25,10 @@ export function useCanvasHotkeys() {
 
     const pushHistory = useCallback(() => {
         const state = useCanvasStore.getState();
-        const nodesOnly = state.items.filter((i): i is Node => i.kind === 'node');
-        const edgesOnly = state.items.filter((i): i is Edge => i.kind === 'edge');
-        historyRef.current.push({ nodes: nodesOnly, edges: edgesOnly });
+        const nodes = getNodes(state.items);
+        const edges = getEdges(state.items);
+
+        historyRef.current.push({ nodes: nodes, edges: edges });
 
         redoRef.current = [];
     }, []);
