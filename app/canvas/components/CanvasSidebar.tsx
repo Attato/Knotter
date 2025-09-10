@@ -57,7 +57,7 @@ export default function CanvasSidebar() {
 
             <hr className="border-b-0 border-[#1a1a1a]" />
 
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 overflow-y-auto">
                 {breadcrumbs.length === 1 && !inspectorItem && (
                     <>
                         <div className="flex items-center gap-2 m-1">
