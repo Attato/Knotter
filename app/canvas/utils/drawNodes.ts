@@ -1,5 +1,13 @@
 import { Node } from '@/canvas/canvas.types';
-import { drawOctagon } from '@/canvas/utils/drawOctagon';
+import {
+    drawOctagon,
+    drawCircle,
+    drawDiamond,
+    drawPoint,
+    drawTriangle,
+    drawHexagon,
+    drawSquircle,
+} from '@/canvas/utils/drawShapes';
 
 export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selectedNodeIds: string[], nodeSize: number) {
     const padding = 4;
@@ -9,11 +17,41 @@ export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selected
         const { x, y } = node.position;
 
         ctx.save();
-        ctx.beginPath();
-        drawOctagon(ctx, x, y, nodeSize);
+
+        switch (node.type) {
+            case 'octagon':
+                drawOctagon(ctx, x, y, nodeSize);
+                break;
+
+            case 'circle':
+                drawCircle(ctx, x, y, nodeSize / 2);
+                break;
+
+            case 'diamond':
+                drawDiamond(ctx, x, y, nodeSize);
+                break;
+
+            case 'triangle':
+                drawTriangle(ctx, x, y, nodeSize);
+                break;
+
+            case 'hexagon':
+                drawHexagon(ctx, x, y, nodeSize);
+                break;
+
+            case 'squircle':
+                drawSquircle(ctx, x, y, nodeSize);
+                break;
+
+            case 'point':
+                drawPoint(ctx, x, y, 3);
+                break;
+        }
+
         ctx.lineWidth = 2;
         ctx.strokeStyle = 'white';
         ctx.stroke();
+
         ctx.restore();
 
         if (isSelected) {
