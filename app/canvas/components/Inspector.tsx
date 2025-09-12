@@ -5,7 +5,7 @@ import { CanvasItem, NodeType } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { Octagon, Circle, Squircle, Hexagon, Triangle, Diamond, Dot, type LucideIcon } from 'lucide-react';
 
-import { handleNameChange } from '../utils/handleNameChange';
+import { handleItemNameChange } from '@/canvas/utils/handleItemNameChange';
 
 type InspectorProps = {
     item: CanvasItem;
@@ -79,7 +79,7 @@ export default function Inspector({ item }: InspectorProps) {
                 value={name}
                 onChange={(e) => {
                     setName(e.target.value);
-                    handleNameChange(item, e.target.value);
+                    handleItemNameChange(item, e.target.value);
                 }}
                 className="w-full h-8 bg-[#151515] text-white placeholder-[#888] pl-3 pr-9 text-sm rounded-r-md focus:outline-none"
                 placeholder="Название"
