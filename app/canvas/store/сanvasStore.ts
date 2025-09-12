@@ -23,6 +23,12 @@ interface CanvasState {
 
     showAxes: boolean;
     toggleShowAxes: () => void;
+
+    inspectorItem: CanvasItem | null;
+    setInspectorItem: (item: CanvasItem | null) => void;
+
+    breadcrumbs: { label: string }[];
+    setBreadcrumbs: (breadcrumbs: { label: string }[]) => void;
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({
@@ -46,4 +52,10 @@ export const useCanvasStore = create<CanvasState>((set) => ({
 
     showAxes: false,
     toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
+
+    inspectorItem: null,
+    setInspectorItem: (item) => set({ inspectorItem: item }),
+
+    breadcrumbs: [{ label: 'Канвас' }],
+    setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
 }));

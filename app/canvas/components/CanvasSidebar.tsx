@@ -4,51 +4,27 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
-import { CanvasItem } from '@/canvas/canvas.types';
-
 import Sidebar from '@/components/UI/Sidebar';
-import Breadcrumbs, { Breadcrumb } from '@/components/UI/Breadcrumbs';
-
+import Breadcrumbs from '@/components/UI/Breadcrumbs';
 import CanvasSidebarList from '@/canvas/components/CanvasSidebarList';
 import Inspector from '@/canvas/components/Inspector';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { getNodes } from '@/canvas/utils/getNodes';
+import { openInspector } from '@/canvas/utils/openInspector';
 
 import { Plus, Home, Search } from 'lucide-react';
 
 export default function CanvasSidebar() {
-    const { items, setItems } = useCanvasStore();
+    const { items, setItems, inspectorItem, breadcrumbs } = useCanvasStore();
     const [filterText, setFilterText] = useState('');
-    const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([{ label: 'Канвас' }]);
-    const [inspectorItem, setInspectorItem] = useState<CanvasItem | null>(null);
 
     const nodes = getNodes(items);
 
-    const handleAddNodeClick = () => {
-        const newNode = handleAddNode(nodes);
-        setItems([...items, newNode]);
-    };
-
     const handleBreadcrumbClick = (index: number) => {
-        setBreadcrumbs((prev) => {
-            if (index === 0) setInspectorItem(null);
-            return prev.slice(0, index + 1);
-        });
-    };
-
-    const openInspectorForItem = (item: CanvasItem) => {
-        setBreadcrumbs([{ label: 'Канвас' }, { label: item.name }]);
-        setInspectorItem(item);
-    };
-
-    const handleNameChange = (newName: string) => {
-        if (!inspectorItem) return;
-
-        const updatedItems = items.map((i) => (i.id === inspectorItem.id ? { ...i, name: newName } : i));
-        setItems(updatedItems);
-
-        setBreadcrumbs([{ label: 'Канвас' }, { label: newName }]);
+        const { breadcrumbs, setBreadcrumbs, setInspectorItem } = useCanvasStore.getState();
+        if (index === 0) setInspectorItem(null);
+        setBreadcrumbs(breadcrumbs.slice(0, index + 1));
     };
 
     return (
@@ -62,7 +38,7 @@ export default function CanvasSidebar() {
                     <>
                         <div className="flex items-center gap-2 m-1">
                             <button
-                                onClick={handleAddNodeClick}
+                                onClick={() => setItems([...items, handleAddNode(nodes)])}
                                 className="w-fit bg-[#151515] hover:bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer"
                             >
                                 <Plus size={16} />
@@ -79,15 +55,14 @@ export default function CanvasSidebar() {
                                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888]" size={14} />
                             </div>
                         </div>
-
                         <hr className="border-b-0 border-[#1a1a1a]" />
                     </>
                 )}
 
                 {inspectorItem ? (
-                    <Inspector item={inspectorItem} onNameChange={handleNameChange} />
+                    <Inspector item={inspectorItem} />
                 ) : (
-                    <CanvasSidebarList filterText={filterText} openInspectorForItem={openInspectorForItem} />
+                    <CanvasSidebarList filterText={filterText} openInspectorForItem={openInspector} />
                 )}
             </div>
 
