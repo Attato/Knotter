@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
@@ -16,16 +16,23 @@ import { openInspector } from '@/canvas/utils/openInspector';
 import { Plus, Home, Search } from 'lucide-react';
 
 export default function CanvasSidebar() {
-    const { items, setItems, inspectorItem, breadcrumbs } = useCanvasStore();
+    const { items, setItems, inspectorItem, setInspectorItem, setBreadcrumbs, breadcrumbs } = useCanvasStore();
     const [filterText, setFilterText] = useState('');
 
     const nodes = getNodes(items);
 
     const handleBreadcrumbClick = (index: number) => {
-        const { breadcrumbs, setBreadcrumbs, setInspectorItem } = useCanvasStore.getState();
         if (index === 0) setInspectorItem(null);
+
         setBreadcrumbs(breadcrumbs.slice(0, index + 1));
     };
+
+    useEffect(() => {
+        if (inspectorItem && !items.some((i) => i.id === inspectorItem.id)) {
+            setInspectorItem(null);
+            setBreadcrumbs(breadcrumbs.slice(0, 1));
+        }
+    }, [items, inspectorItem, setInspectorItem, breadcrumbs, setBreadcrumbs]);
 
     return (
         <Sidebar>
@@ -60,7 +67,11 @@ export default function CanvasSidebar() {
                 )}
 
                 {inspectorItem ? (
-                    <Inspector item={inspectorItem} />
+                    items.some((i) => i.id === inspectorItem.id) ? (
+                        <Inspector item={inspectorItem} />
+                    ) : (
+                        <CanvasSidebarList filterText={filterText} openInspectorForItem={openInspector} />
+                    )
                 ) : (
                     <CanvasSidebarList filterText={filterText} openInspectorForItem={openInspector} />
                 )}
