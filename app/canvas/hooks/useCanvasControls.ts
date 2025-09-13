@@ -75,6 +75,10 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             const positions = prepareDrag(nodes, newSelectedIds);
             setInitialNodePositions(positions);
 
+            if (clickedNode && selectedItemIds.includes(clickedNode.id) && clickedNodeId !== clickedNode.id) {
+                setClickedNodeId(clickedNode.id);
+            }
+
             const isAlreadySelected = selectedItemIds.includes(clickedNode.id) && !isModifierPressed;
 
             if (!isAlreadySelected) return;
