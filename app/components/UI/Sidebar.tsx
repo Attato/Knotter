@@ -23,14 +23,17 @@ export default function Sidebar({
     const { width, isResizing, startResize } = useSidebarResize(minWidth, baseWidth, maxWidth);
 
     return (
-        <aside style={{ width }} className="h-screen border-l border-[#1a1a1a] bg-[#0f0f0f] select-none flex-shrink-0 z-50">
+        <aside
+            style={{ width }}
+            className="h-screen border-l border-border bg-background-alt select-none flex-shrink-0 z-50"
+        >
             <div className="flex flex-col h-full overflow-hidden relative">
                 {children}
 
                 <div
                     onMouseDown={startResize}
                     className={`absolute top-0 left-0 h-full w-1 hover:cursor-ew-resize ${
-                        isResizing ? 'bg-[#333]' : 'hover:bg-[#333]'
+                        isResizing ? 'bg-border-light' : 'hover:bg-border-light'
                     }`}
                 />
             </div>

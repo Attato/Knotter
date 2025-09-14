@@ -1,8 +1,11 @@
 import { DrawOptions } from '@/canvas/canvas.types';
 
-function fillAndStroke(ctx: CanvasRenderingContext2D, fillStyle: string, strokeStyle?: string, lineWidth: number = 1) {
-    ctx.fillStyle = fillStyle;
-    ctx.fill();
+function fillAndStroke(ctx: CanvasRenderingContext2D, fillStyle?: string, strokeStyle?: string, lineWidth: number = 1) {
+    if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+    }
+
     if (strokeStyle) {
         ctx.strokeStyle = strokeStyle;
         ctx.lineWidth = lineWidth;
@@ -10,8 +13,15 @@ function fillAndStroke(ctx: CanvasRenderingContext2D, fillStyle: string, strokeS
     }
 }
 
+function getDefaultColors(): { fill?: string; stroke?: string } {
+    const styles = getComputedStyle(document.documentElement);
+    const fill = styles.getPropertyValue('--background')?.trim() || undefined;
+    const stroke = styles.getPropertyValue('--contrast')?.trim() || undefined;
+    return { fill, stroke };
+}
+
 export function drawOctagon(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, options: DrawOptions = {}) {
-    const { fillStyle = '#0d0d0d', strokeStyle, lineWidth = 1 } = options;
+    const { fillStyle, strokeStyle, lineWidth = 1 } = { ...getDefaultColors(), ...options };
     const r = size / 2;
     const cut = r / 2.5;
     const left = cx - r;
@@ -42,7 +52,7 @@ export function drawCircle(
     radius: number,
     options: DrawOptions = {},
 ) {
-    const { fillStyle = '#0d0d0d', strokeStyle, lineWidth = 1 } = options;
+    const { fillStyle, strokeStyle, lineWidth = 1 } = { ...getDefaultColors(), ...options };
 
     ctx.save();
     ctx.beginPath();
@@ -54,8 +64,7 @@ export function drawCircle(
 }
 
 export function drawDiamond(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, options: DrawOptions = {}) {
-    const { fillStyle = '#0d0d0d', strokeStyle, lineWidth = 1, cornerRadius = 4 } = options;
-
+    const { fillStyle, strokeStyle, lineWidth = 1, cornerRadius = 4 } = { ...getDefaultColors(), ...options };
     const half = size / 2;
 
     const points = [
@@ -89,7 +98,6 @@ export function drawDiamond(ctx: CanvasRenderingContext2D, cx: number, cy: numbe
     }
 
     ctx.closePath();
-
     fillAndStroke(ctx, fillStyle, strokeStyle, lineWidth);
     ctx.restore();
 }
@@ -101,8 +109,7 @@ export function drawTriangle(
     size: number,
     options: DrawOptions = {},
 ) {
-    const { fillStyle = '#0d0d0d', strokeStyle, lineWidth = 1, cornerRadius = 4 } = options;
-
+    const { fillStyle, strokeStyle, lineWidth = 1, cornerRadius = 4 } = { ...getDefaultColors(), ...options };
     const height = (Math.sqrt(3) / 2) * size;
     const half = size / 2;
 
@@ -136,13 +143,12 @@ export function drawTriangle(
     }
 
     ctx.closePath();
-
     fillAndStroke(ctx, fillStyle, strokeStyle, lineWidth);
     ctx.restore();
 }
 
 export function drawHexagon(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, options: DrawOptions = {}) {
-    const { fillStyle = '#0d0d0d', strokeStyle, lineWidth = 1 } = options;
+    const { fillStyle, strokeStyle, lineWidth = 1 } = { ...getDefaultColors(), ...options };
     const r = size / 2;
 
     ctx.save();
@@ -157,7 +163,6 @@ export function drawHexagon(ctx: CanvasRenderingContext2D, cx: number, cy: numbe
     }
 
     ctx.closePath();
-
     fillAndStroke(ctx, fillStyle, strokeStyle, lineWidth);
     ctx.restore();
 }
@@ -169,7 +174,7 @@ export function drawSquircle(
     size: number,
     options: DrawOptions = {},
 ) {
-    const { fillStyle = '#0d0d0d', strokeStyle, lineWidth = 1 } = options;
+    const { fillStyle, strokeStyle, lineWidth = 1 } = { ...getDefaultColors(), ...options };
     const r = size / 2;
     const cornerRadius = r / 2;
 
@@ -185,7 +190,6 @@ export function drawSquircle(
     ctx.lineTo(cx - r, cy - r + cornerRadius);
     ctx.quadraticCurveTo(cx - r, cy - r, cx - r + cornerRadius, cy - r);
     ctx.closePath();
-
     fillAndStroke(ctx, fillStyle, strokeStyle, lineWidth);
     ctx.restore();
 }
@@ -197,13 +201,12 @@ export function drawPoint(
     radius: number = 3,
     options: DrawOptions = {},
 ) {
-    const { fillStyle = '#ffffff', strokeStyle, lineWidth = 1 } = options;
+    const { fillStyle, strokeStyle, lineWidth = 1 } = { ...getDefaultColors(), ...options };
 
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
     ctx.closePath();
-
     fillAndStroke(ctx, fillStyle, strokeStyle, lineWidth);
     ctx.restore();
 }

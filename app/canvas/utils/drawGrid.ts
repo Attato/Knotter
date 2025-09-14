@@ -21,11 +21,18 @@ export function drawGrid(
     const worldRight = worldLeft + canvasWidth / zoom;
     const worldBottom = worldTop + canvasHeight / zoom;
 
+    const styles = getComputedStyle(document.documentElement);
+    const gridColor1 = styles.getPropertyValue('--grid-color-1').trim();
+    const gridColor2 = styles.getPropertyValue('--grid-color-2').trim();
+    const gridColor3 = styles.getPropertyValue('--grid-color-3').trim();
+    const axisXColor = styles.getPropertyValue('--axis-x').trim();
+    const axisYColor = styles.getPropertyValue('--axis-y').trim();
+
     if (showGrid) {
         const levels = [
-            { step: baseGridSize, color: '#1a1a1a' },
-            { step: baseGridSize * 10, color: '#2a2a2a' },
-            { step: baseGridSize * 100, color: '#3a3a3a' },
+            { step: baseGridSize, color: gridColor1 },
+            { step: baseGridSize * 10, color: gridColor2 },
+            { step: baseGridSize * 100, color: gridColor3 },
         ];
 
         for (const { step, color } of levels) {
@@ -52,13 +59,13 @@ export function drawGrid(
 
     if (showAxes) {
         ctx.beginPath();
-        ctx.strokeStyle = '#e74c3c';
+        ctx.strokeStyle = axisYColor;
         ctx.moveTo(0, worldTop);
         ctx.lineTo(0, worldBottom);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.strokeStyle = '#27ae60';
+        ctx.strokeStyle = axisXColor;
         ctx.moveTo(worldLeft, 0);
         ctx.lineTo(worldRight, 0);
         ctx.stroke();

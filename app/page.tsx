@@ -24,7 +24,7 @@ export default function Home() {
 
                 <Link
                     href="/canvas"
-                    className="flex items-center gap-1 px-3 py-1 bg-white hover:bg-neutral-200 text-black rounded-md transition-all select-none"
+                    className="flex items-center gap-1 px-3 py-1 bg-card hover:bg-ui border border-border-light text-foreground rounded-md transition-all select-none"
                 >
                     Начать - Бесплатно
                 </Link>

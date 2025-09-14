@@ -53,18 +53,18 @@ export default function Inspector({ item }: InspectorProps) {
                 <div className="relative">
                     <button
                         onClick={() => setIsOpen((prev) => !prev)}
-                        className={`h-8 px-2 flex items-center gap-1 justify-center rounded-l-md ${isOpen ? 'bg-[#1a1a1a]' : 'bg-[#151515]'} hover:bg-[#1a1a1a] border-r border-[#1a1a1a] transition cursor-pointer`}
+                        className={`h-8 px-2 flex items-center gap-1 justify-center rounded-l-md ${isOpen ? 'bg-ui' : 'bg-card'} hover:bg-ui border-r border-border transition cursor-pointer`}
                     >
                         <ShapePreview type={nodeType} size={20} />
                     </button>
 
                     {isOpen && (
-                        <div className="absolute top-full left-0 mt-1 bg-[#151515] rounded-md shadow-lg z-50 flex flex-col">
+                        <div className="absolute top-full left-0 mt-1 bg-card rounded-md shadow-lg z-50 flex flex-col">
                             {NODE_TYPES.map((type) => (
                                 <button
                                     key={type}
                                     onClick={() => handleTypeChange(type)}
-                                    className="w-full flex items-center gap-2 px-2 py-1 hover:bg-[#1a1a1a] transition cursor-pointer rounded-md"
+                                    className="w-full flex items-center gap-2 px-2 py-1 hover:bg-ui transition cursor-pointer rounded-md"
                                 >
                                     <ShapePreview type={type} size={24} />
                                 </button>
@@ -81,7 +81,7 @@ export default function Inspector({ item }: InspectorProps) {
                     setName(e.target.value);
                     handleItemNameChange(item, e.target.value);
                 }}
-                className="w-full h-8 bg-[#151515] text-white placeholder-[#888] pl-3 pr-9 text-sm rounded-r-md focus:outline-none"
+                className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-9 text-sm rounded-r-md focus:outline-none"
                 placeholder="Название"
             />
         </div>

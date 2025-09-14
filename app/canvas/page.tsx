@@ -56,7 +56,7 @@ export default function Canvas() {
                                 e.stopPropagation();
                                 onClick();
                             }}
-                            className={`p-2 rounded-md w-fit cursor-pointer ${active ? 'bg-[#1f6feb]' : 'bg-[#151515] hover:bg-[#1a1a1a]'}`}
+                            className={`p-2 rounded-md w-fit cursor-pointer ${active ? 'bg-accent text-white' : 'bg-card hover:bg-ui'}`}
                         >
                             <Icon size={16} />
                         </button>

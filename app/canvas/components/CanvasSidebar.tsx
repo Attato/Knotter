@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 import Sidebar from '@/components/UI/Sidebar';
 import Breadcrumbs from '@/components/UI/Breadcrumbs';
+import ThemeToggle from '@/components/ThemeToggle';
+
 import CanvasSidebarList from '@/canvas/components/CanvasSidebarList';
 import Inspector from '@/canvas/components/Inspector';
 
@@ -38,7 +41,7 @@ export default function CanvasSidebar() {
         <Sidebar>
             <Breadcrumbs items={breadcrumbs} onClick={handleBreadcrumbClick} />
 
-            <hr className="border-b-0 border-[#1a1a1a]" />
+            <hr className="border-b-0 border-border" />
 
             <div className="flex flex-col flex-1 overflow-y-auto">
                 {breadcrumbs.length === 1 && !inspectorItem && (
@@ -46,7 +49,7 @@ export default function CanvasSidebar() {
                         <div className="flex items-center gap-2 m-1">
                             <button
                                 onClick={() => setItems([...items, handleAddNode(nodes)])}
-                                className="w-fit bg-[#151515] hover:bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer"
+                                className="w-fit bg-card hover:bg-ui p-2 rounded-md cursor-pointer"
                             >
                                 <Plus size={16} />
                             </button>
@@ -57,12 +60,12 @@ export default function CanvasSidebar() {
                                     placeholder="Поиск..."
                                     value={filterText}
                                     onChange={(e) => setFilterText(e.target.value)}
-                                    className="w-full h-8 bg-[#151515] text-white placeholder-[#888] pl-3 pr-9 text-sm rounded-md focus:outline-none"
+                                    className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-9 text-sm rounded-md focus:outline-none"
                                 />
-                                <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[#888]" size={14} />
+                                <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray" size={14} />
                             </div>
                         </div>
-                        <hr className="border-b-0 border-[#1a1a1a]" />
+                        <hr className="border-b-0 border-border" />
                     </>
                 )}
 
@@ -77,10 +80,12 @@ export default function CanvasSidebar() {
                 )}
             </div>
 
-            <hr className="border-b-0 border-[#1a1a1a]" />
+            <hr className="border-b-0 border-border" />
 
-            <div className="flex justify-end m-1">
-                <Link href="/" className="w-fit bg-[#151515] hover:bg-[#1a1a1a] p-2 rounded-md transition cursor-pointer">
+            <div className="flex justify-between m-1 gap-2">
+                <ThemeToggle />
+
+                <Link href="/" className="w-fit bg-card hover:bg-ui border border-border p-2 rounded-md cursor-pointer">
                     <Home size={16} />
                 </Link>
             </div>

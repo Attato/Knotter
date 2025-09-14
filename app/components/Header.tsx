@@ -1,20 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-
-import GithubBager from '@/components/GithubBager';
+import GithubBager from './GithubBager';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
     return (
-        <header className="sticky top-0 w-full border-b border-[#1a1a1a] px-4">
+        <header className="sticky top-0 w-full border-b border-border px-4 bg-background z-50">
             <div className="container flex justify-between items-center m-auto h-16">
-                <div className="flex gap-6 text-[15px] items-center">
-                    <Link href="/" className="tracking-widest font-extrabold mr-10 text-base">
+                <div className="flex gap-6 items-center text-[15px]">
+                    <Link href="/" className="tracking-widest font-extrabold text-base select-none">
                         KNTTR
                     </Link>
                 </div>
-
-                <GithubBager />
+                <div className="flex items-center gap-3">
+                    <ThemeToggle />
+                    <GithubBager />
+                </div>
             </div>
         </header>
     );

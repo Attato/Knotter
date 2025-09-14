@@ -3,6 +3,10 @@ import { Node, Edge } from '@/canvas/canvas.types';
 export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], selectedItemIds: string[] = [], edges: Edge[]) {
     ctx.lineWidth = 2;
 
+    const styles = getComputedStyle(document.documentElement);
+    const edgeColor = styles.getPropertyValue('--contrast').trim();
+    const selectedColor = styles.getPropertyValue('--selected').trim();
+
     for (const edge of edges) {
         const fromNode = nodes.find((n) => n.id === edge.from);
         const toNode = nodes.find((n) => n.id === edge.to);
@@ -19,7 +23,7 @@ export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], selected
         ctx.beginPath();
         ctx.moveTo(fromX, fromY);
         ctx.lineTo(toX, toY);
-        ctx.strokeStyle = isSelected ? '#ffc107' : '#fff';
+        ctx.strokeStyle = isSelected ? selectedColor : edgeColor;
         ctx.stroke();
     }
 }

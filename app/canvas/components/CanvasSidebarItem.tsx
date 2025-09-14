@@ -29,10 +29,8 @@ export default function CanvasSidebarItem({
     return (
         <button
             onMouseDown={onMouseDown}
-            className={`w-full px-4 py-2 rounded-md outline-none tabular-nums transition-all duration-150 cursor-pointer ${
-                isSelected
-                    ? 'bg-[#388bfd1a] focus-visible:bg-[#388bfd26]'
-                    : 'bg-[#151515] hover:bg-[#1a1a1a] focus-visible:bg-[#1a1a1a]'
+            className={`w-full px-4 py-2 rounded-md outline-none tabular-nums cursor-pointer ${
+                isSelected ? 'bg-[#388bfd1a] focus-visible:bg-[#388bfd26]' : 'bg-card hover:bg-ui focus-visible:bg-ui'
             }`}
             onClick={(e) => {
                 e.stopPropagation();
@@ -51,9 +49,10 @@ export default function CanvasSidebarItem({
                         isSelected={isSelected}
                         onChange={(newName) => onChange?.({ ...canvasItem, name: newName })}
                     />
-                    <ChevronRight size={14} className="text-[#888]" />
+                    <ChevronRight size={14} className="text-gray" />
                 </div>
-                <GripVertical color="#999" size={16} />
+
+                <GripVertical className="text-gray" size={16} />
             </div>
         </button>
     );

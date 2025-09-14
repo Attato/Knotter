@@ -30,7 +30,7 @@ export default function CanvasSidebarList({ filterText, openInspectorForItem }: 
         <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2">
             <ul className="flex flex-col gap-1">
                 {filteredItems.length === 0 ? (
-                    <li className="p-2 text-[#999] text-sm text-center">Ничего не найдено.</li>
+                    <li className="p-2 text-gray text-sm text-center">Ничего не найдено.</li>
                 ) : (
                     filteredItems.map((item) => (
                         <CanvasSidebarItem
