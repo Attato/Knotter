@@ -31,7 +31,7 @@ export default function GithubBager() {
 
     return (
         <Link href="https://github.com/Attato/Knotter" target="_blank" className="flex items-center">
-            <div className="w-9 h-[34px] flex items-center justify-center bg-card border border-border-light rounded-l-md">
+            <div className="w-9 h-[34px] flex items-center justify-center bg-card border border-border rounded-l-md">
                 <svg
                     height="20"
                     width="20"
@@ -45,7 +45,7 @@ export default function GithubBager() {
                 </svg>
             </div>
 
-            <div className="h-[34px] flex items-center justify-center bg-card border border-border-light border-l-0 rounded-r-md">
+            <div className="h-[34px] flex items-center justify-center bg-card border border-border border-l-0 rounded-r-md">
                 <Star fill="#fdc700" stroke="#fdc700" size={16} className="ml-2" />
 
                 <p className="mx-2 text-xs font-bold">{stars}</p>
