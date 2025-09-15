@@ -23,6 +23,7 @@
     --contrast: #000;
     --gray: #999;
     --accent: #1f6feb;
+    --star: #fdc700;
 }
 
 [data-theme='dark'] {
@@ -36,12 +37,12 @@
     --ui-hover: #333335;
     --border-light: #39393b;
 
-    --contrast: #fff;
-
     --grid-color-1: rgba(255, 255, 255, 0.05);
     --grid-color-2: rgba(255, 255, 255, 0.08);
     --grid-color-3: rgba(255, 255, 255, 0.12);
     --edge-temp: #ccc;
+
+    --contrast: #fff;
 }
 
 @theme inline {
@@ -66,6 +67,7 @@
     --color-contrast: var(--contrast);
     --color-gray: var(--gray);
     --color-accent: var(--accent);
+    --color-star: var(--star);
 }
 
 body {

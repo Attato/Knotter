@@ -46,7 +46,7 @@ export default function GithubBager() {
             </div>
 
             <div className="h-[34px] flex items-center justify-center bg-card border border-border border-l-0 rounded-r-md">
-                <Star fill="#fdc700" stroke="#fdc700" size={16} className="ml-2" />
+                <Star fill="var(--star)" stroke="var(--star)" size={16} className="ml-2" />
 
                 <p className="mx-2 text-xs font-bold">{stars}</p>
             </div>
