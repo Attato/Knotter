@@ -53,7 +53,7 @@ export default function Inspector({ item }: InspectorProps) {
                 <div className="relative">
                     <button
                         onClick={() => setIsOpen((prev) => !prev)}
-                        className={`h-8 px-2 flex items-center gap-1 justify-center rounded-l-md ${isOpen ? 'bg-ui' : 'bg-card'} hover:bg-ui border-r border-border transition cursor-pointer`}
+                        className={`h-8 px-2 flex items-center gap-1 justify-center rounded-l-md ${isOpen ? 'bg-ui' : 'bg-card'} hover:bg-ui border-r border-border cursor-pointer`}
                     >
                         <ShapePreview type={nodeType} size={20} />
                     </button>
@@ -64,7 +64,7 @@ export default function Inspector({ item }: InspectorProps) {
                                 <button
                                     key={type}
                                     onClick={() => handleTypeChange(type)}
-                                    className="w-full flex items-center gap-2 px-2 py-1 hover:bg-ui transition cursor-pointer rounded-md"
+                                    className="w-full flex items-center gap-2 px-2 py-1 hover:bg-ui cursor-pointer rounded-md"
                                 >
                                     <ShapePreview type={type} size={24} />
                                 </button>
