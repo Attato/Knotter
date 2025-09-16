@@ -29,7 +29,7 @@ export function CanvasControls({ isMagnet, showGrid, showAxes, toggleShowGrid, t
                             onClick();
                         }}
                         className={`p-2 rounded-md w-fit cursor-pointer ${
-                            active ? 'bg-accent text-white' : 'bg-card hover:bg-ui'
+                            active ? 'bg-bg-accent text-white' : 'bg-card hover:bg-ui'
                         }`}
                     >
                         <Icon size={16} />

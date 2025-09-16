@@ -6,6 +6,8 @@
 
     --background-alt: #e4e4e2;
     --card-bg: #dededc;
+    --background-accent: #1f6feb;
+    --text-accent: #4493f8;
     --border: #d8d8d6;
     --ui: #d2d2d0;
     --ui-hover: #ccccca;
@@ -22,7 +24,6 @@
 
     --contrast: #000;
     --gray: #999;
-    --accent: #1f6feb;
     --star: #fdc700;
 }
 
@@ -66,7 +67,8 @@
 
     --color-contrast: var(--contrast);
     --color-gray: var(--gray);
-    --color-accent: var(--accent);
+    --color-bg-accent: var(--background-accent);
+    --color-text-accent: var(--text-accent);
     --color-star: var(--star);
 }
 
