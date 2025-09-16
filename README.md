@@ -39,7 +39,13 @@ bun dev
 
 ## License
 
-Knotter is released under the **MIT License**, which is a permissive open-source license.  
-This means you are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, as long as you include the original copyright and license notice in all copies or substantial portions of the software.
+Knotter is released under the **GNU General Public License v3.0 (GPLv3)**.  
+This means you are free to use, modify, and distribute this software, provided that:
 
-For more details, see the [full MIT License](https://opensource.org/licenses/MIT).
+- You include a copy of the GPLv3 license with any distribution.
+- You make the full corresponding source code available when distributing the software or derivative works.
+- You preserve existing copyright notices and state any changes you made.
+
+This ensures that Knotter and any modifications remain free and open-source for everyone.
+
+For more details, see the [full GNU GPLv3 License](https://www.gnu.org/licenses/gpl-3.0.html).
