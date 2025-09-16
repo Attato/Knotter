@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { CanvasItem } from '@/canvas/canvas.types';
-import { NODE_MOVE_MIN_STEP } from '@/canvas/constants';
+import { persist } from 'zustand/middleware';
+import { CanvasItem, Position } from '@/canvas/canvas.types';
+import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/constants';
 
 interface CanvasState {
     items: CanvasItem[];
@@ -9,11 +10,17 @@ interface CanvasState {
     selectedItemIds: string[];
     setSelectedItemIds: (ids: string[]) => void;
 
-    tempEdge: { from: string; toPos: { x: number; y: number } } | null;
-    setTempEdge: (edge: { from: string; toPos: { x: number; y: number } } | null) => void;
+    tempEdge: { from: string; toPos: Position } | null;
+    setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
 
     nodeMoveStep: number;
     setNodeMoveStep: (step: number) => void;
+
+    offset: Position;
+    setOffset: (offset: Position) => void;
+
+    zoomLevel: number;
+    setZoomLevel: (zoom: number) => void;
 
     isMagnet: boolean;
     setIsMagnet: (value: boolean) => void;
@@ -31,31 +38,55 @@ interface CanvasState {
     setBreadcrumbs: (breadcrumbs: { label: string }[]) => void;
 }
 
-export const useCanvasStore = create<CanvasState>((set) => ({
-    items: [],
-    setItems: (items: CanvasItem[]) => set({ items }),
+export const useCanvasStore = create<CanvasState>()(
+    persist(
+        (set) => ({
+            items: [],
+            setItems: (items) => set({ items }),
 
-    selectedItemIds: [],
-    setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
+            selectedItemIds: [],
+            setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
 
-    tempEdge: null,
-    setTempEdge: (tempEdge) => set({ tempEdge }),
+            tempEdge: null,
+            setTempEdge: (tempEdge) => set({ tempEdge }),
 
-    nodeMoveStep: NODE_MOVE_MIN_STEP,
-    setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
+            nodeMoveStep: NODE_MOVE_MIN_STEP,
+            setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
 
-    isMagnet: false,
-    setIsMagnet: (value) => set({ isMagnet: value }),
+            offset: { x: 0, y: 0 },
+            setOffset: (offset) => set({ offset }),
 
-    showGrid: true,
-    toggleShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
+            zoomLevel: INITIAL_ZOOM,
+            setZoomLevel: (zoom) => set({ zoomLevel: zoom }),
 
-    showAxes: false,
-    toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
+            isMagnet: false,
+            setIsMagnet: (value) => set({ isMagnet: value }),
 
-    inspectorItem: null,
-    setInspectorItem: (item) => set({ inspectorItem: item }),
+            showGrid: true,
+            toggleShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
 
-    breadcrumbs: [{ label: 'Канвас' }],
-    setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
-}));
+            showAxes: false,
+            toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
+
+            inspectorItem: null,
+            setInspectorItem: (item) => set({ inspectorItem: item }),
+
+            breadcrumbs: [{ label: 'Канвас' }],
+            setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
+        }),
+        {
+            name: 'canvas-storage',
+            partialize: (state) => ({
+                items: state.items,
+                selectedItemIds: state.selectedItemIds,
+                nodeMoveStep: state.nodeMoveStep,
+                offset: state.offset,
+                zoomLevel: state.zoomLevel,
+                isMagnet: state.isMagnet,
+                showGrid: state.showGrid,
+                showAxes: state.showAxes,
+                breadcrumbs: state.breadcrumbs,
+            }),
+        },
+    ),
+);
