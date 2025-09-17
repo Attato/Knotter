@@ -31,11 +31,11 @@ interface CanvasState {
     showAxes: boolean;
     toggleShowAxes: () => void;
 
+    invertY: boolean;
+    setInvertY: (value: boolean) => void;
+
     inspectorItem: CanvasItem | null;
     setInspectorItem: (item: CanvasItem | null) => void;
-
-    breadcrumbs: { label: string }[];
-    setBreadcrumbs: (breadcrumbs: { label: string }[]) => void;
 }
 
 export const useCanvasStore = create<CanvasState>()(
@@ -68,11 +68,11 @@ export const useCanvasStore = create<CanvasState>()(
             showAxes: false,
             toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
 
+            invertY: true,
+            setInvertY: (value) => set({ invertY: value }),
+
             inspectorItem: null,
             setInspectorItem: (item) => set({ inspectorItem: item }),
-
-            breadcrumbs: [{ label: 'Канвас' }],
-            setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
         }),
         {
             name: 'canvas-storage',
@@ -85,7 +85,7 @@ export const useCanvasStore = create<CanvasState>()(
                 isMagnet: state.isMagnet,
                 showGrid: state.showGrid,
                 showAxes: state.showAxes,
-                breadcrumbs: state.breadcrumbs,
+                invertY: state.invertY,
             }),
         },
     ),
