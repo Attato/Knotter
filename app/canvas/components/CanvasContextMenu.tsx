@@ -11,12 +11,10 @@ type CanvasContextMenuProps = {
     isOpen: boolean;
     position: { x: number; y: number };
     closeMenu: () => void;
-    offset: { x: number; y: number };
-    zoomLevel: number;
     canvasRef: React.RefObject<HTMLCanvasElement | null>;
 };
 
-export function CanvasContextMenu({ isOpen, position, closeMenu, offset, zoomLevel, canvasRef }: CanvasContextMenuProps) {
+export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: CanvasContextMenuProps) {
     const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge } = useCanvasStore();
 
     const nodes = getNodes(items);
@@ -62,7 +60,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, offset, zoomLev
                     if (!e || !canvasRef.current) return;
 
                     const rect = canvasRef.current.getBoundingClientRect();
-                    const mousePos = getMousePosition(e.nativeEvent, rect, offset, zoomLevel);
+                    const mousePos = getMousePosition(e.nativeEvent, rect);
 
                     const newNode = handleAddNode(nodes, { x: mousePos.x, y: mousePos.y });
 
@@ -83,7 +81,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, offset, zoomLev
                     if (!nodes.some((n) => n.id === selectedNodeId)) return;
 
                     const rect = canvasRef.current.getBoundingClientRect();
-                    const mousePos = getMousePosition(e.nativeEvent, rect, offset, zoomLevel);
+                    const mousePos = getMousePosition(e.nativeEvent, rect);
 
                     setTempEdge({ from: selectedNodeId, toPos: mousePos });
                     closeMenu();

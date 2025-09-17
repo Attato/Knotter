@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, RefObject } from 'react';
 import { Position } from '@/canvas/canvas.types';
-import { INITIAL_ZOOM } from '@/canvas/constants';
 
 import { setupPan, setupSelect, setupZoom, setupScroll } from '@/canvas/events/canvasEvents';
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
@@ -10,8 +9,8 @@ import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
-import { getNodeAtPosition } from '@/canvas/utils/getNodeAtPosition';
-import { getEdgeAtPosition } from '@/canvas/utils/getEdgeAtPosition';
+import { findNodeUnderCursor } from '@/canvas/utils/findNodeUnderCursor';
+import { findEdgeUnderCursor } from '@/canvas/utils/findEdgeUnderCursor';
 import { getItemsInSelectionArea } from '@/canvas/utils/getItemsInSelectionArea';
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 import { moveNodes } from '@/canvas/utils/moveNodes';
@@ -23,10 +22,11 @@ import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 
 export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
-    const { setItems, nodeMoveStep, tempEdge, setTempEdge, selectedItemIds, setSelectedItemIds } = useCanvasStore();
-    const { offset, setOffset, isInitialOffsetSet } = useInitialCanvasOffset(canvasRef);
+    useInitialCanvasOffset(canvasRef);
 
-    const [zoomLevel, setZoomLevel] = useState(INITIAL_ZOOM);
+    const { setItems, nodeMoveStep, tempEdge, setTempEdge, offset, zoomLevel, selectedItemIds, setSelectedItemIds } =
+        useCanvasStore();
+
     const [selectionStart, setSelectionStart] = useState<Position | null>(null);
     const [selectionEnd, setSelectionEnd] = useState<Position | null>(null);
     const [lastMousePosition, setLastMousePosition] = useState<Position | null>(null);
@@ -44,14 +44,14 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
-            const mousePos = getMousePosition(e, rect, offset, zoomLevel);
+            const mousePos = getMousePosition(e, rect);
 
             const items = useCanvasStore.getState().items;
             const nodes = getNodes(items);
             const edges = getEdges(items);
 
-            const clickedNode = getNodeAtPosition(nodes, mousePos);
-            const clickedEdge = !clickedNode ? getEdgeAtPosition(edges, nodes, mousePos) : null;
+            const clickedNode = findNodeUnderCursor(nodes, mousePos);
+            const clickedEdge = !clickedNode ? findEdgeUnderCursor(edges, nodes, mousePos) : null;
 
             if (!clickedNode && !clickedEdge) return;
 
@@ -90,7 +90,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
                 setClickedNodeId(clickedNode.id);
             }
         },
-        [canvasRef, offset, zoomLevel, selectedItemIds, setSelectedItemIds, clickedNodeId],
+        [canvasRef, selectedItemIds, setSelectedItemIds, clickedNodeId],
     );
 
     const handleMouseMove = useCallback(
@@ -99,12 +99,12 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             if (!canvas) return;
 
             const rect = canvas.getBoundingClientRect();
-            const mousePos = getMousePosition(e, rect, offset, zoomLevel);
+            const mousePos = getMousePosition(e, rect);
 
             const items = useCanvasStore.getState().items;
             const nodes = getNodes(items);
 
-            const hoveredNode = getNodeAtPosition(nodes, mousePos);
+            const hoveredNode = findNodeUnderCursor(nodes, mousePos);
             canvas.style.cursor = hoveredNode ? 'move' : 'default';
 
             if (tempEdge) {
@@ -127,13 +127,12 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
                 }
                 return item;
             });
+
             setItems(newItems);
         },
         [
             isDraggingNodes,
             dragStartMouse,
-            offset,
-            zoomLevel,
             initialNodePositions,
             nodeMoveStep,
             tempEdge,
@@ -152,16 +151,15 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
                 const edges = getEdges(items);
 
                 const rect = canvasRef.current!.getBoundingClientRect();
-                const mousePos = getMousePosition(e, rect, offset, zoomLevel);
+                const mousePos = getMousePosition(e, rect);
 
-                const targetNode = getNodeAtPosition(nodes, mousePos);
+                const targetNode = findNodeUnderCursor(nodes, mousePos);
                 const edgeExists = targetNode
                     ? edges.some((edge) => edge.from === tempEdge.from && edge.to === targetNode.id)
                     : true;
 
                 if (targetNode && targetNode.id !== tempEdge.from && !edgeExists) {
                     const fromNode = nodes.find((n) => n.id === tempEdge.from);
-
                     if (fromNode) {
                         const newEdge = handleAddEdge(getEdges(items), fromNode, targetNode);
                         setItems([...items, newEdge]);
@@ -177,7 +175,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
                 setInitialNodePositions(new Map());
             }
         },
-        [tempEdge, setTempEdge, setItems, isDraggingNodes, offset, zoomLevel, canvasRef],
+        [tempEdge, setTempEdge, setItems, isDraggingNodes, canvasRef],
     );
 
     const handleSelectionArea = useCallback(
@@ -191,23 +189,22 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
     );
 
     const initializeSelection = useCallback(
-        (canvas: HTMLCanvasElement) =>
-            setupSelect(canvas, offset, zoomLevel, setSelectionStart, setSelectionEnd, handleSelectionArea),
-        [offset, zoomLevel, handleSelectionArea],
+        (canvas: HTMLCanvasElement) => setupSelect(canvas, setSelectionStart, setSelectionEnd, handleSelectionArea),
+        [handleSelectionArea],
     );
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (!canvas || !isInitialOffsetSet) return;
+        if (!canvas) return;
 
         canvas.addEventListener('mousedown', handleMouseDown);
         canvas.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
 
-        const cleanupPan = setupPan(canvas, isPanning, setIsPanning, lastMousePosition, setLastMousePosition, setOffset);
+        const cleanupPan = setupPan(canvas, isPanning, setIsPanning, lastMousePosition, setLastMousePosition);
         const cleanupSelect = initializeSelection(canvas);
-        const cleanupZoom = setupZoom(canvas, zoomLevel, setZoomLevel, setOffset);
-        const cleanupScroll = setupScroll(canvas, setOffset);
+        const cleanupZoom = setupZoom(canvas);
+        const cleanupScroll = setupScroll(canvas);
 
         return () => {
             canvas.removeEventListener('mousedown', handleMouseDown);
@@ -221,15 +218,12 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
         };
     }, [
         canvasRef,
-        isInitialOffsetSet,
         handleMouseDown,
         handleMouseMove,
         handleMouseUp,
         isPanning,
         lastMousePosition,
-        offset,
         zoomLevel,
-        setOffset,
         initializeSelection,
     ]);
 

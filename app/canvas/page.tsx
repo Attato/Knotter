@@ -13,23 +13,12 @@ import { CanvasControls } from '@/canvas/components/CanvasControls';
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const { items, selectedItemIds, tempEdge, isMagnet, showGrid, toggleShowGrid, showAxes, toggleShowAxes } =
+    const { items, selectedItemIds, tempEdge, zoomLevel, isMagnet, showGrid, toggleShowGrid, showAxes, toggleShowAxes } =
         useCanvasStore();
 
-    const { offset, zoomLevel, selectionStart, selectionEnd } = useCanvasControls(canvasRef);
+    const { selectionStart, selectionEnd } = useCanvasControls(canvasRef);
 
-    useCanvasRenderer(
-        canvasRef,
-        offset,
-        zoomLevel,
-        selectionStart,
-        selectionEnd,
-        items,
-        selectedItemIds,
-        tempEdge,
-        showGrid,
-        showAxes,
-    );
+    useCanvasRenderer(canvasRef, selectionStart, selectionEnd, items, selectedItemIds, tempEdge, showGrid, showAxes);
 
     const { isOpen, position, handleContextMenu, closeMenu } = useContextMenu();
 
@@ -45,14 +34,7 @@ export default function Canvas() {
                 toggleShowAxes={toggleShowAxes}
             />
 
-            <CanvasContextMenu
-                isOpen={isOpen}
-                position={position}
-                closeMenu={closeMenu}
-                offset={offset}
-                zoomLevel={zoomLevel}
-                canvasRef={canvasRef}
-            />
+            <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
 
             <canvas ref={canvasRef} className="fixed w-full h-full" onContextMenu={handleContextMenu} />
         </div>

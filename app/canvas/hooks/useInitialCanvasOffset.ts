@@ -1,9 +1,10 @@
-import { useLayoutEffect, useState, RefObject } from 'react';
-import { Position } from '@/canvas/canvas.types';
+import { useLayoutEffect, RefObject } from 'react';
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 export function useInitialCanvasOffset(canvasRef: RefObject<HTMLCanvasElement | null>) {
-    const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
-    const [isInitialOffsetSet, setInitialOffsetFlag] = useState(false);
+    const { offset, setOffset } = useCanvasStore();
+
+    const isInitialOffsetSet = offset.x !== 0 || offset.y !== 0;
 
     useLayoutEffect(() => {
         const canvas = canvasRef.current;
@@ -12,9 +13,6 @@ export function useInitialCanvasOffset(canvasRef: RefObject<HTMLCanvasElement | 
         const rect = canvas.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
             setOffset({ x: rect.width / 2, y: rect.height / 2 });
-            setInitialOffsetFlag(true);
         }
-    }, [canvasRef, isInitialOffsetSet]);
-
-    return { offset, setOffset, isInitialOffsetSet, setInitialOffsetFlag };
+    }, [canvasRef, isInitialOffsetSet, setOffset]);
 }

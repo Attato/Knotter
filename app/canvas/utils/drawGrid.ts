@@ -1,15 +1,16 @@
-import { Position } from '@/canvas/canvas.types';
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 export function drawGrid(
     ctx: CanvasRenderingContext2D,
     canvasWidth: number,
     canvasHeight: number,
-    zoom: number,
-    offset: Position,
-    baseGridSize = 50,
     showGrid = false,
     showAxes = false,
 ) {
+    const { offset, zoomLevel: zoom } = useCanvasStore.getState();
+
+    const baseGridSize = 50;
+
     const lineWidth = 1 / zoom;
     ctx.lineWidth = lineWidth;
 

@@ -1,8 +1,6 @@
-import { Dispatch, SetStateAction } from 'react';
-
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
-
 import { getCanvasCoordinates } from '@/canvas/utils/getCanvasCoordinates';
 
 export function setupPan(
@@ -11,7 +9,6 @@ export function setupPan(
     setIsPanning: (val: boolean) => void,
     lastMousePosition: Position | null,
     setLastMousePosition: (val: Position | null) => void,
-    setOffset: Dispatch<SetStateAction<Position>>,
 ) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
@@ -25,7 +22,9 @@ export function setupPan(
         const dx = e.clientX - lastMousePosition.x;
         const dy = e.clientY - lastMousePosition.y;
 
-        setOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+        const { offset, setOffset } = useCanvasStore.getState();
+        setOffset({ x: offset.x + dx, y: offset.y + dy });
+
         setLastMousePosition({ x: e.clientX, y: e.clientY });
     };
 
@@ -53,19 +52,16 @@ export function setupPan(
     };
 }
 
-export function setupScroll(canvas: HTMLCanvasElement, setOffset: Dispatch<SetStateAction<Position>>) {
+export function setupScroll(canvas: HTMLCanvasElement) {
     const handleScroll = (e: WheelEvent) => {
         if (e.ctrlKey) return;
-
         e.preventDefault();
 
         const dx = e.shiftKey ? e.deltaY : 0;
         const dy = !e.shiftKey ? e.deltaY : 0;
 
-        setOffset((prev) => ({
-            x: prev.x - dx,
-            y: prev.y - dy,
-        }));
+        const { offset, setOffset } = useCanvasStore.getState();
+        setOffset({ x: offset.x - dx, y: offset.y - dy });
     };
 
     canvas.addEventListener('wheel', handleScroll, { passive: false });
@@ -75,29 +71,25 @@ export function setupScroll(canvas: HTMLCanvasElement, setOffset: Dispatch<SetSt
     };
 }
 
-export function setupZoom(
-    canvas: HTMLCanvasElement,
-    zoomLevel: number,
-    setZoomLevel: (val: number) => void,
-    setOffset: Dispatch<SetStateAction<Position>>,
-) {
+export function setupZoom(canvas: HTMLCanvasElement) {
     const handleZoom = (e: WheelEvent) => {
         if (!e.ctrlKey) return;
-
         e.preventDefault();
 
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
+        const { offset, setOffset, zoomLevel, setZoomLevel } = useCanvasStore.getState();
+
         const zoomFactor = 1.1;
         const deltaZoom = e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
         const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel * deltaZoom));
 
-        setOffset((prev) => ({
-            x: mouseX - (mouseX - prev.x) * (newZoom / zoomLevel),
-            y: mouseY - (mouseY - prev.y) * (newZoom / zoomLevel),
-        }));
+        setOffset({
+            x: mouseX - (mouseX - offset.x) * (newZoom / zoomLevel),
+            y: mouseY - (mouseY - offset.y) * (newZoom / zoomLevel),
+        });
 
         setZoomLevel(newZoom);
     };
@@ -111,8 +103,6 @@ export function setupZoom(
 
 export function setupSelect(
     canvas: HTMLCanvasElement,
-    offset: Position,
-    zoomLevel: number,
     setSelectionStart: (val: Position | null) => void,
     setSelectionEnd: (val: Position | null) => void,
     onSelectionComplete?: (start: Position, end: Position) => void,
@@ -121,7 +111,9 @@ export function setupSelect(
 
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0) return;
-        const position = getCanvasCoordinates(e, canvas, offset, zoomLevel);
+
+        const position = getCanvasCoordinates(e, canvas);
+
         selectionStart = position;
         setSelectionStart(position);
         setSelectionEnd(position);
@@ -129,13 +121,17 @@ export function setupSelect(
 
     const handleMouseMove = (e: MouseEvent) => {
         if (!selectionStart || (e.buttons & 1) !== 1) return;
-        const position = getCanvasCoordinates(e, canvas, offset, zoomLevel);
+
+        const position = getCanvasCoordinates(e, canvas);
+
         setSelectionEnd(position);
     };
 
     const handleMouseUp = (e: MouseEvent) => {
         if (e.button !== 0 || !selectionStart) return;
-        const position = getCanvasCoordinates(e, canvas, offset, zoomLevel);
+
+        const position = getCanvasCoordinates(e, canvas);
+
         onSelectionComplete?.(selectionStart, position);
         setSelectionStart(null);
         setSelectionEnd(null);

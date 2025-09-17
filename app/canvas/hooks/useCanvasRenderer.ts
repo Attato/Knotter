@@ -12,11 +12,10 @@ import { drawTempEdge } from '@/canvas/utils/drawTempEdge';
 import { drawGrid } from '@/canvas/utils/drawGrid';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
-    offset: Position,
-    zoom: number,
     selectionStart: Position | null,
     selectionEnd: Position | null,
     items: CanvasItem[],
@@ -26,6 +25,8 @@ export function useCanvasRenderer(
     showAxes: boolean,
 ) {
     const { resolvedTheme } = useTheme();
+
+    const { offset, zoomLevel } = useCanvasStore();
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -52,18 +53,9 @@ export function useCanvasRenderer(
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.setTransform(zoom * dpr, 0, 0, zoom * dpr, offset.x * dpr, offset.y * dpr);
+            ctx.setTransform(zoomLevel * dpr, 0, 0, zoomLevel * dpr, offset.x * dpr, offset.y * dpr);
 
-            drawGrid(
-                ctx,
-                canvas.width / (window.devicePixelRatio || 1),
-                canvas.height / (window.devicePixelRatio || 1),
-                zoom * (window.devicePixelRatio || 1),
-                offset,
-                50,
-                showGrid,
-                showAxes,
-            );
+            drawGrid(ctx, canvas.width / dpr, canvas.height / dpr, showGrid, showAxes);
 
             const nodes: Node[] = getNodes(items);
             const edges: Edge[] = getEdges(items);
@@ -89,7 +81,6 @@ export function useCanvasRenderer(
         resizeObserver.observe(canvas);
 
         const themeObserver = new MutationObserver(() => scheduleRender());
-
         themeObserver.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['data-theme'],
@@ -97,14 +88,11 @@ export function useCanvasRenderer(
 
         return () => {
             if (animationFrameId != null) cancelAnimationFrame(animationFrameId);
-
             resizeObserver.disconnect();
             themeObserver.disconnect();
         };
     }, [
         canvasRef,
-        offset,
-        zoom,
         items,
         selectedItemIds,
         selectionStart,
@@ -112,6 +100,8 @@ export function useCanvasRenderer(
         tempEdge,
         showGrid,
         showAxes,
+        zoomLevel,
+        offset,
         resolvedTheme,
     ]);
 }

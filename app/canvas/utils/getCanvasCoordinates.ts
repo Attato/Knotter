@@ -1,11 +1,8 @@
 import { Position } from '@/canvas/canvas.types';
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
-export function getCanvasCoordinates(
-    event: MouseEvent,
-    canvas: HTMLCanvasElement,
-    offset: Position,
-    zoomLevel: number,
-): Position {
+export function getCanvasCoordinates(event: MouseEvent, canvas: HTMLCanvasElement): Position {
+    const { offset, zoomLevel } = useCanvasStore.getState();
     const rect = canvas.getBoundingClientRect();
 
     return {
