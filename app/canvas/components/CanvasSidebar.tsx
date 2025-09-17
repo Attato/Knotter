@@ -92,7 +92,7 @@ export default function CanvasSidebar() {
                             <Inspector item={inspectorItem} />
                         ) : null
                     ) : (
-                        <div className="flex justify-center items-center h-full text-gray text-sm">
+                        <div className="flex justify-center items-center h-full text-gray text-sm text-center">
                             Выберите элемент для инспектора
                         </div>
                     )}
