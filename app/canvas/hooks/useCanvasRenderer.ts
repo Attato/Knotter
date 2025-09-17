@@ -54,7 +54,16 @@ export function useCanvasRenderer(
 
             ctx.setTransform(zoom * dpr, 0, 0, zoom * dpr, offset.x * dpr, offset.y * dpr);
 
-            drawGrid(ctx, width, height, zoom, offset, 50, showGrid, showAxes);
+            drawGrid(
+                ctx,
+                canvas.width / (window.devicePixelRatio || 1),
+                canvas.height / (window.devicePixelRatio || 1),
+                zoom * (window.devicePixelRatio || 1),
+                offset,
+                50,
+                showGrid,
+                showAxes,
+            );
 
             const nodes: Node[] = getNodes(items);
             const edges: Edge[] = getEdges(items);

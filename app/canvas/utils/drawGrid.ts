@@ -10,9 +10,6 @@ export function drawGrid(
     showGrid = false,
     showAxes = false,
 ) {
-    ctx.save();
-    ctx.setTransform(zoom, 0, 0, zoom, offset.x, offset.y);
-
     const lineWidth = 1 / zoom;
     ctx.lineWidth = lineWidth;
 
@@ -70,6 +67,4 @@ export function drawGrid(
         ctx.lineTo(worldRight, 0);
         ctx.stroke();
     }
-
-    ctx.restore();
 }
