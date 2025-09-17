@@ -12,7 +12,7 @@ import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 import { getSelectedNodes } from '@/canvas/utils/getSelectedNodes';
 import { getSelectedEdges } from '@/canvas/utils/getSelectedEdges';
-import { cloneNodesWithOffset } from '@/canvas/utils/cloneNodesWithOffset';
+import { cloneNodesWithInsertionGap } from '@/canvas/utils/cloneNodesWithInsertionGap ';
 import { cloneEdgesForNewNodes } from '@/canvas/utils/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
@@ -105,8 +105,8 @@ export function useCanvasHotkeys() {
 
                 pushHistory();
 
-                const offset = 50;
-                const newNodes = cloneNodesWithOffset(nodes, offset);
+                const insertionGap = 50;
+                const newNodes = cloneNodesWithInsertionGap(nodes, insertionGap);
                 const nodeIdMap = new Map(nodes.map((node, i) => [node.id, newNodes[i].id]));
                 const newEdges = cloneEdgesForNewNodes(edges, newNodes, nodeIdMap);
 
