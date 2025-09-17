@@ -1,7 +1,7 @@
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
-import { getCanvasCoordinates } from '@/canvas/utils/getCanvasCoordinates';
+import { getMousePosition } from '@/canvas/utils/getMousePosition';
 
 export function setupPan(
     canvas: HTMLCanvasElement,
@@ -22,8 +22,12 @@ export function setupPan(
         const dx = e.clientX - lastMousePosition.x;
         const dy = e.clientY - lastMousePosition.y;
 
-        const { offset, setOffset } = useCanvasStore.getState();
-        setOffset({ x: offset.x + dx, y: offset.y + dy });
+        const { offset, setOffset, invertY } = useCanvasStore.getState();
+
+        setOffset({
+            x: offset.x + dx,
+            y: offset.y + (invertY ? -dy : dy),
+        });
 
         setLastMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -60,8 +64,12 @@ export function setupScroll(canvas: HTMLCanvasElement) {
         const dx = e.shiftKey ? e.deltaY : 0;
         const dy = !e.shiftKey ? e.deltaY : 0;
 
-        const { offset, setOffset } = useCanvasStore.getState();
-        setOffset({ x: offset.x - dx, y: offset.y - dy });
+        const { offset, setOffset, invertY } = useCanvasStore.getState();
+
+        setOffset({
+            x: offset.x - dx,
+            y: offset.y - (invertY ? -dy : dy),
+        });
     };
 
     canvas.addEventListener('wheel', handleScroll, { passive: false });
@@ -112,7 +120,7 @@ export function setupSelect(
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0) return;
 
-        const position = getCanvasCoordinates(e, canvas);
+        const position = getMousePosition(e, canvas);
 
         selectionStart = position;
         setSelectionStart(position);
@@ -122,7 +130,7 @@ export function setupSelect(
     const handleMouseMove = (e: MouseEvent) => {
         if (!selectionStart || (e.buttons & 1) !== 1) return;
 
-        const position = getCanvasCoordinates(e, canvas);
+        const position = getMousePosition(e, canvas);
 
         setSelectionEnd(position);
     };
@@ -130,7 +138,7 @@ export function setupSelect(
     const handleMouseUp = (e: MouseEvent) => {
         if (e.button !== 0 || !selectionStart) return;
 
-        const position = getCanvasCoordinates(e, canvas);
+        const position = getMousePosition(e, canvas);
 
         onSelectionComplete?.(selectionStart, position);
         setSelectionStart(null);

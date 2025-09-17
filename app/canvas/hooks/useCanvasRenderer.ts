@@ -25,8 +25,7 @@ export function useCanvasRenderer(
     showAxes: boolean,
 ) {
     const { resolvedTheme } = useTheme();
-
-    const { offset, zoomLevel } = useCanvasStore();
+    const { offset, zoomLevel, invertY } = useCanvasStore();
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -53,7 +52,10 @@ export function useCanvasRenderer(
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.setTransform(zoomLevel * dpr, 0, 0, zoomLevel * dpr, offset.x * dpr, offset.y * dpr);
+            const scaleY = invertY ? -zoomLevel * dpr : zoomLevel * dpr;
+            const translateY = invertY ? canvas.height - offset.y * dpr : offset.y * dpr;
+
+            ctx.setTransform(zoomLevel * dpr, 0, 0, scaleY, offset.x * dpr, translateY);
 
             drawGrid(ctx, canvas.width / dpr, canvas.height / dpr, showGrid, showAxes);
 
@@ -102,6 +104,7 @@ export function useCanvasRenderer(
         showAxes,
         zoomLevel,
         offset,
+        invertY,
         resolvedTheme,
     ]);
 }
