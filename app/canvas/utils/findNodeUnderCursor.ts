@@ -1,12 +1,12 @@
 import { Position, Node } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
 
-export function getNodeAtPosition(nodes: Node[], pos: Position): Node | undefined {
+export function findNodeUnderCursor(nodes: Node[], cursor: Position): Node | undefined {
     const halfSize = NODE_SIZE / 2;
 
     return nodes.find((node) => {
         const { x, y } = node.position;
 
-        return pos.x >= x - halfSize && pos.x <= x + halfSize && pos.y >= y - halfSize && pos.y <= y + halfSize;
+        return cursor.x >= x - halfSize && cursor.x <= x + halfSize && cursor.y >= y - halfSize && cursor.y <= y + halfSize;
     });
 }
