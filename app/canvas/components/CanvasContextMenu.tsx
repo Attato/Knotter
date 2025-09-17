@@ -59,8 +59,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: Ca
                 onClick={(e) => {
                     if (!e || !canvasRef.current) return;
 
-                    const rect = canvasRef.current.getBoundingClientRect();
-                    const mousePos = getMousePosition(e.nativeEvent, rect);
+                    const mousePos = getMousePosition(e.nativeEvent, canvasRef.current);
 
                     const newNode = handleAddNode(nodes, { x: mousePos.x, y: mousePos.y });
 
@@ -80,8 +79,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: Ca
                     const selectedNodeId = selectedItemIds[0];
                     if (!nodes.some((n) => n.id === selectedNodeId)) return;
 
-                    const rect = canvasRef.current.getBoundingClientRect();
-                    const mousePos = getMousePosition(e.nativeEvent, rect);
+                    const mousePos = getMousePosition(e.nativeEvent, canvasRef.current);
 
                     setTempEdge({ from: selectedNodeId, toPos: mousePos });
                     closeMenu();

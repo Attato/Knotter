@@ -43,8 +43,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             const canvas = canvasRef.current;
             if (!canvas) return;
 
-            const rect = canvas.getBoundingClientRect();
-            const mousePos = getMousePosition(e, rect);
+            const mousePos = getMousePosition(e, canvas);
 
             const items = useCanvasStore.getState().items;
             const nodes = getNodes(items);
@@ -98,8 +97,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
             const canvas = canvasRef.current;
             if (!canvas) return;
 
-            const rect = canvas.getBoundingClientRect();
-            const mousePos = getMousePosition(e, rect);
+            const mousePos = getMousePosition(e, canvas);
 
             const items = useCanvasStore.getState().items;
             const nodes = getNodes(items);
@@ -146,12 +144,14 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
     const handleMouseUp = useCallback(
         (e: MouseEvent) => {
             if (tempEdge) {
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+
                 const items = useCanvasStore.getState().items;
                 const nodes = getNodes(items);
                 const edges = getEdges(items);
 
-                const rect = canvasRef.current!.getBoundingClientRect();
-                const mousePos = getMousePosition(e, rect);
+                const mousePos = getMousePosition(e, canvas);
 
                 const targetNode = findNodeUnderCursor(nodes, mousePos);
                 const edgeExists = targetNode
