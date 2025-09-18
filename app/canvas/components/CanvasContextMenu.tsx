@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
@@ -15,10 +16,14 @@ type CanvasContextMenuProps = {
 };
 
 export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: CanvasContextMenuProps) {
-    const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge } = useCanvasStore();
+    const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge, offset } = useCanvasStore();
 
     const nodes = getNodes(items);
     const edges = getEdges(items);
+
+    useEffect(() => {
+        closeMenu();
+    }, [offset.x, offset.y, closeMenu]);
 
     return (
         <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
