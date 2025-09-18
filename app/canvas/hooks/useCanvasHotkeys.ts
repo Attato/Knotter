@@ -69,6 +69,8 @@ export function useCanvasHotkeys() {
     };
 
     useEffect(() => {
+        const keysPressed = new Set<string>();
+
         const handlers = {
             toggleMagnet: () => toggleMagnetMode(),
             toggleGrid: () => useCanvasStore.getState().toggleShowGrid(),
@@ -97,8 +99,6 @@ export function useCanvasHotkeys() {
 
             paste: () => {
                 const state = useCanvasStore.getState();
-
-                const currentItems = state.items;
                 const { nodes, edges } = clipboardRef.current;
 
                 if (!nodes.length) return;
@@ -110,7 +110,7 @@ export function useCanvasHotkeys() {
                 const nodeIdMap = new Map(nodes.map((node, i) => [node.id, newNodes[i].id]));
                 const newEdges = cloneEdgesForNewNodes(edges, newNodes, nodeIdMap);
 
-                state.setItems([...currentItems, ...newNodes, ...newEdges]);
+                state.setItems([...state.items, ...newNodes, ...newEdges]);
                 state.setSelectedItemIds(newNodes.map((n) => n.id));
             },
 
@@ -167,7 +167,12 @@ export function useCanvasHotkeys() {
         const onKeyDown = (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
             const target = e.target as HTMLElement;
+
             if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+
+            if (keysPressed.has(key)) return;
+
+            keysPressed.add(key);
 
             const isCtrl = e.ctrlKey || e.metaKey;
 
@@ -177,11 +182,31 @@ export function useCanvasHotkeys() {
 
             if (key === 'delete') return handlers.delete();
 
-            if ((key === 'a' || key === 'ф') && isCtrl) return handlers.selectAll();
-            if ((key === 'c' || key === 'с') && isCtrl) return handlers.copy();
-            if ((key === 'v' || key === 'м') && isCtrl) return handlers.paste();
-            if ((key === 'z' || key === 'я') && isCtrl && !e.shiftKey) return undo();
-            if ((key === 'z' || key === 'я') && isCtrl && e.shiftKey) return redo();
+            if ((key === 'a' || key === 'ф') && isCtrl) {
+                e.preventDefault();
+                return handlers.selectAll();
+            }
+
+            if ((key === 'a' || key === 'ф') && isCtrl) {
+                e.preventDefault();
+                return handlers.selectAll();
+            }
+
+            if ((key === 'c' || key === 'с') && isCtrl) {
+                e.preventDefault();
+                return handlers.copy();
+            }
+
+            if ((key === 'v' || key === 'м') && isCtrl) {
+                e.preventDefault();
+                return handlers.paste();
+            }
+
+            if ((key === 'z' || key === 'я') && isCtrl) {
+                e.preventDefault();
+                if (e.shiftKey) return redo();
+                return undo();
+            }
 
             if ((key === 'a' || key === 'ф') && e.shiftKey) return handlers.addNode();
             if ((key === 'e' || key === 'у') && e.shiftKey) return handlers.startEdge();
@@ -196,7 +221,16 @@ export function useCanvasHotkeys() {
             }
         };
 
+        const onKeyUp = (e: KeyboardEvent) => {
+            keysPressed.delete(e.key.toLowerCase());
+        };
+
         window.addEventListener('keydown', onKeyDown);
-        return () => window.removeEventListener('keydown', onKeyDown);
+        window.addEventListener('keyup', onKeyUp);
+
+        return () => {
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keyup', onKeyUp);
+        };
     }, [selectedItemIds, setSelectedItemIds]);
 }
