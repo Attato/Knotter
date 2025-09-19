@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 interface ContextMenuProps {
     isOpen: boolean;
@@ -9,15 +9,18 @@ interface ContextMenuProps {
     children: React.ReactNode;
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({ isOpen, position, children }) => {
+export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(({ isOpen, position, children }, ref) => {
     if (!isOpen) return null;
 
     return (
         <div
+            ref={ref}
             className="min-w-56 absolute bg-card border border-border-light text-foreground rounded shadow-md py-1 text-sm z-50"
             style={{ top: position.y, left: position.x }}
         >
             {children}
         </div>
     );
-};
+});
+
+ContextMenu.displayName = 'ContextMenu';
