@@ -4,13 +4,13 @@ import { CanvasItem } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import CanvasSidebarItem from '@/canvas/components/CanvasSidebarItem';
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
+import { openInspector } from '@/canvas/utils/openInspector';
 
 type CanvasSidebarListProps = {
     filterText: string;
-    openInspectorForItem?: (item: CanvasItem) => void;
 };
 
-export default function CanvasSidebarList({ filterText, openInspectorForItem }: CanvasSidebarListProps) {
+export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps) {
     const { selectedItemIds, setSelectedItemIds, setItems } = useCanvasStore();
     const canvasItems = useCanvasStore((state) => state.items);
 
@@ -39,7 +39,7 @@ export default function CanvasSidebarList({ filterText, openInspectorForItem }: 
                             isSelected={selectedItemIds.includes(item.id)}
                             onSelect={(e) => handleSelect(e, item.id)}
                             onChange={handleChange}
-                            onDoubleClick={() => openInspectorForItem?.(item)}
+                            onDoubleClick={() => openInspector?.(item)}
                             onKeyDown={(e) => {
                                 if (e.key !== 'Enter') return;
 
@@ -50,7 +50,7 @@ export default function CanvasSidebarList({ filterText, openInspectorForItem }: 
                                     return;
                                 }
 
-                                openInspectorForItem?.(item);
+                                openInspector?.(item);
                             }}
                         />
                     ))

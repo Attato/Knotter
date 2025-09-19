@@ -11,7 +11,6 @@ import Inspector from '@/canvas/components/Inspector';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { getNodes } from '@/canvas/utils/getNodes';
-import { openInspector } from '@/canvas/utils/openInspector';
 
 import { Plus, Home, Search } from 'lucide-react';
 
@@ -75,7 +74,7 @@ export default function CanvasSidebar() {
                 </div>
 
                 <div className="flex flex-col flex-1 overflow-hidden">
-                    <CanvasSidebarList filterText={filterText} openInspectorForItem={openInspector} />
+                    <CanvasSidebarList filterText={filterText} />
                 </div>
 
                 <div
