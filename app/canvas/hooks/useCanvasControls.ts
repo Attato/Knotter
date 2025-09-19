@@ -36,7 +36,7 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
     const [initialNodePositions, setInitialNodePositions] = useState<Map<string, Position>>(new Map());
     const [clickedNodeId, setClickedNodeId] = useState<string | null>(null);
 
-    useCanvasHotkeys();
+    useCanvasHotkeys(canvasRef);
 
     const handleMouseDown = useCallback(
         (e: MouseEvent) => {

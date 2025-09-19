@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, RefObject } from 'react';
 
 import { NODE_MOVE_MAX_STEP, MAX_UNDO_STEPS } from '@/canvas/constants';
 import { Position, CanvasState } from '@/canvas/canvas.types';
@@ -12,16 +12,18 @@ import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 import { getSelectedNodes } from '@/canvas/utils/getSelectedNodes';
 import { getSelectedEdges } from '@/canvas/utils/getSelectedEdges';
+import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { cloneNodesWithInsertionGap } from '@/canvas/utils/cloneNodesWithInsertionGap ';
 import { cloneEdgesForNewNodes } from '@/canvas/utils/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
-export function useCanvasHotkeys() {
+export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { selectedItemIds, setSelectedItemIds } = useCanvasStore();
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
     const historyRef = useRef<CanvasState[]>([]);
     const redoRef = useRef<CanvasState[]>([]);
+    const mousePosRef = useRef<Position>({ x: 0, y: 0 });
 
     const pushHistory = () => {
         const state = useCanvasStore.getState();
@@ -69,7 +71,16 @@ export function useCanvasHotkeys() {
     };
 
     useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
         const keysPressed = new Set<string>();
+
+        const onMouseMove = (e: MouseEvent) => {
+            mousePosRef.current = getMousePosition(e, canvas);
+        };
+
+        canvas.addEventListener('mousemove', onMouseMove);
 
         const handlers = {
             toggleMagnet: () => toggleMagnetMode(),
@@ -117,11 +128,12 @@ export function useCanvasHotkeys() {
             addNode: () => {
                 const state = useCanvasStore.getState();
 
-                if (!state) return;
+                if (!state || !canvas) return;
 
                 pushHistory();
 
-                const newNode = handleAddNode(getNodes(state.items));
+                const mousePos = mousePosRef.current;
+                const newNode = handleAddNode(getNodes(state.items), mousePos);
 
                 state.setItems([...state.items, newNode]);
                 state.setSelectedItemIds([newNode.id]);
@@ -187,11 +199,6 @@ export function useCanvasHotkeys() {
                 return handlers.selectAll();
             }
 
-            if ((key === 'a' || key === 'ф') && isCtrl) {
-                e.preventDefault();
-                return handlers.selectAll();
-            }
-
             if ((key === 'c' || key === 'с') && isCtrl) {
                 e.preventDefault();
                 return handlers.copy();
@@ -231,6 +238,7 @@ export function useCanvasHotkeys() {
         return () => {
             window.removeEventListener('keydown', onKeyDown);
             window.removeEventListener('keyup', onKeyUp);
+            canvas.removeEventListener('mousemove', onMouseMove);
         };
-    }, [selectedItemIds, setSelectedItemIds]);
+    }, [selectedItemIds, setSelectedItemIds, canvasRef]);
 }
