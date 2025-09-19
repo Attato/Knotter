@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
@@ -7,6 +7,7 @@ import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
+import { openInspector } from '@/canvas/utils/openInspector';
 
 type CanvasContextMenuProps = {
     isOpen: boolean;
@@ -16,6 +17,8 @@ type CanvasContextMenuProps = {
 };
 
 export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: CanvasContextMenuProps) {
+    const menuRef = useRef<HTMLDivElement | null>(null);
+
     const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge, offset } = useCanvasStore();
 
     const nodes = getNodes(items);
@@ -29,10 +32,11 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: Ca
         if (!isOpen) return;
 
         const handleClickOutside = (e: MouseEvent) => {
-            if (!canvasRef.current) return;
+            if (!canvasRef.current || !menuRef.current) return;
             const canvas = canvasRef.current;
+            const menu = menuRef.current;
 
-            if (e.target instanceof Node && !canvas.contains(e.target)) {
+            if (e.target instanceof Node && !canvas.contains(e.target) && !menu.contains(e.target)) {
                 closeMenu();
             }
         };
@@ -44,7 +48,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: Ca
     }, [isOpen, canvasRef, closeMenu]);
 
     return (
-        <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
+        <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu} ref={menuRef}>
             <ContextMenuItem
                 onClick={() => {
                     setSelectedItemIds(items.map((i) => i.id));
@@ -77,6 +81,20 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: Ca
             </ContextMenuItem>
 
             <hr className="border-b-0 border-border-light my-1" />
+
+            <ContextMenuItem
+                onClick={() => {
+                    if (selectedItemIds.length !== 1) return;
+                    const selectedItem = items.find((i) => i.id === selectedItemIds[0]);
+                    if (!selectedItem) return;
+
+                    openInspector(selectedItem);
+                    closeMenu();
+                }}
+                disabled={selectedItemIds.length !== 1}
+            >
+                Открыть в инспекторе
+            </ContextMenuItem>
 
             <ContextMenuItem
                 onClick={(e) => {
