@@ -25,6 +25,24 @@ export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: Ca
         closeMenu();
     }, [offset.x, offset.y, closeMenu]);
 
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const handleClickOutside = (e: MouseEvent) => {
+            if (!canvasRef.current) return;
+            const canvas = canvasRef.current;
+
+            if (e.target instanceof Node && !canvas.contains(e.target)) {
+                closeMenu();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen, canvasRef, closeMenu]);
+
     return (
         <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu}>
             <ContextMenuItem
