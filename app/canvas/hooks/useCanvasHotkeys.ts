@@ -1,9 +1,10 @@
 import { useEffect, useRef, RefObject } from 'react';
 
-import { NODE_MOVE_MAX_STEP, MAX_UNDO_STEPS } from '@/canvas/constants';
+import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
 import { Position, CanvasState } from '@/canvas/canvas.types';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
@@ -19,56 +20,10 @@ import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
 export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { selectedItemIds, setSelectedItemIds } = useCanvasStore();
+    const { pushHistory, undo, redo } = useCanvasHistory();
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
-    const historyRef = useRef<CanvasState[]>([]);
-    const redoRef = useRef<CanvasState[]>([]);
     const mousePosRef = useRef<Position>({ x: 0, y: 0 });
-
-    const pushHistory = () => {
-        const state = useCanvasStore.getState();
-        const snapshot = {
-            nodes: getNodes(state.items),
-            edges: getEdges(state.items),
-        };
-
-        const history = historyRef.current;
-
-        if (history.length >= MAX_UNDO_STEPS) history.shift();
-
-        history.push(snapshot);
-        redoRef.current = [];
-    };
-
-    const undo = () => {
-        const state = useCanvasStore.getState();
-        const lastState = historyRef.current.pop();
-
-        if (!lastState) return;
-
-        redoRef.current.push({
-            nodes: getNodes(state.items),
-            edges: getEdges(state.items),
-        });
-
-        state.setItems([...lastState.nodes, ...lastState.edges]);
-        state.setSelectedItemIds([]);
-    };
-
-    const redo = () => {
-        const state = useCanvasStore.getState();
-        const redoState = redoRef.current.pop();
-
-        if (!redoState) return;
-
-        historyRef.current.push({
-            nodes: getNodes(state.items),
-            edges: getEdges(state.items),
-        });
-
-        state.setItems([...redoState.nodes, ...redoState.edges]);
-        state.setSelectedItemIds([]);
-    };
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -240,5 +195,5 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
             window.removeEventListener('keyup', onKeyUp);
             canvas.removeEventListener('mousemove', onMouseMove);
         };
-    }, [selectedItemIds, setSelectedItemIds, canvasRef]);
+    }, [selectedItemIds, setSelectedItemIds, canvasRef, pushHistory, redo, undo]);
 }
