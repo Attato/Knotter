@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { useRef } from 'react';
 import { CanvasState, Position } from '@/canvas/canvas.types';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
@@ -16,13 +16,11 @@ import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
-export interface CanvasHandlersDeps {
-    clipboard: RefObject<CanvasState>;
-    mousePos: RefObject<Position>;
-}
-
-export function useCanvasHandlers({ clipboard, mousePos }: CanvasHandlersDeps) {
+export function useCanvasHandlers() {
     const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge } = useCanvasStore();
+
+    const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
+    const mousePosRef = useRef<Position>({ x: 0, y: 0 });
 
     const { pushHistory } = useCanvasHistory();
 
@@ -43,14 +41,14 @@ export function useCanvasHandlers({ clipboard, mousePos }: CanvasHandlersDeps) {
         },
 
         copy: () => {
-            clipboard.current = {
+            clipboardRef.current = {
                 nodes: getSelectedNodes(items, selectedItemIds),
                 edges: getSelectedEdges(items, selectedItemIds),
             };
         },
 
         paste: () => {
-            const { nodes, edges } = clipboard.current;
+            const { nodes, edges } = clipboardRef.current;
             if (!nodes.length) return;
 
             pushHistory();
@@ -66,7 +64,7 @@ export function useCanvasHandlers({ clipboard, mousePos }: CanvasHandlersDeps) {
 
         addNode: () => {
             pushHistory();
-            const newNode = handleAddNode(getNodes(items), mousePos.current);
+            const newNode = handleAddNode(getNodes(items), mousePosRef.current);
             setItems([...items, newNode]);
             setSelectedItemIds([newNode.id]);
         },

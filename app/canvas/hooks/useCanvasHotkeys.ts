@@ -1,7 +1,7 @@
 import { useEffect, useRef, RefObject } from 'react';
 
 import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
-import { Position, CanvasState } from '@/canvas/canvas.types';
+import { Position } from '@/canvas/canvas.types';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
@@ -14,13 +14,9 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
     const { items, setItems, setTempEdge, selectedItemIds, setSelectedItemIds } = useCanvasStore();
     const { undo, redo } = useCanvasHistory();
 
-    const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
     const mousePosRef = useRef<Position>({ x: 0, y: 0 });
 
-    const handlers = useCanvasHandlers({
-        clipboard: clipboardRef,
-        mousePos: mousePosRef,
-    });
+    const handlers = useCanvasHandlers();
 
     useEffect(() => {
         const canvas = canvasRef.current;
