@@ -4,13 +4,15 @@ import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
 import { Position, CanvasState } from '@/canvas/canvas.types';
 
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
-import { useCanvasHandlers } from './useCanvasHandlers';
+import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
+
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 
 export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { items, setItems, setTempEdge, selectedItemIds, setSelectedItemIds } = useCanvasStore();
-    const { pushHistory, undo, redo } = useCanvasHistory();
+    const { undo, redo } = useCanvasHistory();
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
     const mousePosRef = useRef<Position>({ x: 0, y: 0 });
@@ -18,7 +20,6 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
     const handlers = useCanvasHandlers({
         clipboard: clipboardRef,
         mousePos: mousePosRef,
-        pushHistory,
     });
 
     useEffect(() => {
@@ -110,5 +111,5 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
             window.removeEventListener('keyup', onKeyUp);
             canvas.removeEventListener('mousemove', onMouseMove);
         };
-    }, [selectedItemIds, setSelectedItemIds, canvasRef, pushHistory, redo, undo, items, setItems, setTempEdge, handlers]);
+    }, [selectedItemIds, setSelectedItemIds, canvasRef, redo, undo, items, setItems, setTempEdge, handlers]);
 }

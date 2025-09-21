@@ -1,6 +1,8 @@
 import { RefObject } from 'react';
 import { CanvasState, Position } from '@/canvas/canvas.types';
 
+import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
+
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
 import { moveNodes } from '@/canvas/utils/moveNodes';
@@ -17,11 +19,12 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 export interface CanvasHandlersDeps {
     clipboard: RefObject<CanvasState>;
     mousePos: RefObject<Position>;
-    pushHistory: () => void;
 }
 
-export function useCanvasHandlers({ clipboard, mousePos, pushHistory }: CanvasHandlersDeps) {
+export function useCanvasHandlers({ clipboard, mousePos }: CanvasHandlersDeps) {
     const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge } = useCanvasStore();
+
+    const { pushHistory } = useCanvasHistory();
 
     return {
         toggleMagnet: toggleMagnetMode,
