@@ -1,26 +1,25 @@
+import { RefObject } from 'react';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
-import { getMousePosition } from '@/canvas/utils/getMousePosition';
 
 export function setupPan(
     canvas: HTMLCanvasElement,
-    isPanning: boolean,
-    setIsPanning: (val: boolean) => void,
-    lastMousePosition: Position | null,
-    setLastMousePosition: (val: Position | null) => void,
+    isPanningRef: RefObject<boolean>,
+    lastMouseRef: RefObject<Position | null>,
 ) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
         e.preventDefault();
-        setIsPanning(true);
-        setLastMousePosition({ x: e.clientX, y: e.clientY });
+        isPanningRef.current = true;
+        lastMouseRef.current = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-        if (!isPanning || !lastMousePosition) return;
-        const dx = e.clientX - lastMousePosition.x;
-        const dy = e.clientY - lastMousePosition.y;
+        if (!isPanningRef.current || !lastMouseRef.current) return;
+
+        const dx = e.clientX - lastMouseRef.current.x;
+        const dy = e.clientY - lastMouseRef.current.y;
 
         const { offset, setOffset, invertY } = useCanvasStore.getState();
 
@@ -29,30 +28,22 @@ export function setupPan(
             y: offset.y + (invertY ? -dy : dy),
         });
 
-        setLastMousePosition({ x: e.clientX, y: e.clientY });
+        lastMouseRef.current = { x: e.clientX, y: e.clientY };
     };
 
-    const stopPanning = () => {
-        setIsPanning(false);
-        setLastMousePosition(null);
+    const handleMouseUp = () => {
+        isPanningRef.current = false;
+        lastMouseRef.current = null;
     };
-
-    const handleMouseUp = (e: MouseEvent) => {
-        if (e.button === 1) stopPanning();
-    };
-
-    const handleMouseLeave = stopPanning;
 
     canvas.addEventListener('mousedown', handleMouseDown);
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseup', handleMouseUp);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
         canvas.removeEventListener('mousedown', handleMouseDown);
-        canvas.removeEventListener('mousemove', handleMouseMove);
-        canvas.removeEventListener('mouseup', handleMouseUp);
-        canvas.removeEventListener('mouseleave', handleMouseLeave);
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
     };
 }
 
@@ -120,27 +111,26 @@ export function setupSelect(
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0) return;
 
-        const position = getMousePosition(e, canvas);
+        const mousePos = useCanvasStore.getState().mousePosition;
 
-        selectionStart = position;
-        setSelectionStart(position);
-        setSelectionEnd(position);
+        selectionStart = mousePos;
+        setSelectionStart(mousePos);
+        setSelectionEnd(mousePos);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
         if (!selectionStart || (e.buttons & 1) !== 1) return;
 
-        const position = getMousePosition(e, canvas);
-
-        setSelectionEnd(position);
+        const mousePos = useCanvasStore.getState().mousePosition;
+        setSelectionEnd(mousePos);
     };
 
     const handleMouseUp = (e: MouseEvent) => {
         if (e.button !== 0 || !selectionStart) return;
 
-        const position = getMousePosition(e, canvas);
+        const mousePos = useCanvasStore.getState().mousePosition;
 
-        onSelectionComplete?.(selectionStart, position);
+        onSelectionComplete?.(selectionStart, mousePos);
         setSelectionStart(null);
         setSelectionEnd(null);
         selectionStart = null;
