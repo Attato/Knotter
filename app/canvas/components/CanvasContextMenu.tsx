@@ -1,153 +1,97 @@
-import { useEffect, useRef } from 'react';
-import { getMousePosition } from '@/canvas/utils/getMousePosition';
-import { handleAddNode } from '@/canvas/utils/handleAddNode';
-import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
+import { useEffect, useRef, useMemo, RefObject } from 'react';
 import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
-import { openInspector } from '@/canvas/utils/openInspector';
+import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 
 type CanvasContextMenuProps = {
     isOpen: boolean;
     position: { x: number; y: number };
     closeMenu: () => void;
-    canvasRef: React.RefObject<HTMLCanvasElement | null>;
+    canvasRef: RefObject<HTMLCanvasElement | null>;
 };
 
-export function CanvasContextMenu({ isOpen, position, closeMenu, canvasRef }: CanvasContextMenuProps) {
+type MenuItem = {
+    label?: string;
+    onClick?: () => void;
+    disabled?: boolean;
+    shortcut?: string;
+    type?: 'divider';
+};
+
+export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
     const menuRef = useRef<HTMLDivElement | null>(null);
 
-    const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge, offset } = useCanvasStore();
+    const { items, selectedItemIds, offset } = useCanvasStore();
 
-    const nodes = getNodes(items);
-    const edges = getEdges(items);
+    const nodes = useMemo(() => getNodes(items), [items]);
+    const edges = useMemo(() => getEdges(items), [items]);
+
+    const handlers = useCanvasHandlers();
+
+    const createItem = (
+        label: string,
+        onClick: () => void,
+        options?: { disabled?: boolean; shortcut?: string },
+    ): MenuItem => ({
+        label,
+        onClick,
+        disabled: options?.disabled,
+        shortcut: options?.shortcut,
+    });
+
+    const createDivider = (): MenuItem => ({ type: 'divider' });
+
+    const menuItems: MenuItem[] = useMemo(() => {
+        const selectGroup = [
+            createItem('Выбрать всё', handlers.selectAll, { disabled: items.length === 0, shortcut: 'Ctrl + A' }),
+            createItem('Выбрать все узлы', handlers.selectAllNodes, { disabled: nodes.length === 0 }),
+            createItem('Выбрать все связи', handlers.selectAllEdges, { disabled: edges.length === 0 }),
+        ];
+
+        const editGroup = [
+            createItem('Открыть в инспекторе', handlers.openInspector, { disabled: selectedItemIds.length !== 1 }),
+            createItem('Добавить узел', handlers.addNode, { shortcut: 'Shift + A' }),
+            createItem('Добавить связь', handlers.startEdge, {
+                disabled: selectedItemIds.length !== 1 || !nodes.some((n) => n.id === selectedItemIds[0]),
+                shortcut: 'Shift + E',
+            }),
+        ];
+
+        const deleteGroup = [
+            createItem('Удалить выбранное', handlers.delete, { disabled: selectedItemIds.length === 0, shortcut: 'Del' }),
+        ];
+
+        return [...selectGroup, createDivider(), ...editGroup, createDivider(), ...deleteGroup];
+    }, [items, nodes, edges, selectedItemIds, handlers]);
 
     useEffect(() => {
-        closeMenu();
+        if (offset.x || offset.y) {
+            closeMenu();
+        }
     }, [offset.x, offset.y, closeMenu]);
-
-    useEffect(() => {
-        if (!isOpen) return;
-
-        const handleClickOutside = (e: MouseEvent) => {
-            if (!canvasRef.current || !menuRef.current) return;
-            const canvas = canvasRef.current;
-            const menu = menuRef.current;
-
-            if (e.target instanceof Node && !canvas.contains(e.target) && !menu.contains(e.target)) {
-                closeMenu();
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen, canvasRef, closeMenu]);
 
     return (
         <ContextMenu isOpen={isOpen} position={position} onClose={closeMenu} ref={menuRef}>
-            <ContextMenuItem
-                onClick={() => {
-                    setSelectedItemIds(items.map((i) => i.id));
-                    closeMenu();
-                }}
-                disabled={items.length === 0}
-                shortcut="Ctrl + A"
-            >
-                Выбрать всё
-            </ContextMenuItem>
-
-            <ContextMenuItem
-                onClick={() => {
-                    setSelectedItemIds(nodes.map((n) => n.id));
-                    closeMenu();
-                }}
-                disabled={nodes.length === 0}
-            >
-                Выбрать все узлы
-            </ContextMenuItem>
-
-            <ContextMenuItem
-                onClick={() => {
-                    setSelectedItemIds(edges.map((e) => e.id));
-                    closeMenu();
-                }}
-                disabled={edges.length === 0}
-            >
-                Выбрать все связи
-            </ContextMenuItem>
-
-            <hr className="border-b-0 border-border-light my-1" />
-
-            <ContextMenuItem
-                onClick={() => {
-                    if (selectedItemIds.length !== 1) return;
-                    const selectedItem = items.find((i) => i.id === selectedItemIds[0]);
-                    if (!selectedItem) return;
-
-                    openInspector(selectedItem);
-                    closeMenu();
-                }}
-                disabled={selectedItemIds.length !== 1}
-            >
-                Открыть в инспекторе
-            </ContextMenuItem>
-
-            <ContextMenuItem
-                onClick={(e) => {
-                    if (!e || !canvasRef.current) return;
-
-                    const mousePos = getMousePosition(e.nativeEvent, canvasRef.current);
-
-                    const newNode = handleAddNode(nodes, { x: mousePos.x, y: mousePos.y });
-
-                    setItems([...items, newNode]);
-                    setSelectedItemIds([newNode.id]);
-                    closeMenu();
-                }}
-                shortcut="Shift + A"
-            >
-                Добавить узел
-            </ContextMenuItem>
-
-            <ContextMenuItem
-                onClick={(e?: React.MouseEvent<HTMLButtonElement>) => {
-                    if (!e || selectedItemIds.length !== 1 || !canvasRef.current) return;
-
-                    const selectedNodeId = selectedItemIds[0];
-                    if (!nodes.some((n) => n.id === selectedNodeId)) return;
-
-                    const mousePos = getMousePosition(e.nativeEvent, canvasRef.current);
-
-                    setTempEdge({ from: selectedNodeId, toPos: mousePos });
-                    closeMenu();
-                }}
-                disabled={selectedItemIds.length !== 1 || !nodes.some((n) => n.id === selectedItemIds[0])}
-                shortcut="Shift + E"
-            >
-                Добавить связь
-            </ContextMenuItem>
-
-            <hr className="border-b-0 border-border-light my-1" />
-
-            <ContextMenuItem
-                onClick={() => {
-                    if (selectedItemIds.length === 0) return;
-
-                    const newItems = handleDeleteItems(items, selectedItemIds);
-
-                    setItems(newItems);
-                    setSelectedItemIds([]);
-                    closeMenu();
-                }}
-                disabled={selectedItemIds.length === 0}
-                shortcut="Del"
-            >
-                Удалить выбранное
-            </ContextMenuItem>
+            {menuItems.map((item, idx) =>
+                item.type === 'divider' ? (
+                    <hr key={idx} className="border-b-0 border-border-light my-1" />
+                ) : (
+                    <ContextMenuItem
+                        key={idx}
+                        onClick={() => {
+                            item.onClick?.();
+                            closeMenu();
+                        }}
+                        disabled={item.disabled}
+                        shortcut={item.shortcut}
+                    >
+                        {item.label}
+                    </ContextMenuItem>
+                ),
+            )}
         </ContextMenu>
     );
 }
