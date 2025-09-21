@@ -35,7 +35,7 @@ interface CanvasState {
     setInvertY: (value: boolean) => void;
 
     mousePosition: Position;
-    setMousePosition: (pos: Position) => void;
+    updateMousePosition: (pos: Position) => void;
 
     inspectorItem: CanvasItem | null;
     setInspectorItem: (item: CanvasItem | null) => void;
@@ -43,43 +43,60 @@ interface CanvasState {
 
 export const useCanvasStore = create<CanvasState>()(
     persist(
-        (set) => ({
-            items: [],
-            setItems: (items) => set({ items }),
+        (set) => {
+            let rafId: number | null = null;
+            let latestMousePosition: Position = { x: 0, y: 0 };
 
-            selectedItemIds: [],
-            setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
+            const scheduleMouseUpdate = () => {
+                if (rafId === null) {
+                    rafId = requestAnimationFrame(() => {
+                        set({ mousePosition: latestMousePosition });
+                        rafId = null;
+                    });
+                }
+            };
 
-            tempEdge: null,
-            setTempEdge: (tempEdge) => set({ tempEdge }),
+            return {
+                items: [],
+                setItems: (items) => set({ items }),
 
-            nodeMoveStep: NODE_MOVE_MIN_STEP,
-            setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
+                selectedItemIds: [],
+                setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
 
-            offset: { x: 0, y: 0 },
-            setOffset: (offset) => set({ offset }),
+                tempEdge: null,
+                setTempEdge: (tempEdge) => set({ tempEdge }),
 
-            zoomLevel: INITIAL_ZOOM,
-            setZoomLevel: (zoom) => set({ zoomLevel: zoom }),
+                nodeMoveStep: NODE_MOVE_MIN_STEP,
+                setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
 
-            isMagnet: false,
-            setIsMagnet: (value) => set({ isMagnet: value }),
+                offset: { x: 0, y: 0 },
+                setOffset: (offset) => set({ offset }),
 
-            showGrid: true,
-            toggleShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
+                zoomLevel: INITIAL_ZOOM,
+                setZoomLevel: (zoom) => set({ zoomLevel: zoom }),
 
-            showAxes: false,
-            toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
+                isMagnet: false,
+                setIsMagnet: (value) => set({ isMagnet: value }),
 
-            invertY: true,
-            setInvertY: (value) => set({ invertY: value }),
+                showGrid: true,
+                toggleShowGrid: () => set((s) => ({ showGrid: !s.showGrid })),
 
-            mousePosition: { x: 0, y: 0 },
-            setMousePosition: (pos) => set({ mousePosition: pos }),
+                showAxes: false,
+                toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
 
-            inspectorItem: null,
-            setInspectorItem: (item) => set({ inspectorItem: item }),
-        }),
+                invertY: true,
+                setInvertY: (value) => set({ invertY: value }),
+
+                mousePosition: { x: 0, y: 0 },
+                updateMousePosition: (position: Position) => {
+                    latestMousePosition = position;
+                    scheduleMouseUpdate();
+                },
+
+                inspectorItem: null,
+                setInspectorItem: (item) => set({ inspectorItem: item }),
+            };
+        },
         {
             name: 'canvas-storage',
             partialize: (state) => ({
