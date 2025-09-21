@@ -5,6 +5,7 @@ import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
 import { handleAddNode } from '@/canvas/utils/handleAddNode';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
+import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 import { moveNodes } from '@/canvas/utils/moveNodes';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
@@ -17,10 +18,9 @@ import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 export function useCanvasHandlers() {
-    const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge } = useCanvasStore();
+    const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge, mousePosition } = useCanvasStore();
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
-    const mousePosRef = useRef<Position>({ x: 0, y: 0 });
 
     const { pushHistory } = useCanvasHistory();
 
@@ -36,8 +36,18 @@ export function useCanvasHandlers() {
         },
 
         selectAll: () => {
+            const allIds = items.map((i) => i.id);
+            setSelectedItemIds(allIds);
+        },
+
+        selectAllNodes: () => {
             const nodeIds = items.filter((i) => i.kind === 'node').map((n) => n.id);
             setSelectedItemIds(nodeIds);
+        },
+
+        selectAllEdges: () => {
+            const edgeIds = items.filter((i) => i.kind === 'edge').map((e) => e.id);
+            setSelectedItemIds(edgeIds);
         },
 
         copy: () => {
@@ -64,7 +74,7 @@ export function useCanvasHandlers() {
 
         addNode: () => {
             pushHistory();
-            const newNode = handleAddNode(getNodes(items), mousePosRef.current);
+            const newNode = handleAddNode(getNodes(items), mousePosition);
             setItems([...items, newNode]);
             setSelectedItemIds([newNode.id]);
         },
@@ -87,6 +97,7 @@ export function useCanvasHandlers() {
             const edges = getEdges(items);
 
             const initialPositions = new Map<string, Position>();
+
             nodes.forEach((node) => {
                 if (selectedItemIds.includes(node.id)) {
                     initialPositions.set(node.id, { ...node.position });
@@ -96,6 +107,14 @@ export function useCanvasHandlers() {
             const movedNodes = moveNodes(nodes, selectedItemIds, initialPositions, { x: dx, y: dy }, 1);
 
             setItems([...movedNodes, ...edges]);
+        },
+
+        openInspector: () => {
+            if (selectedItemIds.length !== 1) return;
+            const selectedItem = items.find((i) => i.id === selectedItemIds[0]);
+            if (!selectedItem) return;
+
+            handleOpenInspector(selectedItem);
         },
     };
 }

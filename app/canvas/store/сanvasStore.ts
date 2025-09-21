@@ -34,6 +34,9 @@ interface CanvasState {
     invertY: boolean;
     setInvertY: (value: boolean) => void;
 
+    mousePosition: Position;
+    setMousePosition: (pos: Position) => void;
+
     inspectorItem: CanvasItem | null;
     setInspectorItem: (item: CanvasItem | null) => void;
 }
@@ -70,6 +73,9 @@ export const useCanvasStore = create<CanvasState>()(
 
             invertY: true,
             setInvertY: (value) => set({ invertY: value }),
+
+            mousePosition: { x: 0, y: 0 },
+            setMousePosition: (pos) => set({ mousePosition: pos }),
 
             inspectorItem: null,
             setInspectorItem: (item) => set({ inspectorItem: item }),
