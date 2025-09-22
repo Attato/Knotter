@@ -9,18 +9,13 @@ import ThemeToggle from '@/components/ThemeToggle';
 import CanvasSidebarList from '@/canvas/components/CanvasSidebarList';
 import Inspector from '@/canvas/components/Inspector';
 
-import { handleAddNode } from '@/canvas/utils/handleAddNode';
-import { getNodes } from '@/canvas/utils/getNodes';
-
-import { Plus, Home, Search } from 'lucide-react';
-
 import useVerticalResize from '@/canvas/hooks/useVerticalResize';
 
-export default function CanvasSidebar() {
-    const { items, setItems, inspectorItem, setInspectorItem } = useCanvasStore();
-    const [filterText, setFilterText] = useState('');
+import { Home, Search } from 'lucide-react';
 
-    const nodes = getNodes(items);
+export default function CanvasSidebar() {
+    const { items, inspectorItem, setInspectorItem } = useCanvasStore();
+    const [filterText, setFilterText] = useState('');
 
     const topBlockRef = useRef<HTMLDivElement>(null);
     const [topOffset, setTopOffset] = useState(0);
@@ -51,13 +46,6 @@ export default function CanvasSidebar() {
             <div className="flex flex-col h-full relative">
                 <div ref={topBlockRef} className="flex flex-col">
                     <div className="flex items-center gap-2 m-1">
-                        <button
-                            onClick={() => setItems([...items, handleAddNode(nodes)])}
-                            className="w-fit bg-card hover:bg-ui p-2 rounded-md cursor-pointer"
-                        >
-                            <Plus size={16} />
-                        </button>
-
                         <div className="relative flex-1">
                             <input
                                 type="text"
@@ -97,9 +85,7 @@ export default function CanvasSidebar() {
                     )}
                 </div>
 
-                <hr className="border-b-0 border-border" />
-
-                <div className="flex justify-between m-1 gap-2">
+                <div className="flex justify-between p-1 gap-2 h-[42px] border-t border-border">
                     <ThemeToggle />
 
                     <Link href="/" className="w-fit bg-card hover:bg-ui border border-border p-2 rounded-md cursor-pointer">
