@@ -48,7 +48,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
         const selectGroup = [
             createItem('Выбрать всё', handlers.selectAll, { disabled: items.length === 0, shortcut: 'Ctrl + A' }),
             createItem('Выбрать все узлы', handlers.selectAllNodes, { disabled: nodes.length === 0 }),
-            createItem('Выбрать все связи', handlers.selectAllEdges, { disabled: edges.length === 0 }),
+            createItem('Выбрать все связи', handlers.selectAllEdges, { disabled: edges.length === 0, shortcut: 'Ctrl + E' }),
         ];
 
         const editGroup = [

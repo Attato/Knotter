@@ -48,6 +48,8 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
                 const ctrlMap: Record<string, () => void> = {
                     a: handlers.selectAll,
                     ф: handlers.selectAll,
+                    у: handlers.selectAllEdges,
+                    e: handlers.selectAllEdges,
                     c: handlers.copy,
                     с: handlers.copy,
                     v: handlers.paste,
@@ -68,6 +70,7 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
             }
 
             const step = NODE_MOVE_MAX_STEP;
+
             switch (key) {
                 case 'arrowup':
                     handlers.moveSelection(0, -step);
