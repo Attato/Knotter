@@ -14,7 +14,7 @@ import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { getItemsInSelectionArea } from '@/canvas/utils/getItemsInSelectionArea';
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 import { moveNodes } from '@/canvas/utils/moveNodes';
-import { handleAddEdge } from '@/canvas/utils/handleAddEdge';
+import { handleAddItem } from '@/canvas/utils/handleAddItem';
 import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 import { prepareDrag } from '@/canvas/utils/prepareDrag';
 
@@ -173,9 +173,16 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
                 if (targetNode && targetNode.id !== tempEdge.from && !edgeExists) {
                     const fromNode = nodes.find((n) => n.id === tempEdge.from);
+
                     if (fromNode) {
-                        const newEdge = handleAddEdge(getEdges(items), fromNode, targetNode);
-                        setItems([...items, newEdge]);
+                        const newEdge = handleAddItem({
+                            type: 'edge',
+                            state: { nodes, edges },
+                            fromNode,
+                            toNode: targetNode,
+                        });
+
+                        if (newEdge) setItems([...items, newEdge]);
                     }
                 }
 

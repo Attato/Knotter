@@ -3,7 +3,7 @@ import { CanvasState, Position } from '@/canvas/canvas.types';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
-import { handleAddNode } from '@/canvas/utils/handleAddNode';
+import { handleAddItem } from '@/canvas/utils/handleAddItem';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
 import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 import { moveNodes } from '@/canvas/utils/moveNodes';
@@ -64,9 +64,14 @@ export function useCanvasHandlers() {
             pushHistory();
 
             const insertionGap = 50;
-            const newNodes = cloneNodesWithInsertionGap(nodes, insertionGap);
-            const nodeIdMap = new Map(nodes.map((node, i) => [node.id, newNodes[i].id]));
-            const newEdges = cloneEdgesForNewNodes(edges, newNodes, nodeIdMap);
+            const existingCount = items.length;
+
+            const newNodes = cloneNodesWithInsertionGap(nodes, insertionGap, existingCount);
+            if (!newNodes.length) return;
+
+            const nodeIdMap = new Map(nodes.slice(0, newNodes.length).map((node, i) => [node.id, newNodes[i].id]));
+
+            const newEdges = cloneEdgesForNewNodes(edges, newNodes, nodeIdMap, existingCount + newNodes.length);
 
             setItems([...items, ...newNodes, ...newEdges]);
             setSelectedItemIds(newNodes.map((n) => n.id));
@@ -74,7 +79,15 @@ export function useCanvasHandlers() {
 
         addNode: () => {
             pushHistory();
-            const newNode = handleAddNode(getNodes(items), mousePosition);
+
+            const newNode = handleAddItem({
+                type: 'node',
+                state: { nodes: getNodes(items), edges: getEdges(items) },
+                position: mousePosition,
+            });
+
+            if (!newNode) return;
+
             setItems([...items, newNode]);
             setSelectedItemIds([newNode.id]);
         },
