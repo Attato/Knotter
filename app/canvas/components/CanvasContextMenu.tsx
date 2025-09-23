@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useMemo, RefObject } from 'react';
 import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
@@ -19,6 +21,7 @@ type MenuItem = {
     disabled?: boolean;
     shortcut?: string;
     type?: 'divider';
+    submenu?: MenuItem[];
 };
 
 export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
@@ -45,14 +48,13 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
     const createDivider = (): MenuItem => ({ type: 'divider' });
 
     const menuItems: MenuItem[] = useMemo(() => {
-        const selectGroup = [
+        const selectGroup: MenuItem[] = [
             createItem('Выбрать всё', handlers.selectAll, { disabled: items.length === 0, shortcut: 'Ctrl + A' }),
             createItem('Выбрать все узлы', handlers.selectAllNodes, { disabled: nodes.length === 0 }),
             createItem('Выбрать все связи', handlers.selectAllEdges, { disabled: edges.length === 0, shortcut: 'Ctrl + E' }),
         ];
 
-        const editGroup = [
-            createItem('Открыть в инспекторе', handlers.openInspector, { disabled: selectedItemIds.length !== 1 }),
+        const addGroup: MenuItem[] = [
             createItem('Добавить узел', handlers.addNode, { shortcut: 'Shift + A' }),
             createItem('Добавить связь', handlers.startEdge, {
                 disabled: selectedItemIds.length !== 1 || !nodes.some((n) => n.id === selectedItemIds[0]),
@@ -60,11 +62,24 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
             }),
         ];
 
-        const deleteGroup = [
+        const deleteGroup: MenuItem[] = [
             createItem('Удалить выбранное', handlers.delete, { disabled: selectedItemIds.length === 0, shortcut: 'Del' }),
         ];
 
-        return [...selectGroup, createDivider(), ...editGroup, createDivider(), ...deleteGroup];
+        return [
+            createItem('Открыть в инспекторе', handlers.openInspector, { disabled: selectedItemIds.length !== 1 }),
+            createDivider(),
+            {
+                label: 'Выбрать',
+                submenu: selectGroup,
+            },
+            {
+                label: 'Добавить',
+                submenu: addGroup,
+            },
+            createDivider(),
+            ...deleteGroup,
+        ];
     }, [items, nodes, edges, selectedItemIds, handlers]);
 
     useEffect(() => {
@@ -87,6 +102,22 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
                         }}
                         disabled={item.disabled}
                         shortcut={item.shortcut}
+                        submenu={
+                            item.submenu &&
+                            item.submenu.map((sub, subIdx) => (
+                                <ContextMenuItem
+                                    key={subIdx}
+                                    onClick={() => {
+                                        sub.onClick?.();
+                                        closeMenu();
+                                    }}
+                                    disabled={sub.disabled}
+                                    shortcut={sub.shortcut}
+                                >
+                                    {sub.label}
+                                </ContextMenuItem>
+                            ))
+                        }
                     >
                         {item.label}
                     </ContextMenuItem>
