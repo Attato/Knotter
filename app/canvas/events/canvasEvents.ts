@@ -79,17 +79,18 @@ export function setupZoom(canvas: HTMLCanvasElement) {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        const { offset, setOffset, zoomLevel, setZoomLevel } = useCanvasStore.getState();
+        const { offset, setOffset, zoomLevel, setZoomLevel, invertY } = useCanvasStore.getState();
 
         const zoomFactor = 1.1;
-        const deltaZoom = e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
-        const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel * deltaZoom));
+        const scale = e.deltaY < 0 ? zoomFactor : 1 / zoomFactor;
+        const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel * scale));
 
-        setOffset({
-            x: mouseX - (mouseX - offset.x) * (newZoom / zoomLevel),
-            y: mouseY - (mouseY - offset.y) * (newZoom / zoomLevel),
-        });
+        const cursorY = invertY ? canvas.height - mouseY : mouseY;
 
+        const newOffsetX = mouseX - (mouseX - offset.x) * (newZoom / zoomLevel);
+        const newOffsetY = cursorY - (cursorY - offset.y) * (newZoom / zoomLevel);
+
+        setOffset({ x: newOffsetX, y: newOffsetY });
         setZoomLevel(newZoom);
     };
 
