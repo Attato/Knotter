@@ -48,12 +48,12 @@ export function EditableName({ name, isSelected, onChange }: EditableNameProps) 
             onChange={(e) => setValue(e.target.value)}
             onBlur={finishEditing}
             onKeyDown={handleInputKeyDown}
-            className="bg-card border border-bg-accent rounded px-1 py-0.5 text-foreground text-sm outline-none w-full transition-all"
+            className="bg-card border border-bg-accent rounded px-1 py-0.5 text-foreground text-sm outline-none w-full"
             onDoubleClick={(e) => e.stopPropagation()}
         />
     ) : (
         <span
-            className={`text-sm cursor-pointer transition-colors ${isSelected ? 'text-text-accent' : 'text-foreground'}`}
+            className={`text-sm cursor-pointer ${isSelected ? 'text-text-accent' : 'text-foreground'}`}
             onDoubleClick={(e) => {
                 e.stopPropagation();
                 setEditing(true);
