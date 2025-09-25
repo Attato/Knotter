@@ -7,7 +7,7 @@ export interface CanvasState {
 
 export type CanvasItem = Node | Edge;
 
-export type NodeType = 'octagon' | 'circle' | 'diamond' | 'triangle' | 'hexagon' | 'squircle' | 'point';
+export type NodeShapeType = 'octagon' | 'circle' | 'diamond' | 'triangle' | 'hexagon' | 'squircle' | 'point';
 
 export interface DrawOptions {
     fillStyle?: string;
@@ -19,7 +19,7 @@ export interface DrawOptions {
 export interface Node {
     id: string;
     name: string;
-    type: NodeType;
+    shapeType: NodeShapeType;
     position: Position;
     kind: 'node';
 }

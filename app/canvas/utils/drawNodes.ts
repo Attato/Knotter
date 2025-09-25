@@ -23,7 +23,7 @@ export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selected
 
         const options = { fillStyle: fillColor, strokeStyle: strokeColor, lineWidth: 2 };
 
-        switch (node.type) {
+        switch (node.shapeType) {
             case 'octagon':
                 drawOctagon(ctx, x, y, nodeSize, options);
                 break;

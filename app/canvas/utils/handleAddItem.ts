@@ -44,7 +44,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
         const newNode: Node = {
             id: uuidv4(),
             name,
-            type: 'octagon',
+            shapeType: 'octagon',
             position: { x, y },
             kind: 'node',
         };
