@@ -45,6 +45,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             const isModifierPressed = e.ctrlKey || e.metaKey || e.shiftKey;
 
             let newSelectedIds = selectedItemIds;
+
             if (!selectedItemIds.includes(itemId) || isModifierPressed) {
                 newSelectedIds = selectCanvasItem(allItems, selectedItemIds, itemId, e);
                 setSelectedItemIds(newSelectedIds);
@@ -62,6 +63,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             }
 
             const isAlreadySelected = selectedItemIds.includes(clickedNode.id) && !isModifierPressed;
+
             if (!isAlreadySelected) return;
 
             if (clickedNodeId === clickedNode.id) {
@@ -143,6 +145,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
                 if (targetNode && targetNode.id !== tempEdge.from && !edgeExists) {
                     const fromNode = nodes.find((n) => n.id === tempEdge.from);
+
                     if (fromNode) {
                         const newEdge = handleAddItem({
                             type: 'edge',
@@ -150,6 +153,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
                             fromNode,
                             toNode: targetNode,
                         });
+
                         if (newEdge) setItems([...items, newEdge]);
                     }
                 }
