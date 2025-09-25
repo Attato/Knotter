@@ -73,16 +73,6 @@ export default function CanvasSidebar() {
         </div>
     );
 
-    const BottomControls = () => (
-        <div className="flex justify-between p-1 gap-2 h-[42px] border-t border-border">
-            <ThemeToggle />
-
-            <Link href="/" className="w-fit bg-card hover:bg-ui border border-border p-2 rounded-md cursor-pointer">
-                <Home size={16} />
-            </Link>
-        </div>
-    );
-
     return (
         <Sidebar>
             <div className="flex flex-col h-full relative">
@@ -99,7 +89,13 @@ export default function CanvasSidebar() {
 
                 <InspectorBlock />
 
-                <BottomControls />
+                <div className="flex justify-between p-1 gap-2 h-[42px] border-t border-border">
+                    <ThemeToggle />
+
+                    <Link href="/" className="w-fit bg-card hover:bg-ui border border-border p-2 rounded-md cursor-pointer">
+                        <Home size={16} />
+                    </Link>
+                </div>
             </div>
         </Sidebar>
     );
