@@ -23,7 +23,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
     const [initialNodePositions, setInitialNodePositions] = useState<Map<string, Position>>(new Map());
     const [clickedNodeId, setClickedNodeId] = useState<string | null>(null);
 
-    const handleMouseDown = useCallback(
+    const onMouseDown = useCallback(
         (e: MouseEvent) => {
             const canvas = canvasRef.current;
             if (!canvas) return;
@@ -37,6 +37,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             const clickedNode = findNodeUnderCursor(nodes, mousePos);
             const clickedEdge = !clickedNode ? findEdgeUnderCursor(edges, nodes, mousePos) : null;
+
             if (!clickedNode && !clickedEdge) return;
 
             const itemId = clickedNode?.id || clickedEdge!.id;
@@ -74,7 +75,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
         [canvasRef, selectedItemIds, setSelectedItemIds, clickedNodeId, updateMousePosition],
     );
 
-    const handleMouseMove = useCallback(
+    const onMouseMove = useCallback(
         (e: MouseEvent) => {
             const canvas = canvasRef.current;
             if (!canvas) return;
@@ -123,7 +124,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
         ],
     );
 
-    const handleMouseUp = useCallback(
+    const onMouseUp = useCallback(
         (e: MouseEvent) => {
             const canvas = canvasRef.current;
             if (!canvas) return;
@@ -165,5 +166,5 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
         [canvasRef, tempEdge, setTempEdge, setItems, isDraggingNodes],
     );
 
-    return { handleMouseDown, handleMouseMove, handleMouseUp };
+    return { onMouseDown, onMouseMove, onMouseUp };
 }
