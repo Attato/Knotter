@@ -3,11 +3,7 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
 
-export function setupPan(
-    canvas: HTMLCanvasElement,
-    isPanningRef: RefObject<boolean>,
-    lastMouseRef: RefObject<Position | null>,
-) {
+export function getPanEventHandlers(isPanningRef: RefObject<boolean>, lastMouseRef: RefObject<Position | null>) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
         e.preventDefault();
@@ -36,19 +32,11 @@ export function setupPan(
         lastMouseRef.current = null;
     };
 
-    canvas.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-        canvas.removeEventListener('mousedown', handleMouseDown);
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-    };
+    return { handleMouseDown, handleMouseMove, handleMouseUp };
 }
 
-export function setupScroll(canvas: HTMLCanvasElement) {
-    const handleScroll = (e: WheelEvent) => {
+export function getScrollEventHandler() {
+    return (e: WheelEvent) => {
         if (e.ctrlKey) return;
         e.preventDefault();
 
@@ -62,16 +50,10 @@ export function setupScroll(canvas: HTMLCanvasElement) {
             y: offset.y - (invertY ? -dy : dy),
         });
     };
-
-    canvas.addEventListener('wheel', handleScroll, { passive: false });
-
-    return () => {
-        canvas.removeEventListener('wheel', handleScroll);
-    };
 }
 
-export function setupZoom(canvas: HTMLCanvasElement) {
-    const handleZoom = (e: WheelEvent) => {
+export function getZoomEventHandler(canvas: HTMLCanvasElement) {
+    return (e: WheelEvent) => {
         if (!e.ctrlKey) return;
         e.preventDefault();
 
@@ -92,11 +74,5 @@ export function setupZoom(canvas: HTMLCanvasElement) {
 
         setOffset({ x: newOffsetX, y: newOffsetY });
         setZoomLevel(newZoom);
-    };
-
-    canvas.addEventListener('wheel', handleZoom, { passive: false });
-
-    return () => {
-        canvas.removeEventListener('wheel', handleZoom);
     };
 }
