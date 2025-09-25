@@ -2,8 +2,12 @@
 
 import { useEffect, RefObject } from 'react';
 import { useTheme } from 'next-themes';
+
 import { Position, CanvasItem, Node, Edge } from '@/canvas/canvas.types';
+
 import { NODE_SIZE } from '@/canvas/constants';
+
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 import { drawNodes } from '@/canvas/utils/drawNodes';
 import { drawEdges } from '@/canvas/utils/drawEdges';
@@ -12,7 +16,6 @@ import { drawTempEdge } from '@/canvas/utils/drawTempEdge';
 import { drawGrid } from '@/canvas/utils/drawGrid';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
 export function useCanvasRenderer(
     canvasRef: RefObject<HTMLCanvasElement | null>,
