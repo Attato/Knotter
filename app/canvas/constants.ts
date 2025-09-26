@@ -13,11 +13,11 @@ export const NODE_MOVE_MAX_STEP = 50;
 export const MAX_CANVAS_ITEMS = 250;
 
 export const NODE_SHAPE_TYPES: NodeShapeType[] = [
-    'octagon',
+    'point',
     'circle',
     'squircle',
-    'hexagon',
     'triangle',
     'diamond',
-    'point',
+    'hexagon',
+    'octagon',
 ];
