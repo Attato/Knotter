@@ -4,7 +4,7 @@ import { useEffect, useRef, RefObject } from 'react';
 import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 
-import { MenuItem, useCanvasMenuItems } from '@/canvas/hooks/useCanvasMenuItems';
+import { MenuItem, useContextMenuItems } from '@/canvas/hooks/useContextMenuItems';
 
 type CanvasContextMenuProps = {
     isOpen: boolean;
@@ -15,7 +15,7 @@ type CanvasContextMenuProps = {
 
 export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
     const menuRef = useRef<HTMLDivElement | null>(null);
-    const { menuItems, offset } = useCanvasMenuItems();
+    const { menuItems, offset } = useContextMenuItems();
 
     useEffect(() => {
         if (offset.x || offset.y) {
@@ -36,6 +36,7 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
                 disabled={item.disabled}
                 shortcut={item.shortcut}
                 submenu={item.submenu?.map((sub, subIdx) => renderMenuItem(sub, close, subIdx))}
+                icon={item.icon}
             >
                 {item.label}
             </ContextMenuItem>
