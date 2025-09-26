@@ -21,7 +21,6 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
     const [isDraggingNodes, setIsDraggingNodes] = useState(false);
     const [dragStartMouse, setDragStartMouse] = useState<Position | null>(null);
     const [initialNodePositions, setInitialNodePositions] = useState<Map<string, Position>>(new Map());
-    const [clickedNodeId, setClickedNodeId] = useState<string | null>(null);
 
     const onMouseDown = useCallback(
         (e: MouseEvent) => {
@@ -31,7 +30,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             const mousePos = getMousePosition(e, canvas);
             updateMousePosition(mousePos);
 
-            const items = useCanvasStore.getState().items;
+            const { items, selectedItemIds } = useCanvasStore.getState();
             const nodes = getNodes(items);
             const edges = getEdges(items);
 
@@ -40,41 +39,21 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             if (!clickedNode && !clickedEdge) return;
 
-            const itemId = clickedNode?.id || clickedEdge!.id;
-            const allItems = [...nodes, ...edges];
-            const isModifierPressed = e.ctrlKey || e.metaKey || e.shiftKey;
+            const clickedItem = clickedNode || clickedEdge!;
 
-            let newSelectedIds = selectedItemIds;
+            const newSelectedIds = selectCanvasItem(items, selectedItemIds, clickedItem.id, e);
 
-            if (!selectedItemIds.includes(itemId) || isModifierPressed) {
-                newSelectedIds = selectCanvasItem(allItems, selectedItemIds, itemId, e);
-                setSelectedItemIds(newSelectedIds);
-                setClickedNodeId(null);
+            setSelectedItemIds(newSelectedIds);
+
+            handleOpenInspector(clickedItem);
+
+            if (clickedNode) {
+                setIsDraggingNodes(true);
+                setDragStartMouse(mousePos);
+                setInitialNodePositions(prepareDrag(nodes, newSelectedIds));
             }
-
-            if (!clickedNode) return;
-
-            setIsDraggingNodes(true);
-            setDragStartMouse(mousePos);
-            setInitialNodePositions(prepareDrag(nodes, newSelectedIds));
-
-            if (clickedNode && selectedItemIds.includes(clickedNode.id) && clickedNodeId !== clickedNode.id) {
-                setClickedNodeId(clickedNode.id);
-            }
-
-            const isAlreadySelected = selectedItemIds.includes(clickedNode.id) && !isModifierPressed;
-
-            if (!isAlreadySelected) return;
-
-            if (clickedNodeId === clickedNode.id) {
-                handleOpenInspector(clickedNode);
-                setClickedNodeId(null);
-                return;
-            }
-
-            setClickedNodeId(clickedNode.id);
         },
-        [canvasRef, selectedItemIds, setSelectedItemIds, clickedNodeId, updateMousePosition],
+        [canvasRef, setSelectedItemIds, updateMousePosition],
     );
 
     const onMouseMove = useCallback(
