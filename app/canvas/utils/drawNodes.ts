@@ -43,7 +43,7 @@ export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selected
                 drawSquircle(ctx, x, y, nodeSize, options);
                 break;
             case 'point':
-                drawPoint(ctx, x, y, 3, options);
+                drawPoint(ctx, x, y, 1, options);
                 break;
         }
 
