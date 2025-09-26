@@ -30,7 +30,7 @@ export default function CanvasSidebarItem({
         <button
             onMouseDown={onMouseDown}
             className={`w-full px-4 py-2 rounded-md outline-none tabular-nums cursor-pointer ${
-                isSelected ? 'bg-[#388bfd1a] focus-visible:bg-[#388bfd26]' : 'bg-card hover:bg-ui focus-visible:bg-ui'
+                isSelected ? 'bg-bg-accent/10 focus-visible:bg-bg-accent/15' : 'bg-card hover:bg-ui focus-visible:bg-ui'
             }`}
             onClick={(e) => {
                 e.stopPropagation();
