@@ -1,3 +1,5 @@
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 import { DrawOptions } from '@/canvas/canvas.types';
 
 function fillAndStroke(ctx: CanvasRenderingContext2D, fillStyle?: string, strokeStyle?: string, lineWidth: number = 1) {
@@ -18,6 +20,11 @@ function getDefaultColors(): { fill?: string; stroke?: string } {
     const fill = styles.getPropertyValue('--background')?.trim() || undefined;
     const stroke = styles.getPropertyValue('--contrast')?.trim() || undefined;
     return { fill, stroke };
+}
+
+function invertY(cy: number, yOffset: number) {
+    const invert = useCanvasStore.getState().invertY;
+    return invert ? cy + yOffset : cy - yOffset;
 }
 
 export function drawOctagon(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number, options: DrawOptions = {}) {
@@ -109,14 +116,25 @@ export function drawTriangle(
     size: number,
     options: DrawOptions = {},
 ) {
-    const { fillStyle, strokeStyle, lineWidth = 1, cornerRadius = 4 } = { ...getDefaultColors(), ...options };
+    const {
+        fillStyle,
+        strokeStyle,
+        lineWidth = 1,
+        cornerRadius = 4,
+    } = {
+        ...getDefaultColors(),
+        ...options,
+    };
+
     const height = (Math.sqrt(3) / 2) * size;
     const half = size / 2;
 
+    const verticalOffset = height / 12;
+
     const points = [
-        { x: cx, y: cy - height / 2 },
-        { x: cx + half, y: cy + height / 2 },
-        { x: cx - half, y: cy + height / 2 },
+        { x: cx, y: invertY(cy, (height * 2) / 3 - verticalOffset) },
+        { x: cx + half, y: invertY(cy, -height / 3 - verticalOffset) },
+        { x: cx - half, y: invertY(cy, -height / 3 - verticalOffset) },
     ];
 
     ctx.save();
@@ -133,8 +151,14 @@ export function drawTriangle(
         const lenPrev = Math.hypot(vPrev.x, vPrev.y);
         const lenNext = Math.hypot(vNext.x, vNext.y);
 
-        const p1 = { x: curr.x - (vPrev.x / lenPrev) * cornerRadius, y: curr.y - (vPrev.y / lenPrev) * cornerRadius };
-        const p2 = { x: curr.x + (vNext.x / lenNext) * cornerRadius, y: curr.y + (vNext.y / lenNext) * cornerRadius };
+        const p1 = {
+            x: curr.x - (vPrev.x / lenPrev) * cornerRadius,
+            y: curr.y - (vPrev.y / lenPrev) * cornerRadius,
+        };
+        const p2 = {
+            x: curr.x + (vNext.x / lenNext) * cornerRadius,
+            y: curr.y + (vNext.y / lenNext) * cornerRadius,
+        };
 
         if (i === 0) ctx.moveTo(p1.x, p1.y);
         else ctx.lineTo(p1.x, p1.y);
@@ -198,7 +222,7 @@ export function drawPoint(
     ctx: CanvasRenderingContext2D,
     cx: number,
     cy: number,
-    radius: number = 3,
+    radius: number = 1,
     options: DrawOptions = {},
 ) {
     const { fillStyle, strokeStyle, lineWidth = 1 } = { ...getDefaultColors(), ...options };
