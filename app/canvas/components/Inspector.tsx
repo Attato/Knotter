@@ -1,105 +1,83 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { CanvasItem, NodeType } from '@/canvas/canvas.types';
+import { useState } from 'react';
+import { CanvasItem, NodeShapeType } from '@/canvas/canvas.types';
+import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
-import { Octagon, Circle, Squircle, Hexagon, Triangle, Diamond, Dot, type LucideIcon } from 'lucide-react';
 import { handleItemNameChange } from '@/canvas/utils/handleItemNameChange';
+import { NODE_SHAPE_TYPES } from '@/canvas/constants';
+import { getShape } from '@/canvas/utils/getShape';
+import Dropdown from '@/components/UI/Dropdown';
 
 type InspectorProps = {
     item: CanvasItem;
 };
 
-const NODE_TYPES: NodeType[] = ['octagon', 'circle', 'squircle', 'hexagon', 'triangle', 'diamond', 'point'];
-
-const ICONS: Record<NodeType, LucideIcon> = {
-    octagon: Octagon,
-    circle: Circle,
-    squircle: Squircle,
-    hexagon: Hexagon,
-    triangle: Triangle,
-    diamond: Diamond,
-    point: Dot,
-};
-
 const AxisInfo = ({ label, value }: { label: string; value: number }) => (
-    <div className="flex gap-2 bg-card px-2 py-1 rounded-md items-center w-full">
+    <div className="flex gap-2 bg-ui px-2 py-1 rounded-md items-center w-full">
         <div className="w-5 flex justify-center">{label}</div>
-        <div className="w-px bg-border h-6" />
+        <div className="w-px bg-border-light h-6" />
         <span className="select-text">{value.toFixed(0)}</span>
     </div>
 );
 
 export default function Inspector({ item }: InspectorProps) {
-    const { items, setItems } = useCanvasStore();
+    const { items } = useCanvasStore();
     const [name, setName] = useState(item.name);
-    const [nodeType, setNodeType] = useState<NodeType | null>(item.kind === 'node' ? item.type : null);
-    const [isOpen, setIsOpen] = useState(false);
 
     const currentItem = items.find((i) => i.id === item.id) || item;
+    const nodeType = currentItem.kind === 'node' ? currentItem.shapeType : null;
 
-    useEffect(() => {
-        setName(item.name);
-        if (item.kind === 'node') setNodeType(item.type);
-    }, [item]);
+    const { changeNodeShapeType } = useCanvasHandlers();
 
-    const handleTypeChange = (newType: NodeType) => {
+    const handleChangeNodeShapeType = (newType: NodeShapeType) => {
         if (item.kind !== 'node') return;
-
-        setNodeType(newType);
-        setItems(items.map((i) => (i.kind === 'node' && i.id === item.id ? { ...i, type: newType } : i)));
-        setIsOpen(false);
-    };
-
-    const ShapePreview = ({ type, size }: { type: NodeType; size: number }) => {
-        const Icon = ICONS[type];
-        return <Icon size={size} />;
+        changeNodeShapeType([item.id], newType);
     };
 
     return (
-        <div className="flex flex-col m-2 relative gap-2">
-            <div className="flex">
-                {nodeType && (
-                    <>
-                        <button
-                            onClick={() => setIsOpen((prev) => !prev)}
-                            className={`h-8 px-2 flex items-center gap-1 justify-center rounded-l-md ${isOpen ? 'bg-ui' : 'bg-card'} hover:bg-ui border-r border-border cursor-pointer`}
-                        >
-                            <ShapePreview type={nodeType} size={20} />
-                        </button>
+        <div className="flex flex-col m-2 gap-2">
+            <input
+                type="text"
+                value={name}
+                onChange={(e) => {
+                    setName(e.target.value);
+                    handleItemNameChange(item, e.target.value);
+                }}
+                className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-3 text-sm rounded-md focus:outline-none"
+                placeholder="Название"
+            />
 
-                        {isOpen && (
-                            <div className="absolute top-full left-0 mt-1 bg-card rounded-md shadow-lg z-50 flex flex-col">
-                                {NODE_TYPES.map((type) => (
-                                    <button
-                                        key={type}
-                                        onClick={() => handleTypeChange(type)}
-                                        className="w-full flex items-center gap-2 px-2 py-1 hover:bg-ui cursor-pointer rounded-md"
-                                    >
-                                        <ShapePreview type={type} size={24} />
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </>
-                )}
+            <Dropdown title="Форма">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(80px,min-content))] gap-2">
+                    {NODE_SHAPE_TYPES.map((type) => {
+                        const shape = getShape(type);
+                        const Icon = shape.icon;
+                        const isActive = nodeType === type;
+                        return (
+                            <button
+                                key={type}
+                                onClick={() => handleChangeNodeShapeType(type)}
+                                className={`flex flex-col items-center gap-1 px-2 py-1 rounded-md cursor-pointer max-w-[96px] w-full focus-visible:outline-0 ${
+                                    isActive
+                                        ? 'text-text-accent bg-bg-accent/10 hover:bg-bg-accent/10 focus-visible:bg-bg-accent/15'
+                                        : ' hover:bg-ui focus-visible:bg-ui'
+                                }`}
+                            >
+                                <Icon size={24} />
+                                <span className="text-xs truncate overflow-hidden w-full text-center">{shape.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </Dropdown>
 
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.target.value);
-                        handleItemNameChange(item, e.target.value);
-                    }}
-                    className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-9 text-sm rounded-r-md focus:outline-none"
-                    placeholder="Название"
-                />
-            </div>
+            <Dropdown title="Трансформация">
+                <p className="text-sm">Позиция</p>
 
-            <div className="flex justify-between gap-2">
                 <AxisInfo label="X" value={currentItem.position.x} />
                 <AxisInfo label="Y" value={currentItem.position.y} />
-            </div>
+            </Dropdown>
         </div>
     );
 }
