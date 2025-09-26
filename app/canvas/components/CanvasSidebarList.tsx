@@ -1,9 +1,9 @@
 'use client';
 
-import { CanvasItem } from '@/canvas/canvas.types';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import CanvasSidebarItem from '@/canvas/components/CanvasSidebarItem';
-import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
+
+import { useCanvasSidebarList } from '@/canvas/hooks/useCanvasSidebarList';
+
 import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 
 type CanvasSidebarListProps = {
@@ -11,20 +11,7 @@ type CanvasSidebarListProps = {
 };
 
 export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps) {
-    const { selectedItemIds, setSelectedItemIds, setItems } = useCanvasStore();
-    const canvasItems = useCanvasStore((state) => state.items);
-
-    const filteredItems = canvasItems.filter((item) => item.name.toLowerCase().includes(filterText.toLowerCase()));
-
-    const handleChange = (updated: CanvasItem) => {
-        const updatedItems = canvasItems.map((i) => (i.id === updated.id ? updated : i));
-        setItems(updatedItems);
-    };
-
-    const handleSelect = (e: React.MouseEvent, itemId: string) => {
-        const newSelectedIds = selectCanvasItem(canvasItems, selectedItemIds, itemId, e);
-        setSelectedItemIds(newSelectedIds);
-    };
+    const { filteredItems, handleChange, handleSelect, handleKeyDown, selectedItemIds } = useCanvasSidebarList(filterText);
 
     return (
         <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2">
@@ -40,18 +27,7 @@ export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps
                             onSelect={(e) => handleSelect(e, item.id)}
                             onChange={handleChange}
                             onDoubleClick={() => handleOpenInspector?.(item)}
-                            onKeyDown={(e) => {
-                                if (e.key !== 'Enter') return;
-
-                                const isSelected = selectedItemIds.includes(item.id);
-
-                                if (!isSelected) {
-                                    setSelectedItemIds([...selectedItemIds, item.id]);
-                                    return;
-                                }
-
-                                handleOpenInspector?.(item);
-                            }}
+                            onKeyDown={(e) => handleKeyDown(e, item)}
                         />
                     ))
                 )}
