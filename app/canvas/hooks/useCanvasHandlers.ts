@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { CanvasState, Position } from '@/canvas/canvas.types';
+import { CanvasState, Position, NodeShapeType } from '@/canvas/canvas.types';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
@@ -128,6 +128,14 @@ export function useCanvasHandlers() {
             if (!selectedItem) return;
 
             handleOpenInspector(selectedItem);
+        },
+
+        changeNodeShapeType: (nodeIds: string[], newShape: NodeShapeType) => {
+            pushHistory();
+            const updatedItems = items.map((i) =>
+                i.kind === 'node' && nodeIds.includes(i.id) ? { ...i, shapeType: newShape } : i,
+            );
+            setItems(updatedItems);
         },
     };
 }
