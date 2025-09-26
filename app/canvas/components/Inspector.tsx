@@ -1,38 +1,73 @@
 'use client';
 
-import { useState } from 'react';
-import { CanvasItem, NodeShapeType } from '@/canvas/canvas.types';
+import { useState, useEffect } from 'react';
+import { NODE_SHAPE_TYPES, NODE_MOVE_MIN_STEP } from '@/canvas/constants';
+
+import { CanvasItem, NodeShapeType, Position } from '@/canvas/canvas.types';
+
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
+
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 import { handleItemNameChange } from '@/canvas/utils/handleItemNameChange';
-import { NODE_SHAPE_TYPES } from '@/canvas/constants';
+import { moveNodes } from '@/canvas/utils/moveNodes';
+import { getNodes } from '@/canvas/utils/getNodes';
 import { getShape } from '@/canvas/utils/getShape';
+
+import InfiniteSliderInput from '@/components/UI/InfiniteSliderInput';
 import Dropdown from '@/components/UI/Dropdown';
 
 type InspectorProps = {
     item: CanvasItem;
 };
 
-const AxisInfo = ({ label, value }: { label: string; value: number }) => (
-    <div className="flex gap-2 bg-ui px-2 py-1 rounded-md items-center w-full">
-        <div className="w-5 flex justify-center">{label}</div>
-        <div className="w-px bg-border-light h-6" />
-        <span className="select-text">{value.toFixed(0)}</span>
-    </div>
-);
-
 export default function Inspector({ item }: InspectorProps) {
-    const { items } = useCanvasStore();
+    const { items, setItems, selectedItemIds, nodeMoveStep } = useCanvasStore();
+
     const [name, setName] = useState(item.name);
 
-    const currentItem = items.find((i) => i.id === item.id) || item;
-    const nodeType = currentItem.kind === 'node' ? currentItem.shapeType : null;
+    useEffect(() => {
+        setName(item.name);
+    }, [item.id, item.name]);
+
+    const handleChangeName = (newName: string) => {
+        setName(newName);
+        handleItemNameChange(item, newName);
+    };
+
+    const nodesOnly = getNodes(items);
+    const currentNode = nodesOnly.find((n) => n.id === item.id) || item;
+    const nodeType = currentNode.kind === 'node' ? currentNode.shapeType : null;
 
     const { changeNodeShapeType } = useCanvasHandlers();
 
     const handleChangeNodeShapeType = (newType: NodeShapeType) => {
-        if (item.kind !== 'node') return;
-        changeNodeShapeType([item.id], newType);
+        if (currentNode.kind !== 'node') return;
+        changeNodeShapeType([currentNode.id], newType);
+    };
+
+    const handleMove = (axis: 'x' | 'y', value: number) => {
+        if (currentNode.kind !== 'node') return;
+
+        const initialPositions = new Map<string, Position>();
+        selectedItemIds.forEach((id) => {
+            const node = nodesOnly.find((n) => n.id === id);
+            if (node) initialPositions.set(id, node.position);
+        });
+
+        const delta: Position = {
+            x: axis === 'x' ? value - currentNode.position.x : 0,
+            y: axis === 'y' ? value - currentNode.position.y : 0,
+        };
+
+        const updatedNodes = moveNodes(nodesOnly, selectedItemIds, initialPositions, delta, nodeMoveStep);
+
+        const updatedItems = items.map((i) => {
+            const updatedNode = updatedNodes.find((n) => n.id === i.id);
+            return updatedNode ? updatedNode : i;
+        });
+
+        setItems(updatedItems);
     };
 
     return (
@@ -40,10 +75,7 @@ export default function Inspector({ item }: InspectorProps) {
             <input
                 type="text"
                 value={name}
-                onChange={(e) => {
-                    setName(e.target.value);
-                    handleItemNameChange(item, e.target.value);
-                }}
+                onChange={(e) => handleChangeName(e.target.value)}
                 className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-3 text-sm rounded-md focus:outline-none"
                 placeholder="Название"
             />
@@ -73,10 +105,21 @@ export default function Inspector({ item }: InspectorProps) {
             </Dropdown>
 
             <Dropdown title="Трансформация">
-                <p className="text-sm">Позиция</p>
+                <p className="text-sm">Положение</p>
 
-                <AxisInfo label="X" value={currentItem.position.x} />
-                <AxisInfo label="Y" value={currentItem.position.y} />
+                <InfiniteSliderInput
+                    label="X"
+                    value={currentNode.position.x}
+                    step={NODE_MOVE_MIN_STEP}
+                    onChange={(val) => handleMove('x', val)}
+                />
+
+                <InfiniteSliderInput
+                    label="Y"
+                    value={currentNode.position.y}
+                    step={NODE_MOVE_MIN_STEP}
+                    onChange={(val) => handleMove('y', val)}
+                />
             </Dropdown>
         </div>
     );
