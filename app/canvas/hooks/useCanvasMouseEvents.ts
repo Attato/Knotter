@@ -43,7 +43,12 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             const clickedItem = clickedNode || clickedEdge!;
 
-            const newSelectedIds = selectCanvasItem(items, selectedItemIds, clickedItem.id, e);
+            const newSelectedIds = selectCanvasItem({
+                items,
+                selectedIds: selectedItemIds,
+                itemId: clickedItem.id,
+                event: e,
+            });
 
             setSelectedItemIds(newSelectedIds);
 
