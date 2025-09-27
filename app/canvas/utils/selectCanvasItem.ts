@@ -7,14 +7,14 @@ export interface SelectCanvasItemEvent {
 }
 
 export interface SelectCanvasItemParams<T extends CanvasItem> {
-    items: readonly T[];
-    selectedIds: readonly string[];
+    items?: readonly T[];
+    selectedIds?: readonly string[];
     itemId: string;
     event: SelectCanvasItemEvent;
 }
 
 export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemParams<T>): string[] {
-    const { items, selectedIds, itemId, event: e } = params;
+    const { items = [], selectedIds = [], itemId, event: e } = params;
 
     const item = items.find((i) => i.id === itemId);
     if (!item) return [...selectedIds];
