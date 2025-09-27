@@ -27,7 +27,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             const canvas = canvasRef.current;
             if (!canvas) return;
 
-            if (e.button === 1) return;
+            if (e.button !== 0) return;
 
             const mousePos = getMousePosition(e, canvas);
             updateMousePosition(mousePos);
