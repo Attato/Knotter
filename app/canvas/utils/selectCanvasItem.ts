@@ -1,25 +1,55 @@
 import { CanvasItem } from '@/canvas/canvas.types';
 
-export function selectCanvasItem<T extends CanvasItem>(
-    items: T[],
-    selectedIds: string[],
-    itemId: string,
-    e: Pick<MouseEvent, 'ctrlKey' | 'metaKey' | 'shiftKey'>,
-): string[] {
-    if (e.shiftKey && selectedIds.length > 0) {
-        const ids = items.map((i) => i.id);
+export interface SelectCanvasItemEvent {
+    ctrlKey: boolean;
+    metaKey: boolean;
+    shiftKey: boolean;
+}
+
+export interface SelectCanvasItemParams<T extends CanvasItem> {
+    items: readonly T[];
+    selectedIds: readonly string[];
+    itemId: string;
+    event: SelectCanvasItemEvent;
+}
+
+export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemParams<T>): string[] {
+    const { items, selectedIds, itemId, event: e } = params;
+
+    const item = items.find((i) => i.id === itemId);
+    if (!item) return [...selectedIds];
+
+    const idToIndex = new Map(items.map((i, index) => [i.id, index]));
+
+    if (e.shiftKey && selectedIds.length > 0 && item.kind === 'node') {
         const lastSelectedId = selectedIds[selectedIds.length - 1];
-        const start = ids.indexOf(lastSelectedId);
-        const end = ids.indexOf(itemId);
+        const start = idToIndex.get(lastSelectedId);
+        const end = idToIndex.get(itemId);
 
-        if (start === -1 || end === -1) return [];
+        if (start !== undefined && end !== undefined) {
+            const [from, to] = start < end ? [start, end] : [end, start];
+            const newSelection = new Set(selectedIds);
+            items.slice(from, to + 1).forEach((i) => newSelection.add(i.id));
+            return Array.from(newSelection);
+        }
 
-        const [from, to] = start < end ? [start, end] : [end, start];
-        return ids.slice(from, to + 1);
+        return [...selectedIds];
     }
 
     if (e.ctrlKey || e.metaKey) {
-        return selectedIds.includes(itemId) ? selectedIds.filter((id) => id !== itemId) : [...selectedIds, itemId];
+        const newSelection = new Set(selectedIds);
+
+        if (newSelection.has(itemId)) {
+            newSelection.delete(itemId);
+        } else {
+            newSelection.add(itemId);
+        }
+
+        return Array.from(newSelection);
+    }
+
+    if (selectedIds.includes(itemId)) {
+        return [...selectedIds];
     }
 
     return [itemId];
