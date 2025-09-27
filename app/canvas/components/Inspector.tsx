@@ -80,7 +80,7 @@ export default function Inspector({ item }: InspectorProps) {
                 placeholder="Название"
             />
 
-            <Dropdown title="Форма">
+            <Dropdown title="Форма" disabled={item.kind === 'edge'}>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(80px,min-content))] gap-2">
                     {NODE_SHAPE_TYPES.map((type) => {
                         const shape = getShape(type);
@@ -104,19 +104,19 @@ export default function Inspector({ item }: InspectorProps) {
                 </div>
             </Dropdown>
 
-            <Dropdown title="Трансформация">
+            <Dropdown title="Трансформация" disabled={item.kind === 'edge'}>
                 <p className="text-sm">Положение</p>
 
                 <InfiniteSliderInput
                     label="X"
-                    value={currentNode.position.x}
+                    value={currentNode.kind !== 'edge' ? currentNode.position.x : 0}
                     step={NODE_MOVE_MIN_STEP}
                     onChange={(val) => handleMove('x', val)}
                 />
 
                 <InfiniteSliderInput
                     label="Y"
-                    value={currentNode.position.y}
+                    value={currentNode.kind !== 'edge' ? currentNode.position.y : 0}
                     step={NODE_MOVE_MIN_STEP}
                     onChange={(val) => handleMove('y', val)}
                 />

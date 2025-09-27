@@ -6,22 +6,30 @@ import { ChevronDown } from 'lucide-react';
 type DropdownProps = {
     title: string;
     children: React.ReactNode;
+    disabled?: boolean;
 };
 
-export default function Dropdown({ title, children }: DropdownProps) {
+export default function Dropdown({ title, children, disabled = false }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
 
+    const toggle = () => {
+        if (!disabled) setIsOpen((prev) => !prev);
+    };
+
     return (
-        <div className="flex flex-col gap-1 bg-card rounded-md">
+        <div className={`flex flex-col gap-1 rounded-md bg-card ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
             <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex justify-start gap-2 items-center px-3 py-2 w-full cursor-pointer text-sm"
+                onClick={toggle}
+                disabled={disabled}
+                className={`flex justify-start gap-2 items-center px-3 py-2 w-full text-sm transition-colors ${
+                    disabled ? 'cursor-not-allowed text-gray' : 'cursor-pointer hover:bg-accent'
+                }`}
             >
-                <ChevronDown className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} size={16} />
+                <ChevronDown className={`transition-transform ${isOpen && !disabled ? 'rotate-180' : ''}`} size={16} />
                 {title}
             </button>
 
-            {isOpen && <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>}
+            {isOpen && !disabled && <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>}
         </div>
     );
 }
