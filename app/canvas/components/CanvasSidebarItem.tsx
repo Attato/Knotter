@@ -13,7 +13,6 @@ interface CanvasSidebarItemProps {
     onSelect: (e: MouseEvent<HTMLButtonElement>) => void;
     onChange?: (updatedItem: CanvasItem) => void;
     onMouseDown?: () => void;
-    onDoubleClick?: () => void;
     onKeyDown?: (e: KeyboardEvent<HTMLButtonElement>) => void;
 }
 
@@ -23,7 +22,6 @@ export default function CanvasSidebarItem({
     onSelect,
     onChange,
     onMouseDown,
-    onDoubleClick,
     onKeyDown,
 }: CanvasSidebarItemProps) {
     return (
@@ -35,10 +33,6 @@ export default function CanvasSidebarItem({
             onClick={(e) => {
                 e.stopPropagation();
                 onSelect(e);
-            }}
-            onDoubleClick={(e) => {
-                e.stopPropagation();
-                onDoubleClick?.();
             }}
             onKeyDown={onKeyDown}
         >
