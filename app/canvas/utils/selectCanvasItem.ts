@@ -21,7 +21,7 @@ export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemP
 
     const idToIndex = new Map(items.map((i, index) => [i.id, index]));
 
-    if (e.shiftKey && selectedIds.length > 0 && item.kind === 'node') {
+    if (e.shiftKey && selectedIds.length > 0) {
         const lastSelectedId = selectedIds[selectedIds.length - 1];
         const start = idToIndex.get(lastSelectedId);
         const end = idToIndex.get(itemId);
