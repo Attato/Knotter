@@ -31,6 +31,12 @@ export function useCanvasSidebarList(filterText: string) {
         setSelectedItemIds(newSelectedIds);
     };
 
+    const handleDeselectOnEmptyClick = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            setSelectedItemIds([]);
+        }
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent, item: CanvasItem) => {
         if (e.key !== 'Enter') return;
         const isSelected = selectedItemIds.includes(item.id);
@@ -43,5 +49,12 @@ export function useCanvasSidebarList(filterText: string) {
         handleOpenInspector?.(item);
     };
 
-    return { filteredItems, handleChange, handleSelect, handleKeyDown, selectedItemIds };
+    return {
+        filteredItems,
+        handleChange,
+        handleSelect,
+        handleKeyDown,
+        handleDeselectOnEmptyClick,
+        selectedItemIds,
+    };
 }
