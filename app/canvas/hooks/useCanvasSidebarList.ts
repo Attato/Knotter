@@ -17,7 +17,17 @@ export function useCanvasSidebarList(filterText: string) {
     };
 
     const handleSelect = (e: React.MouseEvent, itemId: string) => {
-        const newSelectedIds = selectCanvasItem(canvasItems, selectedItemIds, itemId, e);
+        const newSelectedIds = selectCanvasItem({
+            items: canvasItems,
+            selectedIds: selectedItemIds,
+            itemId,
+            event: {
+                ctrlKey: e.ctrlKey,
+                metaKey: e.metaKey,
+                shiftKey: e.shiftKey,
+            },
+        });
+
         setSelectedItemIds(newSelectedIds);
     };
 
