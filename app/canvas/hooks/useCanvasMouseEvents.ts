@@ -14,7 +14,7 @@ import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 
-export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | null>) {
+export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | null>, isPanningRef?: RefObject<boolean>) {
     const { setItems, nodeMoveStep, tempEdge, setTempEdge, selectedItemIds, setSelectedItemIds, updateMousePosition } =
         useCanvasStore();
 
@@ -26,6 +26,8 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
         (e: MouseEvent) => {
             const canvas = canvasRef.current;
             if (!canvas) return;
+
+            if (e.button === 1) return;
 
             const mousePos = getMousePosition(e, canvas);
             updateMousePosition(mousePos);
@@ -64,11 +66,15 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             const mousePos = getMousePosition(e, canvas);
             updateMousePosition(mousePos);
 
+            if (isPanningRef?.current) return;
+
             const items = useCanvasStore.getState().items;
             const nodes = getNodes(items);
 
-            const hoveredNode = findNodeUnderCursor(nodes, mousePos);
-            canvas.style.cursor = hoveredNode ? 'move' : 'default';
+            if (!isDraggingNodes) {
+                const hoveredNode = findNodeUnderCursor(nodes, mousePos);
+                canvas.style.cursor = hoveredNode ? 'move' : 'default';
+            }
 
             if (tempEdge) {
                 setTempEdge({ ...tempEdge, toPos: mousePos });
@@ -102,6 +108,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             tempEdge,
             setTempEdge,
             updateMousePosition,
+            isPanningRef,
         ],
     );
 

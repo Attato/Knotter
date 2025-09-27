@@ -3,12 +3,19 @@ import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
 
-export function getPanEventHandlers(isPanningRef: RefObject<boolean>, lastMouseRef: RefObject<Position | null>) {
+export function getPanEventHandlers(
+    isPanningRef: RefObject<boolean>,
+    lastMouseRef: RefObject<Position | null>,
+    canvasRef?: RefObject<HTMLCanvasElement | null>,
+) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
         e.preventDefault();
+
         isPanningRef.current = true;
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
+
+        if (canvasRef?.current) canvasRef.current.style.cursor = 'grabbing';
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -25,6 +32,8 @@ export function getPanEventHandlers(isPanningRef: RefObject<boolean>, lastMouseR
         });
 
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
+
+        if (canvasRef?.current) canvasRef.current.style.cursor = 'grabbing';
     };
 
     const handleMouseUp = () => {

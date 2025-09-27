@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, RefObject } from 'react';
+import { useEffect, RefObject, useRef } from 'react';
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
 import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
@@ -14,35 +14,35 @@ export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>
 
     const { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, handleSelectionArea } = useCanvasSelection();
 
-    const { onMouseDown, onMouseMove, onMouseUp } = useCanvasMouseEvents(canvasRef);
+    const isPanningRef = useRef(false);
+    const lastMouseRef = useRef<{ x: number; y: number } | null>(null);
+
+    const { onMouseDown, onMouseMove, onMouseUp } = useCanvasMouseEvents(canvasRef, isPanningRef);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const isPanningRef = { current: false };
-        const lastMouseRef = { current: null as { x: number; y: number } | null };
-
-        const panHandlers = getPanEventHandlers(isPanningRef, lastMouseRef);
+        const panHandlers = getPanEventHandlers(isPanningRef, lastMouseRef, canvasRef);
         const selectHandlers = getSelectionEventHandler(setSelectionStart, setSelectionEnd, handleSelectionArea);
         const handleScroll = getScrollEventHandler();
         const handleZoom = getZoomEventHandler(canvas);
 
         const handleMouseDown = (e: MouseEvent) => {
-            onMouseDown(e);
             panHandlers.handleMouseDown(e);
+            onMouseDown(e);
             selectHandlers.handleMouseDown(e);
         };
 
         const handleMouseMove = (e: MouseEvent) => {
-            onMouseMove(e);
             panHandlers.handleMouseMove(e);
+            onMouseMove(e);
             selectHandlers.handleMouseMove(e);
         };
 
         const handleMouseUp = (e: MouseEvent) => {
-            onMouseUp(e);
             panHandlers.handleMouseUp();
+            onMouseUp(e);
             selectHandlers.handleMouseUp(e);
         };
 
