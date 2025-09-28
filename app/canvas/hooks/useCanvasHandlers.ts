@@ -5,7 +5,6 @@ import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
 import { handleAddItem } from '@/canvas/utils/handleAddItem';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
-import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 import { moveNodes } from '@/canvas/utils/moveNodes';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
@@ -120,14 +119,6 @@ export function useCanvasHandlers() {
             const movedNodes = moveNodes(nodes, selectedItemIds, initialPositions, { x: dx, y: dy }, 1);
 
             setItems([...movedNodes, ...edges]);
-        },
-
-        openInspector: () => {
-            if (selectedItemIds.length !== 1) return;
-            const selectedItem = items.find((i) => i.id === selectedItemIds[0]);
-            if (!selectedItem) return;
-
-            handleOpenInspector(selectedItem);
         },
 
         changeNodeShapeType: (nodeIds: string[], newShape: NodeShapeType) => {

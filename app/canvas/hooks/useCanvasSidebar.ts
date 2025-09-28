@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import useVerticalResize from '@/canvas/hooks/useVerticalResize';
 
 export function useCanvasSidebar() {
-    const { items, inspectorItem, setInspectorItem } = useCanvasStore();
+    const { items } = useCanvasStore();
 
     const [filterText, setFilterText] = useState('');
     const topBlockRef = useRef<HTMLDivElement | null>(null);
@@ -24,12 +24,6 @@ export function useCanvasSidebar() {
 
     const { height: inspectorHeight, isResizing, startResize } = useVerticalResize(600, 120, topOffset);
 
-    useEffect(() => {
-        if (inspectorItem && !items.some((i) => i.id === inspectorItem.id)) {
-            setInspectorItem(null);
-        }
-    }, [items, inspectorItem, setInspectorItem]);
-
     return {
         filterText,
         setFilterText,
@@ -38,6 +32,5 @@ export function useCanvasSidebar() {
         isResizing,
         startResize,
         items,
-        inspectorItem,
     };
 }

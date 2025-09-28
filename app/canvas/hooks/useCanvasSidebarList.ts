@@ -3,7 +3,6 @@
 import { CanvasItem } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
-import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 
 export function useCanvasSidebarList(filterText: string) {
     const canvasItems = useCanvasStore((state) => state.items);
@@ -45,8 +44,6 @@ export function useCanvasSidebarList(filterText: string) {
             setSelectedItemIds([...selectedItemIds, item.id]);
             return;
         }
-
-        handleOpenInspector?.(item);
     };
 
     return {

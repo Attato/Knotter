@@ -9,8 +9,7 @@ import { Home, Search } from 'lucide-react';
 import { useCanvasSidebar } from '@/canvas/hooks/useCanvasSidebar';
 
 export default function CanvasSidebar() {
-    const { filterText, setFilterText, topBlockRef, inspectorHeight, isResizing, startResize, items, inspectorItem } =
-        useCanvasSidebar();
+    const { filterText, setFilterText, topBlockRef, inspectorHeight, isResizing, startResize } = useCanvasSidebar();
 
     return (
         <Sidebar>
@@ -44,18 +43,11 @@ export default function CanvasSidebar() {
                     style={{ height: inspectorHeight }}
                     className="overflow-y-auto bg-background-alt border-t border-border"
                 >
-                    {inspectorItem && items.some((i) => i.id === inspectorItem.id) ? (
-                        <Inspector item={inspectorItem} />
-                    ) : (
-                        <div className="flex justify-center items-center h-full text-gray text-sm text-center">
-                            Выберите элемент для инспектора
-                        </div>
-                    )}
+                    <Inspector />
                 </div>
 
                 <div className="flex justify-between p-1 gap-2 h-[42px] border-t border-border">
                     <ThemeToggle />
-
                     <Link href="/" className="w-fit bg-card hover:bg-ui border border-border p-2 rounded-md cursor-pointer">
                         <Home size={16} />
                     </Link>

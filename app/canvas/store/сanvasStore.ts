@@ -36,9 +36,6 @@ interface CanvasState {
 
     mousePosition: Position;
     updateMousePosition: (pos: Position) => void;
-
-    inspectorItem: CanvasItem | null;
-    setInspectorItem: (item: CanvasItem | null) => void;
 }
 
 export const useCanvasStore = create<CanvasState>()(
@@ -92,9 +89,6 @@ export const useCanvasStore = create<CanvasState>()(
                     latestMousePosition = position;
                     scheduleMouseUpdate();
                 },
-
-                inspectorItem: null,
-                setInspectorItem: (item) => set({ inspectorItem: item }),
             };
         },
         {

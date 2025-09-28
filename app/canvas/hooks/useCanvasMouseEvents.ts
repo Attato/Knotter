@@ -9,7 +9,6 @@ import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 import { moveNodes } from '@/canvas/utils/moveNodes';
 import { prepareDrag } from '@/canvas/utils/prepareDrag';
 import { handleAddItem } from '@/canvas/utils/handleAddItem';
-import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 import { useCanvasStore } from '@/canvas/store/сanvasStore';
@@ -51,8 +50,6 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             });
 
             setSelectedItemIds(newSelectedIds);
-
-            handleOpenInspector(clickedItem);
 
             if (clickedNode) {
                 setIsDraggingNodes(true);

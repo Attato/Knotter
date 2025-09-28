@@ -4,8 +4,6 @@ import CanvasSidebarItem from '@/canvas/components/CanvasSidebarItem';
 
 import { useCanvasSidebarList } from '@/canvas/hooks/useCanvasSidebarList';
 
-import { handleOpenInspector } from '@/canvas/utils/handleOpenInspector';
-
 type CanvasSidebarListProps = {
     filterText: string;
 };
@@ -13,12 +11,6 @@ type CanvasSidebarListProps = {
 export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps) {
     const { filteredItems, handleChange, handleSelect, handleKeyDown, handleDeselectOnEmptyClick, selectedItemIds } =
         useCanvasSidebarList(filterText);
-
-    const handleSelectWithInspector = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
-        handleSelect(e, id);
-        const item = filteredItems.find((i) => i.id === id);
-        if (item) handleOpenInspector?.(item);
-    };
 
     return (
         <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2" onClick={handleDeselectOnEmptyClick}>
@@ -31,7 +23,7 @@ export default function CanvasSidebarList({ filterText }: CanvasSidebarListProps
                             key={item.id}
                             canvasItem={item}
                             isSelected={selectedItemIds.includes(item.id)}
-                            onSelect={(e) => handleSelectWithInspector(e, item.id)}
+                            onSelect={(e) => handleSelect(e, item.id)}
                             onChange={handleChange}
                             onKeyDown={(e) => handleKeyDown(e, item)}
                         />

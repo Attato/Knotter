@@ -81,8 +81,6 @@ export function useContextMenuItems() {
         ];
 
         return [
-            createItem('Открыть в инспекторе', handlers.openInspector, { disabled: selectedItemIds.length !== 1 }),
-            createDivider(),
             { label: 'Выбрать', submenu: selectGroup },
             { label: 'Добавить', submenu: addGroup },
             {
