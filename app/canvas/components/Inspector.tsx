@@ -62,7 +62,7 @@ export default function Inspector() {
     };
 
     return (
-        <div className="flex flex-col m-2 gap-2">
+        <div className="flex flex-col h-full overflow-y-auto m-2 gap-2">
             {!selectedItem ? (
                 <div className="flex justify-center items-center h-full text-gray text-sm text-center">
                     Выберите элемент для инспектора

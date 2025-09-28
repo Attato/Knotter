@@ -39,10 +39,7 @@ export default function CanvasSidebar() {
                     onMouseDown={startResize}
                 />
 
-                <div
-                    style={{ height: inspectorHeight }}
-                    className="overflow-y-auto bg-background-alt border-t border-border"
-                >
+                <div style={{ height: inspectorHeight }} className="bg-background-alt border-t border-border">
                     <Inspector />
                 </div>
 
