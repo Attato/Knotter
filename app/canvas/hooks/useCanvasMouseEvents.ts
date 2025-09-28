@@ -69,7 +69,19 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             if (!isDraggingNodes) {
                 const hoveredNode = findNodeUnderCursor(nodes, mousePos);
-                canvas.style.cursor = hoveredNode ? 'move' : 'default';
+                const edges = getEdges(items);
+                const hoveredEdge = !hoveredNode ? findEdgeUnderCursor(edges, nodes, mousePos) : null;
+
+                switch (true) {
+                    case !!hoveredNode:
+                        canvas.style.cursor = 'move';
+                        break;
+                    case !!hoveredEdge:
+                        canvas.style.cursor = 'pointer';
+                        break;
+                    default:
+                        canvas.style.cursor = 'default';
+                }
             }
 
             if (tempEdge) {
@@ -169,7 +181,19 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             setPendingClickItemId(null);
             setInitialNodePositions(new Map());
 
-            canvas.style.cursor = 'default';
+            const hoveredNode = findNodeUnderCursor(getNodes(items), mousePos);
+            const hoveredEdge = !hoveredNode ? findEdgeUnderCursor(getEdges(items), getNodes(items), mousePos) : null;
+
+            switch (true) {
+                case !!hoveredNode:
+                    canvas.style.cursor = 'move';
+                    break;
+                case !!hoveredEdge:
+                    canvas.style.cursor = 'pointer';
+                    break;
+                default:
+                    canvas.style.cursor = 'default';
+            }
         },
         [canvasRef, isDraggingNodes, pendingClickItemId, setSelectedItemIds, tempEdge, setTempEdge, setItems],
     );
