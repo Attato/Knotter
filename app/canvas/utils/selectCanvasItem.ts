@@ -48,9 +48,5 @@ export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemP
         return Array.from(newSelection);
     }
 
-    if (selectedIds.includes(itemId)) {
-        return [...selectedIds];
-    }
-
     return [itemId];
 }
