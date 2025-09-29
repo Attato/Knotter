@@ -10,7 +10,7 @@ type SidebarProps = {
     children: ReactNode;
 };
 
-const SIDEBAR_MIN_WIDTH = 240;
+const SIDEBAR_MIN_WIDTH = 320;
 const SIDEBAR_BASE_WIDTH = 480;
 const SIDEBAR_MAX_WIDTH = typeof window !== 'undefined' ? window.innerWidth * 0.8 : 1600;
 
