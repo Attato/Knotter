@@ -23,3 +23,6 @@ export const NODE_SHAPE_TYPES: NodeShapeType[] = [
     'hexagon',
     'octagon',
 ];
+
+export const MAX_INPUT_LENGTH = 36;
+export const MAX_TEXTAREA_LENGTH = 512;
