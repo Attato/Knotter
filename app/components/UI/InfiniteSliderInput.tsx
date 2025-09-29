@@ -37,8 +37,8 @@ export default function InfiniteSliderInput({ value, step = 1, onChange, label }
     };
 
     return (
-        <div className="flex gap-2 items-center select-none w-full">
-            {label && <label className="text-sm font-medium">{label}</label>}
+        <div className="flex justify-end gap-2 items-center select-none w-full">
+            {label && <label className="text-sm font-medium w-full text-right text-nowrap">{label}</label>}
 
             <div
                 onMouseDown={handleMouseDown}
