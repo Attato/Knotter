@@ -20,6 +20,8 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
         const keysPressed = new Set<string>();
 
         const onKeyDown = (e: KeyboardEvent) => {
+            if (e.repeat) return;
+
             const key = e.key.toLowerCase();
             const target = e.target as HTMLElement;
 
