@@ -19,6 +19,7 @@ export interface DrawOptions {
 export interface Node {
     id: string;
     name: string;
+    description?: string;
     shapeType: NodeShapeType;
     position: Position;
     kind: 'node';
@@ -27,6 +28,7 @@ export interface Node {
 export interface Edge {
     id: string;
     name: string;
+    description?: string;
     from: string;
     to: string;
     position: Position;
