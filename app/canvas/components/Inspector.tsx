@@ -14,22 +14,36 @@ import { getShape } from '@/canvas/utils/getShape';
 
 import InfiniteSliderInput from '@/components/UI/InfiniteSliderInput';
 import Dropdown from '@/components/UI/Dropdown';
+import Textarea from '@/components/UI/Textarea';
+import Input from '@/components/UI/Input';
 
 export default function Inspector() {
     const { items, setItems, selectedItemIds, nodeMoveStep } = useCanvasStore();
     const selectedItem = items.find((i) => selectedItemIds.includes(i.id)) ?? null;
 
     const [name, setName] = useState(selectedItem?.name ?? '');
+    const [description, setDescription] = useState(selectedItem?.description ?? '');
+
     const { changeNodeShapeType } = useCanvasHandlers();
 
     useEffect(() => {
-        if (selectedItem) setName(selectedItem.name);
-    }, [selectedItem, selectedItem?.name]);
+        if (selectedItem) {
+            setName(selectedItem.name);
+            setDescription(selectedItem.description ?? '');
+        }
+    }, [selectedItem, selectedItem?.name, selectedItem?.description]);
 
     const handleChangeName = (newName: string) => {
         if (!selectedItem) return;
         setName(newName);
         handleItemNameChange(selectedItem, newName);
+    };
+
+    const handleChangeDescription = (newDesc: string) => {
+        if (!selectedItem) return;
+        setDescription(newDesc);
+
+        setItems(items.map((i) => (i.id === selectedItem.id ? { ...i, description: newDesc } : i)));
     };
 
     const nodesOnly = getNodes(items);
@@ -69,13 +83,9 @@ export default function Inspector() {
                 </div>
             ) : (
                 <>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => handleChangeName(e.target.value)}
-                        className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-3 text-sm rounded-md focus:outline-none"
-                        placeholder="Название"
-                    />
+                    <Input value={name} onChange={handleChangeName} placeholder="Название" />
+
+                    <Textarea value={description} onChange={handleChangeDescription} placeholder="Описание" />
 
                     <Dropdown title="Форма" disabled={selectedItem.kind === 'edge'}>
                         <div className="grid grid-cols-[repeat(auto-fit,minmax(80px,min-content))] gap-2">
@@ -104,10 +114,8 @@ export default function Inspector() {
                     </Dropdown>
 
                     <Dropdown title="Трансформация" disabled={selectedItem.kind === 'edge'}>
-                        <p className="text-sm">Положение</p>
-
                         <InfiniteSliderInput
-                            label="X"
+                            label="Положение X"
                             value={currentNode?.kind !== 'edge' ? (currentNode?.position.x ?? 0) : 0}
                             step={NODE_MOVE_MIN_STEP}
                             onChange={(val) => handleMove('x', val)}
