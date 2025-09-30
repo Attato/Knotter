@@ -4,15 +4,67 @@ import Link from 'next/link';
 
 import ThemeToggle from '@/components/ThemeToggle';
 
+import { useCanvasStore } from '@/canvas/store/сanvasStore';
+
 import { useClickOutside } from '@/canvas/hooks/useClickOutside';
 
-import { Menu, Home, Download } from 'lucide-react';
+import { Menu, Home, FolderOpen, Download } from 'lucide-react';
 
 export function CanvasControlsMenu() {
+    const { setItems } = useCanvasStore();
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     useClickOutside(menuRef, () => setOpen(false));
+
+    const handleOpen = async () => {
+        try {
+            let file: File | undefined;
+
+            if ('showOpenFilePicker' in window) {
+                const [fileHandle]: FileSystemFileHandle[] = await (
+                    window as unknown as {
+                        showOpenFilePicker: (options?: OpenFilePickerOptions) => Promise<FileSystemFileHandle[]>;
+                    }
+                ).showOpenFilePicker({
+                    types: [{ description: 'Knotter JSON', accept: { 'application/json': ['.knotter.json'] } }],
+                    multiple: false,
+                });
+
+                file = await fileHandle.getFile();
+            } else {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.knotter.json';
+                input.style.display = 'none';
+                document.body.appendChild(input);
+                input.click();
+
+                file = await new Promise<File | undefined>((resolve) => {
+                    input.onchange = () => resolve(input.files?.[0]);
+                });
+
+                document.body.removeChild(input);
+            }
+
+            if (!file) return;
+
+            const text = await file.text();
+            const parsed = JSON.parse(text);
+
+            localStorage.setItem('canvas-storage', JSON.stringify(parsed));
+
+            setItems(parsed.state?.items ?? parsed.items ?? []);
+
+            console.log('Файл успешно загружен');
+        } catch (err: unknown) {
+            if (err instanceof DOMException && err.name === 'AbortError') {
+                console.log('Открытие файла отменено пользователем');
+            } else {
+                console.error('Ошибка при открытии файла:', err);
+            }
+        }
+    };
 
     const handleSaveAs = async () => {
         try {
@@ -64,10 +116,17 @@ export function CanvasControlsMenu() {
                 <div className="flex flex-col bg-background-alt rounded-md shadow max-w-60 w-full text-nowrap">
                     <div className="flex flex-col gap-1 m-1">
                         <button
+                            onClick={handleOpen}
+                            className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
+                        >
+                            Открыть
+                            <FolderOpen size={16} />
+                        </button>
+                        <button
                             onClick={handleSaveAs}
                             className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
                         >
-                            Скачать
+                            Сохранить как
                             <Download size={16} />
                         </button>
 
