@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Link from 'next/link';
 
@@ -27,6 +27,12 @@ export function CanvasControls({ isMagnet, showGrid, showAxes, toggleShowGrid, t
         { active: showGrid, onClick: toggleShowGrid, Icon: Grid2x2, label: 'Сетка (G)' },
         { active: showAxes, onClick: toggleShowAxes, Icon: Move3d, label: 'Оси (A)' },
     ];
+
+    useEffect(() => {
+        const closeMenu = () => setMenuOpen(false);
+        if (menuOpen) window.addEventListener('click', closeMenu);
+        return () => window.removeEventListener('click', closeMenu);
+    }, [menuOpen]);
 
     return (
         <div className="absolute top-4 left-0 right-0 px-4 flex justify-between items-start z-10 text-sm">
