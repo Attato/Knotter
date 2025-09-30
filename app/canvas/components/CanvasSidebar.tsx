@@ -1,12 +1,13 @@
 'use client';
 
-import Link from 'next/link';
+import { useCanvasSidebar } from '@/canvas/hooks/useCanvasSidebar';
+
 import Sidebar from '@/components/UI/Sidebar';
-import ThemeToggle from '@/components/ThemeToggle';
+
 import CanvasSidebarList from '@/canvas/components/CanvasSidebarList';
 import Inspector from '@/canvas/components/Inspector';
-import { Home, Search } from 'lucide-react';
-import { useCanvasSidebar } from '@/canvas/hooks/useCanvasSidebar';
+
+import { Search } from 'lucide-react';
 
 export default function CanvasSidebar() {
     const { filterText, setFilterText, topBlockRef, inspectorHeight, isResizing, startResize } = useCanvasSidebar();
@@ -14,7 +15,7 @@ export default function CanvasSidebar() {
     return (
         <Sidebar>
             <div className="flex flex-col h-full relative">
-                <div ref={topBlockRef} className="flex flex-col">
+                <div ref={topBlockRef}>
                     <div className="flex items-center gap-2 m-1">
                         <div className="relative flex-1">
                             <input
@@ -41,13 +42,6 @@ export default function CanvasSidebar() {
 
                 <div style={{ height: inspectorHeight }} className="bg-background-alt border-t border-border">
                     <Inspector />
-                </div>
-
-                <div className="flex justify-between p-1 gap-2 h-[42px] border-t border-border">
-                    <ThemeToggle />
-                    <Link href="/" className="w-fit bg-card hover:bg-ui border border-border p-2 rounded-md cursor-pointer">
-                        <Home size={16} />
-                    </Link>
                 </div>
             </div>
         </Sidebar>
