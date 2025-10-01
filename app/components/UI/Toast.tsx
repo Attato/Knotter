@@ -67,7 +67,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         (message: string, type: ToastType = 'info') => {
             const id = uuidv4();
             setToasts((prev) => [{ id, message, type, isLeaving: false, height: 0 }, ...prev]);
-            setTimeout(() => removeToast(id), 40000);
+            setTimeout(() => removeToast(id), 4000);
         },
         [removeToast],
     );
