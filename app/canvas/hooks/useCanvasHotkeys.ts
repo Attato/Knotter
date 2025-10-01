@@ -2,7 +2,7 @@ import { useEffect, RefObject } from 'react';
 
 import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
 
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';

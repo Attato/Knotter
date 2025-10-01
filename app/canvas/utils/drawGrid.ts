@@ -1,4 +1,4 @@
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export function drawGrid(
     ctx: CanvasRenderingContext2D,

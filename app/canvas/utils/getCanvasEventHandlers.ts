@@ -1,5 +1,5 @@
 import { RefObject } from 'react';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position } from '@/canvas/canvas.types';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
 

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { CanvasState } from '@/canvas/canvas.types';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { MAX_UNDO_STEPS } from '@/canvas/constants';
 
 export function useCanvasHistory() {

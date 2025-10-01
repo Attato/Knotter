@@ -14,7 +14,7 @@ import { cloneNodesWithInsertionGap } from '@/canvas/utils/cloneNodesWithInserti
 import { cloneEdgesForNewNodes } from '@/canvas/utils/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export function useCanvasHandlers() {
     const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge, mousePosition } = useCanvasStore();

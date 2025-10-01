@@ -1,5 +1,5 @@
 import { Position } from '@/canvas/canvas.types';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export function getSelectionEventHandler(
     setSelectionStart: (value: Position | null) => void,

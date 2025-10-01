@@ -1,5 +1,5 @@
 import { useLayoutEffect, RefObject } from 'react';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export function useInitialCanvasOffset(canvasRef: RefObject<HTMLCanvasElement | null>) {
     const { offset, setOffset } = useCanvasStore();

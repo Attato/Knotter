@@ -1,5 +1,5 @@
 import { CanvasItem } from '@/canvas/canvas.types';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export const handleItemNameChange = (item: CanvasItem, newName: string) => {
     const { items, setItems } = useCanvasStore.getState();

@@ -1,7 +1,7 @@
 'use client';
 
 import { CanvasItem } from '@/canvas/canvas.types';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 
 export function useCanvasSidebarList(filterText: string) {

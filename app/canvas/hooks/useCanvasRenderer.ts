@@ -7,7 +7,7 @@ import { Position, CanvasItem, Node, Edge } from '@/canvas/canvas.types';
 
 import { NODE_SIZE } from '@/canvas/constants';
 
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { drawNodes } from '@/canvas/utils/drawNodes';
 import { drawEdges } from '@/canvas/utils/drawEdges';

@@ -5,7 +5,7 @@ import { NODE_SHAPE_TYPES, NODE_MOVE_MIN_STEP } from '@/canvas/constants';
 import { NodeShapeType, Position } from '@/canvas/canvas.types';
 
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { handleItemNameChange } from '@/canvas/utils/handleItemNameChange';
 import { moveNodes } from '@/canvas/utils/moveNodes';

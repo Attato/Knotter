@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useLayoutEffect } from 'react';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import useVerticalResize from '@/canvas/hooks/useVerticalResize';
 
 export function useCanvasSidebar() {

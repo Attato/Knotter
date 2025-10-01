@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { Position } from '@/canvas/canvas.types';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getItemsInSelectionArea } from '@/canvas/utils/getItemsInSelectionArea';
 

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { NodeShapeType } from '../canvas.types';
 
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { getNodes } from '@/canvas/utils/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';

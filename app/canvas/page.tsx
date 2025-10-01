@@ -10,7 +10,7 @@ import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
 import { useContextMenu } from '@/hooks/useContextMenu';
 
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

@@ -1,4 +1,4 @@
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position } from '@/canvas/canvas.types';
 
 export function getMousePosition(e: MouseEvent, canvas: HTMLCanvasElement): Position {

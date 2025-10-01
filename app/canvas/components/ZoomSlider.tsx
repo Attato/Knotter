@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
 
 interface ZoomSliderProps {

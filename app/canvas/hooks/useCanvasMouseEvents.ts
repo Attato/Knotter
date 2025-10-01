@@ -6,7 +6,7 @@ import { Position } from '@/canvas/canvas.types';
 
 import { DRAG_THRESHOLD } from '@/canvas/constants';
 
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { findNodeUnderCursor } from '@/canvas/utils/findNodeUnderCursor';

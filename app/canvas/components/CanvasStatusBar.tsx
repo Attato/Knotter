@@ -4,7 +4,7 @@ import { RefObject } from 'react';
 
 import { ZoomSlider } from '@/canvas/components/ZoomSlider';
 
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { getCanvasCenter } from '@/canvas/utils/getCanvasCenter';
 

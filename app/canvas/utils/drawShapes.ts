@@ -1,4 +1,4 @@
-import { useCanvasStore } from '@/canvas/store/сanvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { DrawOptions } from '@/canvas/canvas.types';
 
