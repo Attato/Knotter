@@ -7,6 +7,8 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { useCanvasFileActions } from '@/canvas/hooks/useCanvasFileActions';
 import { useClickOutside } from '@/canvas/hooks/useClickOutside';
 
+import { useCanvasStore } from '@/canvas/store/canvasStore';
+
 import { Menu, Home, FolderOpen, Download, CircleHelp } from 'lucide-react';
 
 export function CanvasControlsMenu() {
@@ -18,15 +20,24 @@ export function CanvasControlsMenu() {
     const popupRef = useRef<HTMLDivElement>(null);
 
     const { handleOpen, handleSaveAs } = useCanvasFileActions();
+    const { items, savedItems } = useCanvasStore();
 
     useClickOutside(menuRef, () => setOpen(false));
     useClickOutside(popupRef, () => setShowSavePopup(false));
 
+    const hasUnsavedChanges = JSON.stringify(items) !== JSON.stringify(savedItems);
+
+    const withSaveCheck = (action: () => void) => {
+        if (hasUnsavedChanges) {
+            setPendingAction(() => action);
+            setShowSavePopup(true);
+        } else {
+            action();
+        }
+    };
+
     const onOpenProject = () => {
-        setPendingAction(() => () => {
-            handleOpen();
-        });
-        setShowSavePopup(true);
+        withSaveCheck(handleOpen);
     };
 
     const handleSaveAndProceed = async () => {
@@ -67,7 +78,7 @@ export function CanvasControlsMenu() {
                             <FolderOpen size={16} />
                         </button>
                         <button
-                            onClick={handleSaveAs}
+                            onClick={() => withSaveCheck(handleSaveAs)}
                             className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
                         >
                             Сохранить как
@@ -82,7 +93,17 @@ export function CanvasControlsMenu() {
                     <Link
                         href="/"
                         className="flex items-center justify-between gap-2 bg-card hover:bg-ui px-3 py-2 m-1 rounded-md text-axis-y"
-                        onClick={() => setOpen(false)}
+                        onClick={(e) => {
+                            if (hasUnsavedChanges) {
+                                e.preventDefault();
+                                setPendingAction(() => () => {
+                                    window.location.href = '/';
+                                });
+                                setShowSavePopup(true);
+                            } else {
+                                setOpen(false);
+                            }
+                        }}
                     >
                         На главную
                         <Home size={16} />
