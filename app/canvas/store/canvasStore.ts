@@ -7,6 +7,9 @@ interface CanvasState {
     items: CanvasItem[];
     setItems: (items: CanvasItem[]) => void;
 
+    savedItems: CanvasItem[];
+    setSavedItems: (items: CanvasItem[]) => void;
+
     selectedItemIds: string[];
     setSelectedItemIds: (ids: string[]) => void;
 
@@ -57,6 +60,9 @@ export const useCanvasStore = create<CanvasState>()(
                 items: [],
                 setItems: (items) => set({ items }),
 
+                savedItems: [],
+                setSavedItems: (items) => set({ savedItems: items }),
+
                 selectedItemIds: [],
                 setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
 
@@ -95,6 +101,7 @@ export const useCanvasStore = create<CanvasState>()(
             name: 'canvas-storage',
             partialize: (state) => ({
                 items: state.items,
+                savedItems: state.savedItems,
                 selectedItemIds: state.selectedItemIds,
                 nodeMoveStep: state.nodeMoveStep,
                 offset: state.offset,
