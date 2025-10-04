@@ -10,7 +10,7 @@ const FILE_TYPES: FilePickerAcceptType[] = [
 ];
 
 export function useCanvasFileActions() {
-    const { setItems } = useCanvasStore();
+    const { setItems, setSavedItems } = useCanvasStore();
     const { addToast } = useToast();
 
     const isFileSystemAccessSupported = () => 'showOpenFilePicker' in window && 'showSaveFilePicker' in window;
@@ -52,7 +52,9 @@ export function useCanvasFileActions() {
                 return;
             }
 
-            const parsed = JSON.parse(await file.text()) as { state?: { items?: CanvasItem[] } };
+            const parsed = JSON.parse(await file.text()) as {
+                state?: { items?: CanvasItem[] };
+            };
             const items = Array.isArray(parsed.state?.items) ? parsed.state.items : [];
 
             if (!items.length) {
@@ -63,6 +65,7 @@ export function useCanvasFileActions() {
             localStorage.setItem('canvas-storage', JSON.stringify({ state: { items } }));
 
             setItems(items);
+            setSavedItems(items);
             addToast('Файл успешно загружен', 'success');
         } catch (err) {
             if (err instanceof DOMException && err.name === 'AbortError') {
@@ -76,6 +79,7 @@ export function useCanvasFileActions() {
     const handleSaveAs = async () => {
         try {
             const rawData = localStorage.getItem('canvas-storage');
+
             if (!rawData) {
                 addToast('Нет данных для сохранения', 'error');
                 return;
@@ -113,6 +117,7 @@ export function useCanvasFileActions() {
                 URL.revokeObjectURL(url);
             }
 
+            setSavedItems(items);
             addToast('Файл успешно сохранен', 'success');
         } catch (err) {
             if (err instanceof DOMException && err.name === 'AbortError') {
