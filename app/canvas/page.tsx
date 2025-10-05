@@ -15,8 +15,14 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const { items, selectedItemIds, tempEdge, isMagnet, showGrid, toggleShowGrid, showAxes, toggleShowAxes } =
-        useCanvasStore();
+    const items = useCanvasStore((s) => s.items);
+    const selectedItemIds = useCanvasStore((s) => s.selectedItemIds);
+    const tempEdge = useCanvasStore((s) => s.tempEdge);
+    const isMagnet = useCanvasStore((s) => s.isMagnet);
+    const showGrid = useCanvasStore((s) => s.showGrid);
+    const showAxes = useCanvasStore((s) => s.showAxes);
+    const toggleShowGrid = useCanvasStore((s) => s.toggleShowGrid);
+    const toggleShowAxes = useCanvasStore((s) => s.toggleShowAxes);
 
     const { selectionStart, selectionEnd } = useCanvasControls(canvasRef);
 
