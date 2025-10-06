@@ -7,17 +7,18 @@ export function drawGrid(
     showGrid = false,
     showAxes = false,
 ) {
-    const { offset, zoomLevel: zoom } = useCanvasStore.getState();
+    const offset = useCanvasStore.getState().offset;
+    const zoomLevel = useCanvasStore.getState().zoomLevel;
 
     const baseGridSize = 50;
 
-    const lineWidth = 1 / zoom;
+    const lineWidth = 1 / zoomLevel;
     ctx.lineWidth = lineWidth;
 
-    const worldLeft = -offset.x / zoom;
-    const worldTop = -offset.y / zoom;
-    const worldRight = worldLeft + canvasWidth / zoom;
-    const worldBottom = worldTop + canvasHeight / zoom;
+    const worldLeft = -offset.x / zoomLevel;
+    const worldTop = -offset.y / zoomLevel;
+    const worldRight = worldLeft + canvasWidth / zoomLevel;
+    const worldBottom = worldTop + canvasHeight / zoomLevel;
 
     const styles = getComputedStyle(document.documentElement);
     const gridColor1 = styles.getPropertyValue('--grid-color-1').trim();
@@ -34,7 +35,7 @@ export function drawGrid(
         ];
 
         for (const { step, color } of levels) {
-            if (step * zoom < 8) continue;
+            if (step * zoomLevel < 8) continue;
 
             ctx.beginPath();
             ctx.strokeStyle = color;
