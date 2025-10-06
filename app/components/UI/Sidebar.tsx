@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 import useSidebarResize from '@/hooks/useSidebarResize';
 
 type SidebarProps = {
@@ -14,7 +14,7 @@ const SIDEBAR_MIN_WIDTH = 320;
 const SIDEBAR_BASE_WIDTH = 480;
 const SIDEBAR_MAX_WIDTH = typeof window !== 'undefined' ? window.innerWidth * 0.8 : 1600;
 
-export default function Sidebar({
+export const Sidebar = memo(function Sidebar({
     minWidth = SIDEBAR_MIN_WIDTH,
     baseWidth = SIDEBAR_BASE_WIDTH,
     maxWidth = SIDEBAR_MAX_WIDTH,
@@ -39,4 +39,4 @@ export default function Sidebar({
             </div>
         </aside>
     );
-}
+});
