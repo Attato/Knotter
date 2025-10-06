@@ -44,6 +44,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
         const newNode: Node = {
             id: uuidv4(),
             name,
+            description: '',
             shapeType: 'point',
             position: { x, y },
             kind: 'node',
@@ -68,6 +69,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
         const newEdge: Edge = {
             id: uuidv4(),
             name,
+            description: '',
             from: fromNode.id,
             to: toNode.id,
             position: params.position ?? {
