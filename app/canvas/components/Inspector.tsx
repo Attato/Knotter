@@ -1,135 +1,58 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { NODE_SHAPE_TYPES, NODE_MOVE_MIN_STEP } from '@/canvas/constants';
-import { NodeShapeType, Position } from '@/canvas/canvas.types';
+import { memo, useMemo } from 'react';
 
-import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
-import { useCanvasStore } from '@/canvas/store/canvasStore';
+import { useInspector } from '@/canvas/hooks/useInspector';
 
-import { handleItemNameChange } from '@/canvas/utils/handleItemNameChange';
-import { moveNodes } from '@/canvas/utils/moveNodes';
-import { getNodes } from '@/canvas/utils/getNodes';
-import { getShape } from '@/canvas/utils/getShape';
+import { Input } from '@/components/UI/Input';
+import { Textarea } from '@/components/UI/Textarea';
+import { Dropdown } from '@/components/UI/Dropdown';
 
-import InfiniteSliderInput from '@/components/UI/InfiniteSliderInput';
-import Dropdown from '@/components/UI/Dropdown';
-import Textarea from '@/components/UI/Textarea';
-import Input from '@/components/UI/Input';
+import { ShapeButtons } from '@/canvas/components/ShapeButtons';
+import { PositionInputs } from '@/canvas/components/PositionInputs';
 
-export default function Inspector() {
-    const { items, setItems, selectedItemIds, nodeMoveStep } = useCanvasStore();
-    const selectedItem = items.find((i) => selectedItemIds.includes(i.id)) ?? null;
+export const Inspector = memo(function Inspector() {
+    const { selectedItem, currentItem, handleChangeName, handleChangeDescription, handleChangeNodeShapeType, handleMove } =
+        useInspector();
 
-    const [name, setName] = useState(selectedItem?.name ?? '');
-    const [description, setDescription] = useState(selectedItem?.description ?? '');
+    const isEdge = selectedItem?.kind === 'edge';
+    const shapeType = currentItem?.kind === 'node' ? currentItem.shapeType : null;
+    const positionX = currentItem?.position.x ?? 0;
+    const positionY = currentItem?.position.y ?? 0;
 
-    const { changeNodeShapeType } = useCanvasHandlers();
+    const shapeButtons = useMemo(() => {
+        if (!selectedItem || isEdge) return null;
 
-    useEffect(() => {
-        if (selectedItem) {
-            setName(selectedItem.name);
-            setDescription(selectedItem.description ?? '');
-        }
-    }, [selectedItem, selectedItem?.name, selectedItem?.description]);
+        return <ShapeButtons shapeType={shapeType} onTypeChange={handleChangeNodeShapeType} />;
+    }, [selectedItem, isEdge, shapeType, handleChangeNodeShapeType]);
 
-    const handleChangeName = (newName: string) => {
-        if (!selectedItem) return;
-        setName(newName);
-        handleItemNameChange(selectedItem, newName);
-    };
+    const positionInputs = useMemo(() => {
+        if (!selectedItem || isEdge) return null;
 
-    const handleChangeDescription = (newDesc: string) => {
-        if (!selectedItem) return;
-        setDescription(newDesc);
+        return <PositionInputs positionX={positionX} positionY={positionY} onMove={handleMove} />;
+    }, [selectedItem, isEdge, positionX, positionY, handleMove]);
 
-        setItems(items.map((i) => (i.id === selectedItem.id ? { ...i, description: newDesc } : i)));
-    };
-
-    const nodesOnly = getNodes(items);
-    const currentNode = selectedItem ? nodesOnly.find((n) => n.id === selectedItem.id) || selectedItem : null;
-    const nodeType = currentNode?.kind === 'node' ? currentNode.shapeType : null;
-
-    const handleChangeNodeShapeType = (newType: NodeShapeType) => {
-        if (!currentNode || currentNode.kind !== 'node') return;
-        changeNodeShapeType([currentNode.id], newType);
-    };
-
-    const handleMove = (axis: 'x' | 'y', value: number) => {
-        if (!currentNode || currentNode.kind !== 'node') return;
-
-        const initialPositions = new Map<string, Position>();
-        selectedItemIds.forEach((id) => {
-            const node = nodesOnly.find((n) => n.id === id);
-            if (node) initialPositions.set(id, node.position);
-        });
-
-        const delta: Position = {
-            x: axis === 'x' ? value - currentNode.position.x : 0,
-            y: axis === 'y' ? value - currentNode.position.y : 0,
-        };
-
-        const updatedNodes = moveNodes(nodesOnly, selectedItemIds, initialPositions, delta, nodeMoveStep);
-        const updatedItems = items.map((i) => updatedNodes.find((n) => n.id === i.id) ?? i);
-
-        setItems(updatedItems);
-    };
+    if (!selectedItem) {
+        return (
+            <div className="flex justify-center items-center h-full text-gray text-sm text-center">
+                Выберите элемент для инспектора
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full overflow-y-auto m-2 gap-2">
-            {!selectedItem ? (
-                <div className="flex justify-center items-center h-full text-gray text-sm text-center">
-                    Выберите элемент для инспектора
-                </div>
-            ) : (
-                <>
-                    <Input value={name} onChange={handleChangeName} placeholder="Название" />
+            <Input value={selectedItem.name} onChange={handleChangeName} placeholder="Название" />
 
-                    <Textarea value={description} onChange={handleChangeDescription} placeholder="Описание" />
+            <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
 
-                    <Dropdown title="Форма" disabled={selectedItem.kind === 'edge'}>
-                        <div className="grid grid-cols-[repeat(auto-fit,minmax(80px,min-content))] gap-2">
-                            {NODE_SHAPE_TYPES.map((type) => {
-                                const shape = getShape(type);
-                                const Icon = shape.icon;
-                                const isActive = nodeType === type;
-                                return (
-                                    <button
-                                        key={type}
-                                        onClick={() => handleChangeNodeShapeType(type)}
-                                        className={`flex flex-col items-center gap-1 px-2 py-1 rounded-md cursor-pointer max-w-[96px] w-full focus-visible:outline-0 ${
-                                            isActive
-                                                ? 'text-text-accent bg-bg-accent/10 hover:bg-bg-accent/10 focus-visible:bg-bg-accent/15'
-                                                : 'hover:bg-ui focus-visible:bg-ui'
-                                        }`}
-                                    >
-                                        <Icon size={24} />
-                                        <span className="text-xs truncate overflow-hidden w-full text-center">
-                                            {shape.label}
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </Dropdown>
+            <Dropdown title="Форма" disabled={isEdge}>
+                {shapeButtons}
+            </Dropdown>
 
-                    <Dropdown title="Трансформация" disabled={selectedItem.kind === 'edge'}>
-                        <InfiniteSliderInput
-                            label="Положение X"
-                            value={currentNode?.kind !== 'edge' ? (currentNode?.position.x ?? 0) : 0}
-                            step={NODE_MOVE_MIN_STEP}
-                            onChange={(val) => handleMove('x', val)}
-                        />
-
-                        <InfiniteSliderInput
-                            label="Y"
-                            value={currentNode?.kind !== 'edge' ? (currentNode?.position.y ?? 0) : 0}
-                            step={NODE_MOVE_MIN_STEP}
-                            onChange={(val) => handleMove('y', val)}
-                        />
-                    </Dropdown>
-                </>
-            )}
+            <Dropdown title="Трансформация" disabled={isEdge}>
+                {positionInputs}
+            </Dropdown>
         </div>
     );
-}
+});
