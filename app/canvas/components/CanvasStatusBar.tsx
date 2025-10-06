@@ -1,6 +1,6 @@
 'use client';
 
-import { RefObject } from 'react';
+import { RefObject, memo } from 'react';
 
 import { ZoomSlider } from '@/canvas/components/ZoomSlider';
 
@@ -14,8 +14,8 @@ interface CanvasStatusBarProps {
     canvasRef: RefObject<HTMLCanvasElement | null>;
 }
 
-export function CanvasStatusBar({ canvasRef }: CanvasStatusBarProps) {
-    const { items } = useCanvasStore();
+export const CanvasStatusBar = memo(function CanvasStatusBar({ canvasRef }: CanvasStatusBarProps) {
+    const itemsCount = useCanvasStore((state) => state.items.length);
 
     const center = canvasRef.current ? getCanvasCenter(canvasRef.current) : { x: 0, y: 0 };
 
@@ -28,11 +28,11 @@ export function CanvasStatusBar({ canvasRef }: CanvasStatusBarProps) {
                 </div>
 
                 <p className="tabular-nums">
-                    Количество: {items.length} / {MAX_CANVAS_ITEMS}
+                    Количество: {itemsCount} / {MAX_CANVAS_ITEMS}
                 </p>
 
                 <ZoomSlider />
             </div>
         </div>
     );
-}
+});
