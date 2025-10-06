@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, ReactNode, MouseEvent, useState } from 'react';
+import React, { ReactNode, MouseEvent, memo } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
@@ -13,18 +13,16 @@ interface ContextMenuItemProps {
     icon?: LucideIcon;
 }
 
-export const ContextMenuItem: FC<ContextMenuItemProps> = ({
+export const ContextMenuItem = memo(function ContextMenuItem({
     onClick,
     children,
     disabled = false,
     shortcut,
     submenu,
     icon: Icon,
-}) => {
-    const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
-
+}: ContextMenuItemProps) {
     return (
-        <div className="relative" onMouseEnter={() => setIsSubmenuOpen(true)} onMouseLeave={() => setIsSubmenuOpen(false)}>
+        <div className="relative group">
             <button
                 className={`flex justify-between items-center px-3 py-1 bg-card hover:bg-ui w-full text-left cursor-pointer ${
                     disabled ? 'opacity-40 cursor-not-allowed' : ''
@@ -51,11 +49,11 @@ export const ContextMenuItem: FC<ContextMenuItemProps> = ({
                 </div>
             </button>
 
-            {submenu && isSubmenuOpen && (
-                <div className="absolute top-0 left-full min-w-40 w-full bg-card border border-border-light rounded shadow-md py-1 text-sm z-50">
+            {submenu && !disabled && (
+                <div className="absolute top-0 left-full min-w-40 w-full bg-card border border-border-light rounded shadow-md py-1 text-sm z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-opacity">
                     {submenu}
                 </div>
             )}
         </div>
     );
-};
+});
