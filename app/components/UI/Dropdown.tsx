@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 type DropdownProps = {
@@ -9,12 +9,12 @@ type DropdownProps = {
     disabled?: boolean;
 };
 
-export default function Dropdown({ title, children, disabled = false }: DropdownProps) {
+export const Dropdown = memo(function Dropdown({ title, children, disabled = false }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggle = () => {
+    const toggle = useCallback(() => {
         if (!disabled) setIsOpen((prev) => !prev);
-    };
+    }, [disabled]);
 
     return (
         <div className={`flex flex-col gap-1 rounded-md bg-card ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
@@ -32,4 +32,4 @@ export default function Dropdown({ title, children, disabled = false }: Dropdown
             {isOpen && !disabled && <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>}
         </div>
     );
-}
+});
