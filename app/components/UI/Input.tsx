@@ -1,6 +1,6 @@
 'use client';
 
-import { InputHTMLAttributes } from 'react';
+import { memo, useCallback, InputHTMLAttributes } from 'react';
 import { MAX_INPUT_LENGTH } from '@/canvas/constants';
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'maxLength'> {
@@ -8,16 +8,17 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChan
     onChange: (value: string) => void;
 }
 
-export default function Input({ value, onChange, className = '', ...props }: InputProps) {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let newValue = e.target.value;
-
-        if (MAX_INPUT_LENGTH && newValue.length > MAX_INPUT_LENGTH) {
-            newValue = newValue.slice(0, MAX_INPUT_LENGTH);
-        }
-
-        onChange(newValue);
-    };
+export const Input = memo(function Input({ value, onChange, className = '', ...props }: InputProps) {
+    const handleChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            let newValue = e.target.value;
+            if (MAX_INPUT_LENGTH && newValue.length > MAX_INPUT_LENGTH) {
+                newValue = newValue.slice(0, MAX_INPUT_LENGTH);
+            }
+            onChange(newValue);
+        },
+        [onChange],
+    );
 
     return (
         <div className="relative w-full">
@@ -30,4 +31,4 @@ export default function Input({ value, onChange, className = '', ...props }: Inp
             />
         </div>
     );
-}
+});
