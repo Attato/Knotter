@@ -17,7 +17,14 @@ import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export function useCanvasHandlers() {
-    const { items, setItems, selectedItemIds, setSelectedItemIds, setTempEdge, mousePosition } = useCanvasStore();
+    const items = useCanvasStore((state) => state.items);
+    const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
+    const mousePosition = useCanvasStore((state) => state.mousePosition);
+    const setItems = useCanvasStore((state) => state.setItems);
+    const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
+    const setTempEdge = useCanvasStore((state) => state.setTempEdge);
+    const toggleShowGrid = useCanvasStore((state) => state.toggleShowGrid);
+    const toggleShowAxes = useCanvasStore((state) => state.toggleShowAxes);
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
 
@@ -25,8 +32,8 @@ export function useCanvasHandlers() {
 
     return {
         toggleMagnet: toggleMagnetMode,
-        toggleGrid: () => useCanvasStore.getState().toggleShowGrid(),
-        toggleAxes: () => useCanvasStore.getState().toggleShowAxes(),
+        toggleGrid: toggleShowGrid,
+        toggleAxes: toggleShowAxes,
 
         delete: () => {
             const newItems = handleDeleteItems(items, selectedItemIds);
@@ -34,20 +41,9 @@ export function useCanvasHandlers() {
             setSelectedItemIds([]);
         },
 
-        selectAll: () => {
-            const allIds = items.map((i) => i.id);
-            setSelectedItemIds(allIds);
-        },
-
-        selectAllNodes: () => {
-            const nodeIds = items.filter((i) => i.kind === 'node').map((n) => n.id);
-            setSelectedItemIds(nodeIds);
-        },
-
-        selectAllEdges: () => {
-            const edgeIds = items.filter((i) => i.kind === 'edge').map((e) => e.id);
-            setSelectedItemIds(edgeIds);
-        },
+        selectAll: () => setSelectedItemIds(items.map((i) => i.id)),
+        selectAllNodes: () => setSelectedItemIds(items.filter((i) => i.kind === 'node').map((n) => n.id)),
+        selectAllEdges: () => setSelectedItemIds(items.filter((i) => i.kind === 'edge').map((e) => e.id)),
 
         copy: () => {
             clipboardRef.current = {
