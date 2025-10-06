@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useRef, memo, RefObject } from 'react';
 import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 
@@ -13,7 +13,7 @@ type CanvasContextMenuProps = {
     canvasRef?: RefObject<HTMLCanvasElement | null>;
 };
 
-export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
+export const CanvasContextMenu = memo(function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
     const menuRef = useRef<HTMLDivElement | null>(null);
     const { menuItems, offset } = useContextMenuItems();
 
@@ -24,7 +24,9 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
     }, [offset.x, offset.y, closeMenu]);
 
     const renderMenuItem = (item: MenuItem, close: () => void, key: number) => {
-        if (item.type === 'divider') return <hr key={key} className="border-b-0 border-border-light my-1" />;
+        if (item.type === 'divider') {
+            return <hr key={key} className="border-b-0 border-border-light my-1" />;
+        }
 
         return (
             <ContextMenuItem
@@ -48,4 +50,4 @@ export function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContext
             {menuItems.map((item, idx) => renderMenuItem(item, closeMenu, idx))}
         </ContextMenu>
     );
-}
+});
