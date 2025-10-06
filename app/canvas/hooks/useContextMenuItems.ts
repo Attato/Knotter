@@ -26,6 +26,7 @@ export function getShapeMenuItems(
 ): MenuItem[] {
     return getAllShapes().map((type) => {
         const { label, icon } = getShape(type);
+
         return {
             label,
             icon,
@@ -35,7 +36,9 @@ export function getShapeMenuItems(
 }
 
 export function useContextMenuItems() {
-    const { items, selectedItemIds, offset } = useCanvasStore();
+    const items = useCanvasStore((state) => state.items);
+    const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
+    const offset = useCanvasStore((state) => state.offset);
 
     const nodes = useMemo(() => getNodes(items), [items]);
     const edges = useMemo(() => getEdges(items), [items]);
