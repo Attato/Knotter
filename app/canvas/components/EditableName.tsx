@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 interface EditableNameProps {
     name: string;
@@ -8,7 +8,7 @@ interface EditableNameProps {
     onChange: (newName: string) => void;
 }
 
-export function EditableName({ name, isSelected, onChange }: EditableNameProps) {
+export const EditableName = memo(function EditableName({ name, isSelected, onChange }: EditableNameProps) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(name);
 
@@ -62,4 +62,4 @@ export function EditableName({ name, isSelected, onChange }: EditableNameProps) 
             {name}
         </span>
     );
-}
+});
