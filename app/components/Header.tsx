@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import GithubBager from './GithubBager';
-import ThemeToggle from './ThemeToggle';
+import GithubBager from '@/components/GithubBager';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Header() {
     return (
