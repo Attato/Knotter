@@ -1,8 +1,7 @@
 'use client';
-import { MouseEvent, KeyboardEvent } from 'react';
+import { MouseEvent, KeyboardEvent, memo } from 'react';
 
 import { CanvasItem } from '@/canvas/canvas.types';
-
 import { EditableName } from '@/canvas/components/EditableName';
 
 import { GripVertical, ChevronRight } from 'lucide-react';
@@ -16,7 +15,7 @@ interface CanvasSidebarItemProps {
     onKeyDown?: (e: KeyboardEvent<HTMLButtonElement>) => void;
 }
 
-export default function CanvasSidebarItem({
+export const CanvasSidebarItem = memo(function CanvasSidebarItem({
     canvasItem,
     isSelected,
     onSelect,
@@ -50,4 +49,4 @@ export default function CanvasSidebarItem({
             </div>
         </button>
     );
-}
+});
