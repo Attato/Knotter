@@ -28,7 +28,10 @@ export function useCanvasRenderer(
     showAxes: boolean,
 ) {
     const { resolvedTheme } = useTheme();
-    const { offset, zoomLevel, invertY } = useCanvasStore();
+
+    const offset = useCanvasStore((state) => state.offset);
+    const zoomLevel = useCanvasStore((state) => state.zoomLevel);
+    const invertY = useCanvasStore((state) => state.invertY);
 
     useEffect(() => {
         const canvas = canvasRef.current;
