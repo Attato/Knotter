@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import CanvasSidebar from '@/canvas/components/CanvasSidebar';
+import { CanvasSidebar } from '@/canvas/components/CanvasSidebar';
 import { ToastProvider } from '@/components/UI/Toast';
 
 export default function CanvasLayout({ children }: { children: ReactNode }) {

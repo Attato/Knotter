@@ -1,15 +1,15 @@
 'use client';
 
+import { memo } from 'react';
 import { useCanvasSidebar } from '@/canvas/hooks/useCanvasSidebar';
 
-import Sidebar from '@/components/UI/Sidebar';
-
-import CanvasSidebarList from '@/canvas/components/CanvasSidebarList';
-import Inspector from '@/canvas/components/Inspector';
+import { Sidebar } from '@/components/UI/Sidebar';
+import { CanvasSidebarList } from '@/canvas/components/CanvasSidebarList';
+import { Inspector } from '@/canvas/components/Inspector';
 
 import { Search } from 'lucide-react';
 
-export default function CanvasSidebar() {
+export const CanvasSidebar = memo(function CanvasSidebar() {
     const { filterText, setFilterText, topBlockRef, inspectorHeight, isResizing, startResize } = useCanvasSidebar();
 
     return (
@@ -46,4 +46,4 @@ export default function CanvasSidebar() {
             </div>
         </Sidebar>
     );
-}
+});
