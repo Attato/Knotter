@@ -9,18 +9,29 @@ export function moveNodes(
 ): Node[] {
     const { x: dx, y: dy } = dragDelta;
 
-    return nodes.map((node) => {
+    let changed = false;
+
+    const updatedNodes = nodes.map((node) => {
         if (!selectedNodeIds.includes(node.id)) return node;
 
         const initialPos = initialNodePositions.get(node.id);
+
         if (!initialPos) return node;
+
+        const newX = Math.round((initialPos.x + dx) / nodeMoveStep) * nodeMoveStep;
+        const newY = Math.round((initialPos.y + dy) / nodeMoveStep) * nodeMoveStep;
+
+        if (newX === node.position.x && newY === node.position.y) {
+            return node;
+        }
+
+        changed = true;
 
         return {
             ...node,
-            position: {
-                x: Math.round((initialPos.x + dx) / nodeMoveStep) * nodeMoveStep,
-                y: Math.round((initialPos.y + dy) / nodeMoveStep) * nodeMoveStep,
-            },
+            position: { x: newX, y: newY },
         };
     });
+
+    return changed ? updatedNodes : nodes;
 }
