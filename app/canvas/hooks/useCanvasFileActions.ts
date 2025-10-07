@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { useToast } from '@/components/UI/Toast';
 import type { CanvasItem } from '@/canvas/canvas.types';
@@ -13,9 +14,12 @@ export function useCanvasFileActions() {
     const { setItems, setSavedItems } = useCanvasStore();
     const { addToast } = useToast();
 
-    const isFileSystemAccessSupported = () => 'showOpenFilePicker' in window && 'showSaveFilePicker' in window;
+    const isFileSystemAccessSupported = useCallback(
+        () => 'showOpenFilePicker' in window && 'showSaveFilePicker' in window,
+        [],
+    );
 
-    const handleOpen = async () => {
+    const handleOpen = useCallback(async () => {
         try {
             let file: File | undefined;
 
@@ -52,9 +56,7 @@ export function useCanvasFileActions() {
                 return;
             }
 
-            const parsed = JSON.parse(await file.text()) as {
-                state?: { items?: CanvasItem[] };
-            };
+            const parsed = JSON.parse(await file.text()) as { state?: { items?: CanvasItem[] } };
             const items = Array.isArray(parsed.state?.items) ? parsed.state.items : [];
 
             if (!items.length) {
@@ -74,9 +76,9 @@ export function useCanvasFileActions() {
                 addToast('Ошибка при открытии файла', 'error');
             }
         }
-    };
+    }, [addToast, setItems, setSavedItems, isFileSystemAccessSupported]);
 
-    const handleSaveAs = async () => {
+    const handleSaveAs = useCallback(async () => {
         try {
             const rawData = localStorage.getItem('canvas-storage');
 
@@ -126,7 +128,7 @@ export function useCanvasFileActions() {
                 addToast('Ошибка сохранения файла', 'error');
             }
         }
-    };
+    }, [addToast, setSavedItems, isFileSystemAccessSupported]);
 
     return { handleOpen, handleSaveAs };
 }
