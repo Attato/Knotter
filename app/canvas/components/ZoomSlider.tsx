@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { MIN_ZOOM, MAX_ZOOM } from '@/canvas/constants';
 
@@ -9,46 +9,69 @@ interface ZoomSliderProps {
     height?: number;
 }
 
-export function ZoomSlider({ width = 150, height = 2 }: ZoomSliderProps) {
-    const { zoomLevel, setZoomLevel } = useCanvasStore();
+export const ZoomSlider = memo(function ZoomSlider({ width = 150, height = 2 }: ZoomSliderProps) {
+    const zoomLevel = useCanvasStore((state) => state.zoomLevel);
+    const setZoomLevel = useCanvasStore((state) => state.setZoomLevel);
+
+    const [isReady, setIsReady] = useState(false);
     const sliderRef = useRef<HTMLDivElement>(null);
-    const [isDragging, setIsDragging] = useState(false);
-
-    const sliderToZoom = (value: number) => MIN_ZOOM * Math.pow(MAX_ZOOM / MIN_ZOOM, value);
-
-    const zoomToSlider = (zoom: number) => Math.log(zoom / MIN_ZOOM) / Math.log(MAX_ZOOM / MIN_ZOOM);
-
-    const handlePointerUp = () => setIsDragging(false);
+    const isDragging = useRef(false);
 
     useEffect(() => {
-        const handlePointerMove = (e: PointerEvent) => {
-            if (!isDragging || !sliderRef.current) return;
+        setIsReady(true);
+    }, []);
 
-            const rect = sliderRef.current.getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            x = Math.max(0, Math.min(rect.width, x));
-            const t = x / rect.width;
+    const zoomRatio = MAX_ZOOM / MIN_ZOOM;
 
-            let newZoom = sliderToZoom(t);
+    const sliderToZoom = (value: number) => MIN_ZOOM * Math.pow(zoomRatio, value);
+    const zoomToSlider = (zoom: number) => Math.log(zoom / MIN_ZOOM) / Math.log(zoomRatio);
 
-            if (newZoom > 0.9 && newZoom < 1.2) newZoom = 1;
+    const calculateAndSetZoom = (clientX: number) => {
+        if (!sliderRef.current) return;
 
-            setZoomLevel(newZoom);
-        };
+        const sliderRect = sliderRef.current.getBoundingClientRect();
 
-        if (isDragging) {
-            window.addEventListener('pointermove', handlePointerMove);
-            window.addEventListener('pointerup', handlePointerUp);
-        } else {
-            window.removeEventListener('pointermove', handlePointerMove);
-            window.removeEventListener('pointerup', handlePointerUp);
-        }
+        let pointerX = clientX - sliderRect.left;
+        pointerX = Math.max(0, Math.min(sliderRect.width, pointerX));
 
-        return () => {
-            window.removeEventListener('pointermove', handlePointerMove);
-            window.removeEventListener('pointerup', handlePointerUp);
-        };
-    }, [isDragging, setZoomLevel]);
+        const normalizedPosition = pointerX / sliderRect.width;
+        let calculatedZoom = sliderToZoom(normalizedPosition);
+
+        if (calculatedZoom > 0.9 && calculatedZoom < 1.2) calculatedZoom = 1;
+
+        setZoomLevel(calculatedZoom);
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+        if (!isDragging.current) return;
+
+        calculateAndSetZoom(e.clientX);
+    };
+
+    const handlePointerUp = () => {
+        isDragging.current = false;
+
+        window.removeEventListener('pointermove', handlePointerMove);
+        window.removeEventListener('pointerup', handlePointerUp);
+    };
+
+    const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
+        calculateAndSetZoom(e.clientX);
+
+        isDragging.current = true;
+
+        window.addEventListener('pointermove', handlePointerMove);
+        window.addEventListener('pointerup', handlePointerUp);
+    };
+
+    if (!isReady) {
+        return (
+            <div className="flex items-center space-x-2 opacity-0 select-none" style={{ width }}>
+                <div style={{ width, height }} />
+                <span className="min-w-[6ch] text-right"> </span>
+            </div>
+        );
+    }
 
     const sliderPos = zoomToSlider(zoomLevel);
     const markerPos = zoomToSlider(1);
@@ -59,7 +82,7 @@ export function ZoomSlider({ width = 150, height = 2 }: ZoomSliderProps) {
                 ref={sliderRef}
                 className={`relative bg-border-light rounded cursor-pointer`}
                 style={{ width: `${width}px`, height: `${height}px` }}
-                onPointerDown={() => setIsDragging(true)}
+                onPointerDown={handlePointerDown}
             >
                 <div
                     className="absolute top-[-2px] bg-border-light w-[2px]"
@@ -78,4 +101,4 @@ export function ZoomSlider({ width = 150, height = 2 }: ZoomSliderProps) {
             <span className="tabular-nums min-w-[6ch] text-right">{Math.round(zoomLevel * 100)}%</span>
         </div>
     );
-}
+});
