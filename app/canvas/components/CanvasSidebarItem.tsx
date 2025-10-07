@@ -4,7 +4,7 @@ import { MouseEvent, KeyboardEvent, memo } from 'react';
 import { CanvasItem } from '@/canvas/canvas.types';
 import { EditableName } from '@/canvas/components/EditableName';
 
-import { GripVertical, ChevronRight } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 
 interface CanvasSidebarItemProps {
     canvasItem: CanvasItem;
@@ -35,15 +35,12 @@ export const CanvasSidebarItem = memo(function CanvasSidebarItem({
             }}
             onKeyDown={onKeyDown}
         >
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                    <EditableName
-                        name={canvasItem.name}
-                        isSelected={isSelected}
-                        onChange={(newName) => onChange?.({ ...canvasItem, name: newName })}
-                    />
-                    <ChevronRight size={14} className="text-gray" />
-                </div>
+            <div className="flex items-center justify-between gap-2">
+                <EditableName
+                    name={canvasItem.name}
+                    isSelected={isSelected}
+                    onChange={(newName) => onChange?.({ ...canvasItem, name: newName })}
+                />
 
                 <GripVertical className="text-gray" size={16} />
             </div>
