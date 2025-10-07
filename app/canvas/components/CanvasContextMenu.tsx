@@ -5,6 +5,7 @@ import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 
 import { MenuItem, useContextMenuItems } from '@/canvas/hooks/useContextMenuItems';
+import { useClickOutside } from '@/canvas/hooks/useClickOutside';
 
 type CanvasContextMenuProps = {
     isOpen: boolean;
@@ -16,6 +17,8 @@ type CanvasContextMenuProps = {
 export const CanvasContextMenu = memo(function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
     const menuRef = useRef<HTMLDivElement | null>(null);
     const { menuItems, offset } = useContextMenuItems();
+
+    useClickOutside(menuRef, closeMenu);
 
     useEffect(() => {
         if (offset.x || offset.y) {
