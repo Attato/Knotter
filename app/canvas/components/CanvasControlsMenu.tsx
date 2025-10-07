@@ -1,153 +1,39 @@
-import { useState, useRef } from 'react';
+import { memo } from 'react';
 
-import Link from 'next/link';
+import { MenuContent } from '@/canvas/components/CanvasControlsMenuContent';
+import { SavePopup } from '@/canvas/components/SavePopup';
 
-import ThemeToggle from '@/components/ThemeToggle';
+import { useCanvasControlsMenu } from '@/canvas/hooks/useCanvasControlsMenu';
 
-import { useCanvasFileActions } from '@/canvas/hooks/useCanvasFileActions';
-import { useClickOutside } from '@/canvas/hooks/useClickOutside';
+import { Menu } from 'lucide-react';
 
-import { useCanvasStore } from '@/canvas/store/canvasStore';
-
-import { Menu, Home, FolderOpen, Download, CircleHelp } from 'lucide-react';
-
-export function CanvasControlsMenu() {
-    const [open, setOpen] = useState(false);
-    const [showSavePopup, setShowSavePopup] = useState(false);
-    const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
-
-    const menuRef = useRef<HTMLDivElement>(null);
-    const popupRef = useRef<HTMLDivElement>(null);
-
-    const { handleOpen, handleSaveAs } = useCanvasFileActions();
-    const { items, savedItems } = useCanvasStore();
-
-    useClickOutside(menuRef, () => setOpen(false));
-    useClickOutside(popupRef, () => setShowSavePopup(false));
-
-    const hasUnsavedChanges = JSON.stringify(items) !== JSON.stringify(savedItems);
-
-    const withSaveCheck = (action: () => void) => {
-        if (hasUnsavedChanges) {
-            setPendingAction(() => action);
-            setShowSavePopup(true);
-        } else {
-            action();
-        }
-    };
-
-    const onOpenProject = () => {
-        withSaveCheck(handleOpen);
-    };
-
-    const handleSaveAndProceed = async () => {
-        await handleSaveAs();
-        setShowSavePopup(false);
-        await pendingAction?.();
-        setPendingAction(null);
-    };
-
-    const handleDiscardAndProceed = () => {
-        setShowSavePopup(false);
-        pendingAction?.();
-        setPendingAction(null);
-    };
-
-    const handleCancel = () => {
-        setShowSavePopup(false);
-        setPendingAction(null);
-    };
+export const CanvasControlsMenu = memo(function CanvasControlsMenu() {
+    const {
+        open,
+        showSavePopup,
+        menuRef,
+        onOpenProject,
+        onSaveAs,
+        handleSaveAndProceed,
+        handleDiscardAndProceed,
+        handleCancel,
+        toggleMenu,
+    } = useCanvasControlsMenu();
 
     return (
-        <div className="flex flex-col gap-2 w-full" ref={menuRef}>
+        <div className="flex flex-col gap-2 max-w-60 w-full" ref={menuRef}>
             <button
-                onClick={() => setOpen((p) => !p)}
+                onClick={toggleMenu}
                 className={`p-2 rounded-md w-fit cursor-pointer ${open ? 'bg-bg-accent text-white' : 'bg-card hover:bg-ui'}`}
             >
                 <Menu size={16} />
             </button>
 
-            {open && (
-                <div className="flex flex-col bg-background-alt rounded-md shadow max-w-60 w-full text-nowrap">
-                    <div className="flex flex-col gap-1 m-1">
-                        <button
-                            onClick={onOpenProject}
-                            className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
-                        >
-                            Открыть
-                            <FolderOpen size={16} />
-                        </button>
-                        <button
-                            onClick={() => withSaveCheck(handleSaveAs)}
-                            className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
-                        >
-                            Сохранить как
-                            <Download size={16} />
-                        </button>
-
-                        <ThemeToggle label="Ночной режим" className="px-3 py-2 w-full flex justify-between" />
-                    </div>
-
-                    <hr className="border-b-0 border-border" />
-
-                    <Link
-                        href="/"
-                        className="flex items-center justify-between gap-2 bg-card hover:bg-ui px-3 py-2 m-1 rounded-md text-axis-y"
-                        onClick={(e) => {
-                            if (hasUnsavedChanges) {
-                                e.preventDefault();
-                                setPendingAction(() => () => {
-                                    window.location.href = '/';
-                                });
-                                setShowSavePopup(true);
-                            } else {
-                                setOpen(false);
-                            }
-                        }}
-                    >
-                        На главную
-                        <Home size={16} />
-                    </Link>
-                </div>
-            )}
+            {open && <MenuContent onOpenProject={onOpenProject} onSaveAs={onSaveAs} />}
 
             {showSavePopup && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div
-                        ref={popupRef}
-                        className="flex items-start gap-4 bg-background-alt p-4 rounded-md shadow-md max-w-md w-full"
-                    >
-                        <CircleHelp size={32} className="text-text-accent" />
-
-                        <div className="flex flex-col gap-1 w-full">
-                            <h3>Сохранить файл перед закрытием?</h3>
-
-                            <p className="text-gray">canvas.knotter.json</p>
-
-                            <div className="flex items-center justify-between gap-2 mt-3">
-                                <button
-                                    onClick={handleSaveAndProceed}
-                                    className="px-3 py-2 bg-bg-accent text-white rounded-md cursor-pointer hover:bg-bg-accent/90 w-full"
-                                >
-                                    Сохранить
-                                </button>
-                                <button
-                                    onClick={handleDiscardAndProceed}
-                                    className="px-3 py-2 bg-card hover:bg-ui rounded-md cursor-pointer w-full"
-                                >
-                                    Не сохранять
-                                </button>
-                                <button
-                                    onClick={handleCancel}
-                                    className="px-3 py-2 bg-card hover:bg-ui rounded-md cursor-pointer w-full"
-                                >
-                                    Отмена
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <SavePopup onSave={handleSaveAndProceed} onDiscard={handleDiscardAndProceed} onCancel={handleCancel} />
             )}
         </div>
     );
-}
+});
