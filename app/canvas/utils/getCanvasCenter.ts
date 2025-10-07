@@ -1,8 +1,13 @@
-import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position } from '@/canvas/canvas.types';
 
-export function getCanvasCenter(canvas: HTMLCanvasElement): Position {
-    const { offset, zoomLevel, invertY } = useCanvasStore.getState();
+export interface CanvasCenterOptions {
+    offset: { x: number; y: number };
+    zoomLevel: number;
+    invertY: boolean;
+}
+
+export function getCanvasCenter(canvas: HTMLCanvasElement, options: CanvasCenterOptions): Position {
+    const { offset, zoomLevel, invertY } = options;
     const rect = canvas.getBoundingClientRect();
 
     const centerX = (rect.width / 2 - offset.x) / zoomLevel;

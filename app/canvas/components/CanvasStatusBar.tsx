@@ -16,8 +16,11 @@ interface CanvasStatusBarProps {
 
 export const CanvasStatusBar = memo(function CanvasStatusBar({ canvasRef }: CanvasStatusBarProps) {
     const itemsCount = useCanvasStore((state) => state.items.length);
+    const offset = useCanvasStore((state) => state.offset);
+    const zoomLevel = useCanvasStore((state) => state.zoomLevel);
+    const invertY = useCanvasStore((state) => state.invertY);
 
-    const center = canvasRef.current ? getCanvasCenter(canvasRef.current) : { x: 0, y: 0 };
+    const center = canvasRef.current ? getCanvasCenter(canvasRef.current, { offset, zoomLevel, invertY }) : { x: 0, y: 0 };
 
     return (
         <div className="flex items-center justify-end w-full h-[42px] absolute bottom-0 left-0 z-50 py-1 px-4 bg-background-alt border-t border-border text-xs select-none">
