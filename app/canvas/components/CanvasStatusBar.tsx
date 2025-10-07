@@ -2,13 +2,12 @@
 
 import { RefObject, memo } from 'react';
 
+import { MAX_CANVAS_ITEMS } from '@/canvas/constants';
+
+import { CanvasCoordinates } from '@/canvas/components/CanvasCoordinates'; // импортируем новый компонент
 import { ZoomSlider } from '@/canvas/components/ZoomSlider';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
-
-import { getCanvasCenter } from '@/canvas/utils/getCanvasCenter';
-
-import { MAX_CANVAS_ITEMS } from '@/canvas/constants';
 
 interface CanvasStatusBarProps {
     canvasRef: RefObject<HTMLCanvasElement | null>;
@@ -16,19 +15,11 @@ interface CanvasStatusBarProps {
 
 export const CanvasStatusBar = memo(function CanvasStatusBar({ canvasRef }: CanvasStatusBarProps) {
     const itemsCount = useCanvasStore((state) => state.items.length);
-    const offset = useCanvasStore((state) => state.offset);
-    const zoomLevel = useCanvasStore((state) => state.zoomLevel);
-    const invertY = useCanvasStore((state) => state.invertY);
-
-    const center = canvasRef.current ? getCanvasCenter(canvasRef.current, { offset, zoomLevel, invertY }) : { x: 0, y: 0 };
 
     return (
         <div className="flex items-center justify-end w-full h-[42px] absolute bottom-0 left-0 z-50 py-1 px-4 bg-background-alt border-t border-border text-xs select-none">
             <div className="flex items-center gap-6">
-                <div className="flex gap-1 tabular-nums">
-                    X: <p className="min-w-[5ch]">{Math.round(center.x)}</p> Y:
-                    <p className="min-w-[5ch]">{Math.round(center.y)}</p>
-                </div>
+                <CanvasCoordinates canvasRef={canvasRef} />
 
                 <p className="tabular-nums">
                     Количество: {itemsCount} / {MAX_CANVAS_ITEMS}
