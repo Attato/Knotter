@@ -11,7 +11,18 @@ export function useClickOutside<T extends HTMLElement>(ref: RefObject<T | null>,
             }
         }
 
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === 'Escape') {
+                onCloseRef.current();
+            }
+        }
+
         document.addEventListener('mousedown', handleClick);
-        return () => document.removeEventListener('mousedown', handleClick);
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClick);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, [ref]);
 }
