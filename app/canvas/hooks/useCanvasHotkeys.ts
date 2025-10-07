@@ -33,6 +33,11 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
 
             keysPressed.add(key);
 
+            if (key === 'escape') {
+                setSelectedItemIds([]);
+                return;
+            }
+
             const toggleMap: Record<string, () => void> = {
                 m: handlers.toggleMagnet,
                 ь: handlers.toggleMagnet,
