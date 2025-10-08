@@ -1,34 +1,41 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
+
 import { CanvasItem } from '@/canvas/canvas.types';
+
 import { useCanvasStore } from '@/canvas/store/canvasStore';
+
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 
+import { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
+
 export function useCanvasSidebarList(filterText: string) {
-    const canvasItems = useCanvasStore((state) => state.items);
-    const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
-    const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
+    const items = useCanvasStore((state) => state.items);
+    const selectedIds = useCanvasStore((state) => state.selectedItemIds);
+    const setSelectedIds = useCanvasStore((state) => state.setSelectedItemIds);
     const setItems = useCanvasStore((state) => state.setItems);
 
-    const filteredItems = useMemo(
-        () => canvasItems.filter((item) => item.name.toLowerCase().includes(filterText.toLowerCase())),
-        [canvasItems, filterText],
-    );
+    const filteredItems = useMemo(() => {
+        const lower = filterText.toLowerCase();
 
-    const handleChange = useCallback(
+        return items.filter((item) => item.name.toLowerCase().includes(lower));
+    }, [items, filterText]);
+
+    const handleItemChange = useCallback(
         (updated: CanvasItem) => {
-            const updatedItems = canvasItems.map((i) => (i.id === updated.id ? updated : i));
+            const updatedItems = items.map((i) => (i.id === updated.id ? updated : i));
             setItems(updatedItems);
         },
-        [canvasItems, setItems],
+        [items, setItems],
     );
 
-    const handleSelect = useCallback(
-        (e: React.MouseEvent, itemId: string) => {
+    const handleItemSelect = useCallback(
+        (e: React.MouseEvent<HTMLButtonElement>, itemId: string) => {
             const newSelectedIds = selectCanvasItem({
-                items: canvasItems,
-                selectedIds: selectedItemIds,
+                items,
+                selectedIds,
                 itemId,
                 event: {
                     ctrlKey: e.ctrlKey,
@@ -37,38 +44,55 @@ export function useCanvasSidebarList(filterText: string) {
                 },
             });
 
-            setSelectedItemIds(newSelectedIds);
+            setSelectedIds(newSelectedIds);
         },
-        [canvasItems, selectedItemIds, setSelectedItemIds],
+        [items, selectedIds, setSelectedIds],
     );
 
     const handleDeselectOnEmptyClick = useCallback(
-        (e: React.MouseEvent) => {
+        (e: React.MouseEvent<HTMLDivElement>) => {
             if (e.target === e.currentTarget) {
-                setSelectedItemIds([]);
+                setSelectedIds([]);
             }
         },
-        [setSelectedItemIds],
+        [setSelectedIds],
     );
 
-    const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent, item: CanvasItem) => {
+    const handleItemKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLButtonElement>, item: CanvasItem) => {
             if (e.key !== 'Enter') return;
-            const isSelected = selectedItemIds.includes(item.id);
 
-            if (!isSelected) {
-                setSelectedItemIds([...selectedItemIds, item.id]);
+            if (!selectedIds.includes(item.id)) {
+                setSelectedIds([...selectedIds, item.id]);
             }
         },
-        [selectedItemIds, setSelectedItemIds],
+        [selectedIds, setSelectedIds],
+    );
+
+    const handleDragEnd = useCallback(
+        (event: DragEndEvent) => {
+            const { active, over } = event;
+
+            if (!over || active.id === over.id) return;
+
+            const oldIndex = items.findIndex((i) => i.id === active.id);
+            const newIndex = items.findIndex((i) => i.id === over.id);
+
+            if (oldIndex === -1 || newIndex === -1) return;
+
+            const newItems = arrayMove(items, oldIndex, newIndex);
+            setItems(newItems);
+        },
+        [items, setItems],
     );
 
     return {
         filteredItems,
-        handleChange,
-        handleSelect,
-        handleKeyDown,
+        selectedIds,
+        handleItemChange,
+        handleItemSelect,
+        handleItemKeyDown,
         handleDeselectOnEmptyClick,
-        selectedItemIds,
+        handleDragEnd,
     };
 }
