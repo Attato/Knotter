@@ -21,15 +21,15 @@ export const Dropdown = memo(function Dropdown({ title, children, disabled = fal
             <button
                 onClick={toggle}
                 disabled={disabled}
-                className={`flex justify-start gap-2 items-center px-3 py-2 w-full text-sm transition-colors ${
-                    disabled ? 'cursor-not-allowed text-gray' : 'cursor-pointer hover:bg-accent'
-                }`}
+                className={`flex justify-start gap-2 items-center px-3 py-2 w-full text-sm transition-colors  ${
+                    disabled ? 'cursor-not-allowed text-gray' : 'cursor-pointer hover:bg-ui'
+                } ${isOpen ? 'rounded-t-md' : 'rounded-md'}`}
             >
                 <ChevronDown className={`transition-transform ${isOpen && !disabled ? 'rotate-180' : ''}`} size={16} />
                 {title}
             </button>
 
-            {isOpen && !disabled && <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>}
+            {isOpen && !disabled && <div className="flex flex-col gap-1 px-3 pb-2">{children}</div>}
         </div>
     );
 });
