@@ -51,6 +51,10 @@ export const Inspector = memo(function Inspector() {
         ]);
     }, []);
 
+    const renameDropdown = useCallback((id: number | string, newTitle: string) => {
+        setDropdowns((prev) => prev.map((dd) => (dd.id === id ? { ...dd, title: newTitle } : dd)));
+    }, []);
+
     if (!selectedItem) {
         return (
             <div className="flex justify-center items-center h-full text-gray text-sm text-center">
@@ -77,7 +81,7 @@ export const Inspector = memo(function Inspector() {
             {dropdowns
                 .filter((dd) => typeof dd.id === 'string')
                 .map((dd) => (
-                    <Dropdown key={dd.id} title={dd.title}>
+                    <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
                         <></>
                     </Dropdown>
                 ))}
