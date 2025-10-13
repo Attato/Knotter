@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 
-import { CanvasSidebarItem } from '@/canvas/components/CanvasSidebarItem';
+import { CanvasSidebarItem } from '@/canvas/components/CanvasSidebar/CanvasSidebarItem';
 
 import { useCanvasSidebarList } from '@/canvas/hooks/useCanvasSidebarList';
 

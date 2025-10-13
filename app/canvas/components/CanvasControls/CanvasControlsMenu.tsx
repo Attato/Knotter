@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
-import { MenuContent } from '@/canvas/components/CanvasControlsMenuContent';
-import { SavePopup } from '@/canvas/components/SavePopup';
+import { MenuContent } from '@/canvas/components/CanvasControls/CanvasControlsMenuContent';
+import { SavePopup } from '@/canvas/components/CanvasControls/SavePopup';
 
 import { useCanvasControlsMenu } from '@/canvas/hooks/useCanvasControlsMenu';
 

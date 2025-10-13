@@ -5,7 +5,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import { CanvasItem } from '@/canvas/canvas.types';
-import { EditableName } from '@/canvas/components/EditableName';
+import { EditableName } from '@/components/UI/EditableName';
 
 import { GripVertical } from 'lucide-react';
 

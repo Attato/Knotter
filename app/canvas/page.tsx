@@ -2,9 +2,9 @@
 
 import { useRef } from 'react';
 
-import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu';
-import { CanvasControls } from '@/canvas/components/CanvasControls';
-import { CanvasStatusBar } from '@/canvas/components/CanvasStatusBar';
+import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu/CanvasContextMenu';
+import { CanvasControls } from '@/canvas/components/CanvasControls/CanvasControls';
+import { CanvasStatusBar } from '@/canvas/components/CanvasStatusBar/CanvasStatusBar';
 
 import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';

@@ -4,8 +4,8 @@ import { RefObject, memo } from 'react';
 
 import { MAX_CANVAS_ITEMS } from '@/canvas/constants';
 
-import { CanvasCoordinates } from '@/canvas/components/CanvasCoordinates'; // импортируем новый компонент
-import { ZoomSlider } from '@/canvas/components/ZoomSlider';
+import { CanvasCoordinates } from '@/canvas/components/CanvasStatusBar/CanvasCoordinates'; // импортируем новый компонент
+import { ZoomSlider } from '@/canvas/components/CanvasStatusBar/ZoomSlider';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 

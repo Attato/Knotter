@@ -4,8 +4,8 @@ import { memo } from 'react';
 import { useCanvasSidebar } from '@/canvas/hooks/useCanvasSidebar';
 
 import { Sidebar } from '@/components/UI/Sidebar';
-import { CanvasSidebarList } from '@/canvas/components/CanvasSidebarList';
-import { Inspector } from '@/canvas/components/Inspector';
+import { CanvasSidebarList } from '@/canvas/components/CanvasSidebar/CanvasSidebarList';
+import { Inspector } from '@/canvas/components/Inspector/Inspector';
 
 import { Search } from 'lucide-react';
 

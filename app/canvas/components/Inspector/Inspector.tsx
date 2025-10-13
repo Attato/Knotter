@@ -8,8 +8,8 @@ import { Input } from '@/components/UI/Input';
 import { Textarea } from '@/components/UI/Textarea';
 import { Dropdown } from '@/components/UI/Dropdown';
 
-import { ShapeButtons } from '@/canvas/components/ShapeButtons';
-import { PositionInputs } from '@/canvas/components/PositionInputs';
+import { ShapeButtons } from '@/canvas/components/Inspector/ShapeButtons';
+import { PositionInputs } from '@/canvas/components/Inspector/PositionInputs';
 
 import { Plus } from 'lucide-react';
 
