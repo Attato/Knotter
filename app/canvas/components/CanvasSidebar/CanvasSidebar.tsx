@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { useCanvasSidebar } from '@/canvas/hooks/useCanvasSidebar';
+import { useCanvasSidebar } from '@/canvas/hooks/CanvasSidebar/useCanvasSidebar';
 
 import { Sidebar } from '@/components/UI/Sidebar';
 import { CanvasSidebarList } from '@/canvas/components/CanvasSidebar/CanvasSidebarList';

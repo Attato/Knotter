@@ -4,7 +4,7 @@ import { memo } from 'react';
 
 import { CanvasSidebarItem } from '@/canvas/components/CanvasSidebar/CanvasSidebarItem';
 
-import { useCanvasSidebarList } from '@/canvas/hooks/useCanvasSidebarList';
+import { useCanvasSidebarList } from '@/canvas/hooks/CanvasSidebar/useCanvasSidebarList';
 
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';

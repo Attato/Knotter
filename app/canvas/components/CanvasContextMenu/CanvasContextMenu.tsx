@@ -4,7 +4,7 @@ import { useEffect, useRef, memo, RefObject } from 'react';
 import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 
-import { MenuItem, useContextMenuItems } from '@/canvas/hooks/useContextMenuItems';
+import { MenuItem, useContextMenuItems } from '@/canvas/hooks/CanvasContextMenu/useContextMenuItems';
 import { useClickOutside } from '@/canvas/hooks/useClickOutside';
 
 type CanvasContextMenuProps = {

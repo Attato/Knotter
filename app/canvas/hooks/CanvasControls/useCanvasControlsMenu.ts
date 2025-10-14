@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useMemo } from 'react';
 
 import { useClickOutside } from '@/canvas/hooks/useClickOutside';
-import { useCanvasFileActions } from '@/canvas/hooks/useCanvasFileActions';
+import { useCanvasFileActions } from '@/canvas/hooks/CanvasControls/useCanvasFileActions';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 

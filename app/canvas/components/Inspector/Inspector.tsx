@@ -2,7 +2,7 @@
 
 import { memo, useMemo } from 'react';
 
-import { useInspector } from '@/canvas/hooks/useInspector';
+import { useInspector } from '@/canvas/hooks/Inspector/useInspector';
 
 import { Input } from '@/components/UI/Input';
 import { Textarea } from '@/components/UI/Textarea';
