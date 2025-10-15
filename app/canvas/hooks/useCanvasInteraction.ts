@@ -8,7 +8,7 @@ import { useCanvasMouseEvents } from '@/canvas/hooks/useCanvasMouseEvents';
 import { getPanEventHandlers, getScrollEventHandler, getZoomEventHandler } from '@/canvas/utils/getCanvasEventHandlers';
 import { getSelectionEventHandler } from '@/canvas/utils/getSelectionEventHandler';
 
-export function useCanvasControls(canvasRef: RefObject<HTMLCanvasElement | null>) {
+export function useCanvasInteraction(canvasRef: RefObject<HTMLCanvasElement | null>) {
     useInitialCanvasOffset(canvasRef);
     useCanvasHotkeys(canvasRef);
 

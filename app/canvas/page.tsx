@@ -6,7 +6,7 @@ import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu/CanvasC
 import { CanvasControls } from '@/canvas/components/CanvasControls/CanvasControls';
 import { CanvasStatusBar } from '@/canvas/components/CanvasStatusBar/CanvasStatusBar';
 
-import { useCanvasControls } from '@/canvas/hooks/useCanvasControls';
+import { useCanvasInteraction } from '@/canvas/hooks/useCanvasInteraction';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
 import { useContextMenu } from '@/hooks/useContextMenu';
 
@@ -24,7 +24,7 @@ export default function Canvas() {
     const toggleShowGrid = useCanvasStore((s) => s.toggleShowGrid);
     const toggleShowAxes = useCanvasStore((s) => s.toggleShowAxes);
 
-    const { selectionStart, selectionEnd } = useCanvasControls(canvasRef);
+    const { selectionStart, selectionEnd } = useCanvasInteraction(canvasRef);
 
     useCanvasRenderer(canvasRef, selectionStart, selectionEnd, items, selectedItemIds, tempEdge, showGrid, showAxes);
 
