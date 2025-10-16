@@ -9,12 +9,12 @@ import { NODE_SIZE } from '@/canvas/constants';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { drawNodes } from '@/canvas/utils/drawNodes';
+import { drawNodes } from '@/canvas/utils/nodes/drawNodes';
 import { drawEdges } from '@/canvas/utils/drawEdges';
 import { drawSelectionBox } from '@/canvas/utils/drawSelectionBox';
 import { drawTempEdge } from '@/canvas/utils/drawTempEdge';
 import { drawGrid } from '@/canvas/utils/drawGrid';
-import { getNodes } from '@/canvas/utils/getNodes';
+import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 
 export function useCanvasRenderer(

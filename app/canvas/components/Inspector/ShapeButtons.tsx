@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { NODE_SHAPE_TYPES } from '@/canvas/constants';
-import { getShape } from '../../utils/getShape';
+import { getShape } from '../../utils/nodes/getShape';
 import { NodeShapeType } from '../../canvas.types';
 
 interface ShapeButtonsProps {

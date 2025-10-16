@@ -5,8 +5,8 @@ import { NodeShapeType, Position, Node } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { handleItemNameChange } from '@/canvas/utils/handleItemNameChange';
-import { moveNodes } from '@/canvas/utils/moveNodes';
-import { getNodes } from '@/canvas/utils/getNodes';
+import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
+import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { v4 as uuidv4 } from 'uuid';
 
 export function useInspector() {

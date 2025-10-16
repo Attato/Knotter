@@ -5,12 +5,12 @@ import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
 import { handleAddItem } from '@/canvas/utils/handleAddItem';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
-import { moveNodes } from '@/canvas/utils/moveNodes';
-import { getNodes } from '@/canvas/utils/getNodes';
+import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
+import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
-import { getSelectedNodes } from '@/canvas/utils/getSelectedNodes';
+import { getSelectedNodes } from '@/canvas/utils/nodes/getSelectedNodes';
 import { getSelectedEdges } from '@/canvas/utils/getSelectedEdges';
-import { cloneNodesWithInsertionGap } from '@/canvas/utils/cloneNodesWithInsertionGap ';
+import { cloneNodesWithInsertionGap } from '@/canvas/utils/nodes/cloneNodesWithInsertionGap ';
 import { cloneEdgesForNewNodes } from '@/canvas/utils/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 

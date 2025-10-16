@@ -7,7 +7,7 @@ import {
     drawTriangle,
     drawHexagon,
     drawSquircle,
-} from '@/canvas/utils/drawShapes';
+} from '@/canvas/utils/nodes/drawShapes';
 
 export function drawNodes(ctx: CanvasRenderingContext2D, nodes: Node[], selectedNodeIds: string[], nodeSize: number) {
     const padding = 4;

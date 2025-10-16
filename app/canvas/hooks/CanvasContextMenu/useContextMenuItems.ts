@@ -4,10 +4,10 @@ import { NodeShapeType } from '../../canvas.types';
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { getNodes } from '@/canvas/utils/getNodes';
+import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/getEdges';
 
-import { getShape, getAllShapes } from '@/canvas/utils/getShape';
+import { getShape, getAllShapes } from '@/canvas/utils/nodes/getShape';
 import { LucideIcon } from 'lucide-react';
 
 export type MenuItem = {
