@@ -1,4 +1,4 @@
-import { CanvasItem, Edge } from '../canvas.types';
+import { CanvasItem, Edge } from '../../canvas.types';
 import { getEdges } from './getEdges';
 
 export const getSelectedEdges = (items: CanvasItem[], selectedIds: string[]): Edge[] =>

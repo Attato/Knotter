@@ -1,6 +1,6 @@
 import { CanvasItem } from '@/canvas/canvas.types';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
-import { getEdges } from '@/canvas/utils/getEdges';
+import { getEdges } from '@/canvas/utils/edges/getEdges';
 
 export function handleDeleteItems(items: CanvasItem[], selectedIds: string[]): CanvasItem[] {
     const nodes = getNodes(items);

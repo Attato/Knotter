@@ -7,11 +7,11 @@ import { handleAddItem } from '@/canvas/utils/handleAddItem';
 import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
-import { getEdges } from '@/canvas/utils/getEdges';
+import { getEdges } from '@/canvas/utils/edges/getEdges';
 import { getSelectedNodes } from '@/canvas/utils/nodes/getSelectedNodes';
-import { getSelectedEdges } from '@/canvas/utils/getSelectedEdges';
+import { getSelectedEdges } from '@/canvas/utils/edges/getSelectedEdges';
 import { cloneNodesWithInsertionGap } from '@/canvas/utils/nodes/cloneNodesWithInsertionGap ';
-import { cloneEdgesForNewNodes } from '@/canvas/utils/cloneEdgesForNewNodes';
+import { cloneEdgesForNewNodes } from '@/canvas/utils/edges/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';

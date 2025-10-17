@@ -10,13 +10,13 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { findNodeUnderCursor } from '@/canvas/utils/nodes/findNodeUnderCursor';
-import { findEdgeUnderCursor } from '@/canvas/utils/findEdgeUnderCursor';
+import { findEdgeUnderCursor } from '@/canvas/utils/edges/findEdgeUnderCursor';
 import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { prepareDrag } from '@/canvas/utils/prepareDrag';
 import { handleAddItem } from '@/canvas/utils/handleAddItem';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
-import { getEdges } from '@/canvas/utils/getEdges';
+import { getEdges } from '@/canvas/utils/edges/getEdges';
 
 export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | null>, isPanningRef?: RefObject<boolean>) {
     const items = useCanvasStore((state) => state.items);
