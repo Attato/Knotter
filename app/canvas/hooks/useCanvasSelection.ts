@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { Position } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
-import { getItemsInSelectionArea } from '@/canvas/utils/getItemsInSelectionArea';
+import { getItemsInSelectionArea } from '@/canvas/utils/items/getItemsInSelectionArea';
 
 export function useCanvasSelection() {
     const { setSelectedItemIds } = useCanvasStore();

@@ -11,10 +11,10 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { getMousePosition } from '@/canvas/utils/getMousePosition';
 import { findNodeUnderCursor } from '@/canvas/utils/nodes/findNodeUnderCursor';
 import { findEdgeUnderCursor } from '@/canvas/utils/edges/findEdgeUnderCursor';
-import { selectCanvasItem } from '@/canvas/utils/selectCanvasItem';
+import { selectCanvasItem } from '@/canvas/utils/items/selectCanvasItem';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { prepareDrag } from '@/canvas/utils/prepareDrag';
-import { handleAddItem } from '@/canvas/utils/handleAddItem';
+import { handleAddItem } from '@/canvas/utils/items/handleAddItem';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';
 

@@ -3,8 +3,8 @@ import { CanvasState, Position, NodeShapeType } from '@/canvas/canvas.types';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
-import { handleAddItem } from '@/canvas/utils/handleAddItem';
-import { handleDeleteItems } from '@/canvas/utils/handleDeleteItems';
+import { handleAddItem } from '@/canvas/utils/items/handleAddItem';
+import { handleDeleteItems } from '@/canvas/utils/items/handleDeleteItems';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';

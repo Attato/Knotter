@@ -1,5 +1,5 @@
 import { Node, Edge, CanvasItem } from '@/canvas/canvas.types';
-import { handleAddItem } from '@/canvas/utils/handleAddItem';
+import { handleAddItem } from '@/canvas/utils/items/handleAddItem';
 import { MAX_CANVAS_ITEMS } from '@/canvas/constants';
 
 export const cloneEdgesForNewNodes = (
