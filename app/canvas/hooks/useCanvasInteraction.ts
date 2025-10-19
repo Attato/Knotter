@@ -10,7 +10,7 @@ import {
     getScrollEventHandler,
     getZoomEventHandler,
 } from '@/canvas/utils/canvas/getCanvasEventHandlers';
-import { getSelectionEventHandler } from '@/canvas/utils/nodes/getSelectionEventHandler';
+import { getSelectionEventHandler } from '@/canvas/utils/canvas/getSelectionEventHandler';
 
 export function useCanvasInteraction(canvasRef: RefObject<HTMLCanvasElement | null>) {
     useInitialCanvasOffset(canvasRef);
