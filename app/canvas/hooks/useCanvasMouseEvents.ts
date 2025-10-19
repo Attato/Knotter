@@ -8,12 +8,12 @@ import { DRAG_THRESHOLD } from '@/canvas/constants';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { getMousePosition } from '@/canvas/utils/getMousePosition';
+import { getMousePosition } from '@/canvas/utils/canvas/getMousePosition';
 import { findNodeUnderCursor } from '@/canvas/utils/nodes/findNodeUnderCursor';
 import { findEdgeUnderCursor } from '@/canvas/utils/edges/findEdgeUnderCursor';
 import { selectCanvasItem } from '@/canvas/utils/items/selectCanvasItem';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
-import { prepareDrag } from '@/canvas/utils/prepareDrag';
+import { getSelectedNodesPositions } from '@/canvas/utils/nodes/getSelectedNodesPositions';
 import { handleAddItem } from '@/canvas/utils/items/handleAddItem';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';
@@ -96,7 +96,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
                 if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
                     setIsDraggingNodes(true);
-                    setInitialNodePositions(prepareDrag(nodes, selectedItemIds));
+                    setInitialNodePositions(getSelectedNodesPositions(nodes, selectedItemIds));
                 }
             }
 

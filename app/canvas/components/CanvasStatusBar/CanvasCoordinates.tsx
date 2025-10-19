@@ -2,7 +2,7 @@
 
 import { RefObject, memo } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
-import { getCanvasCenter } from '@/canvas/utils/getCanvasCenter';
+import { getCanvasCenter } from '@/canvas/utils/canvas/getCanvasCenter';
 
 interface CanvasCoordinatesProps {
     canvasRef: RefObject<HTMLCanvasElement | null>;

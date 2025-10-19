@@ -5,7 +5,7 @@ import { useMemo, memo, useState, useEffect } from 'react';
 import { CanvasControlsMenu } from '@/canvas/components/CanvasControls/CanvasControlsMenu';
 import { CanvasControlButtons } from '@/canvas/components/CanvasControls/CanvasControlButtons';
 
-import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
+import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
 
 import { Magnet, Grid2x2, Move3d } from 'lucide-react';
 

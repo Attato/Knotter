@@ -11,9 +11,9 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { drawNodes } from '@/canvas/utils/nodes/drawNodes';
 import { drawEdges } from '@/canvas/utils/edges/drawEdges';
-import { drawSelectionBox } from '@/canvas/utils/drawSelectionBox';
+import { drawSelectionBox } from '@/canvas/utils/canvas/drawSelectionBox';
 import { drawTempEdge } from '@/canvas/utils/edges/drawTempEdge';
-import { drawGrid } from '@/canvas/utils/drawGrid';
+import { drawGrid } from '@/canvas/utils/canvas/drawGrid';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';
 

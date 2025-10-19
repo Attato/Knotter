@@ -12,7 +12,7 @@ import { getSelectedNodes } from '@/canvas/utils/nodes/getSelectedNodes';
 import { getSelectedEdges } from '@/canvas/utils/edges/getSelectedEdges';
 import { cloneNodesWithInsertionGap } from '@/canvas/utils/nodes/cloneNodesWithInsertionGap ';
 import { cloneEdgesForNewNodes } from '@/canvas/utils/edges/cloneEdgesForNewNodes';
-import { toggleMagnetMode } from '@/canvas/utils/toggleMagnetMode';
+import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 

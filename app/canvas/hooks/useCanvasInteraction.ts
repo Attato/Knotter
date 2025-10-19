@@ -5,8 +5,12 @@ import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
 import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
 import { useCanvasMouseEvents } from '@/canvas/hooks/useCanvasMouseEvents';
-import { getPanEventHandlers, getScrollEventHandler, getZoomEventHandler } from '@/canvas/utils/getCanvasEventHandlers';
-import { getSelectionEventHandler } from '@/canvas/utils/getSelectionEventHandler';
+import {
+    getPanEventHandlers,
+    getScrollEventHandler,
+    getZoomEventHandler,
+} from '@/canvas/utils/canvas/getCanvasEventHandlers';
+import { getSelectionEventHandler } from '@/canvas/utils/nodes/getSelectionEventHandler';
 
 export function useCanvasInteraction(canvasRef: RefObject<HTMLCanvasElement | null>) {
     useInitialCanvasOffset(canvasRef);
