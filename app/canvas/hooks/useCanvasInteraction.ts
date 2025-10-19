@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, RefObject, useRef } from 'react';
+
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
 import { useCanvasHotkeys } from '@/canvas/hooks/useCanvasHotkeys';
 import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
 import { useCanvasMouseEvents } from '@/canvas/hooks/useCanvasMouseEvents';
-import {
-    getPanEventHandlers,
-    getScrollEventHandler,
-    getZoomEventHandler,
-} from '@/canvas/utils/canvas/getCanvasEventHandlers';
-import { getSelectionEventHandler } from '@/canvas/utils/canvas/getSelectionEventHandler';
+
+import { getPanEventHandler } from '@/canvas/utils/eventHandlers/getPanEventHandler';
+import { getScrollEventHandler } from '@/canvas/utils/eventHandlers/getScrollEventHandler';
+import { getSelectionEventHandler } from '@/canvas/utils/eventHandlers/getSelectionEventHandler';
+import { getZoomEventHandler } from '@/canvas/utils/eventHandlers/getZoomEventHandler';
 
 export function useCanvasInteraction(canvasRef: RefObject<HTMLCanvasElement | null>) {
     useInitialCanvasOffset(canvasRef);
@@ -27,7 +27,7 @@ export function useCanvasInteraction(canvasRef: RefObject<HTMLCanvasElement | nu
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const panHandlers = getPanEventHandlers(isPanningRef, lastMouseRef, canvasRef);
+        const panHandlers = getPanEventHandler(isPanningRef, lastMouseRef, canvasRef);
         const selectHandlers = getSelectionEventHandler(setSelectionStart, setSelectionEnd, handleSelectionArea);
         const handleScroll = getScrollEventHandler();
         const handleZoom = getZoomEventHandler(canvas);
