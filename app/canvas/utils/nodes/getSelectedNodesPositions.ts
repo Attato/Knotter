@@ -1,6 +1,6 @@
 import { CanvasItem, Position } from '@/canvas/canvas.types';
 
-export function prepareDrag(nodes: CanvasItem[], selectedIds: string[]): Map<string, Position> {
+export function getSelectedNodesPositions(nodes: CanvasItem[], selectedIds: string[]): Map<string, Position> {
     const positions = new Map<string, Position>();
 
     for (const node of nodes) {
