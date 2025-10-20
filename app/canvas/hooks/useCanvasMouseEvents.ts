@@ -7,6 +7,7 @@ import { Position } from '@/canvas/canvas.types';
 import { DRAG_THRESHOLD } from '@/canvas/constants';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
+import { useMousePosition } from '@/canvas/hooks/useMousePosition';
 
 import { getMousePosition } from '@/canvas/utils/canvas/getMousePosition';
 import { findNodeUnderCursor } from '@/canvas/utils/nodes/findNodeUnderCursor';
@@ -20,13 +21,15 @@ import { getEdges } from '@/canvas/utils/edges/getEdges';
 
 export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | null>, isPanningRef?: RefObject<boolean>) {
     const items = useCanvasStore((state) => state.items);
-    const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
     const setItems = useCanvasStore((state) => state.setItems);
+    const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
     const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
     const nodeMoveStep = useCanvasStore((state) => state.nodeMoveStep);
     const tempEdge = useCanvasStore((state) => state.tempEdge);
     const setTempEdge = useCanvasStore((state) => state.setTempEdge);
-    const updateMousePosition = useCanvasStore((state) => state.updateMousePosition);
+    const setMousePosition = useCanvasStore((state) => state.setMousePosition);
+
+    const { trackMousePosition } = useMousePosition();
 
     const [pendingClickItemId, setPendingClickItemId] = useState<string | null>(null);
     const [dragStartMouse, setDragStartMouse] = useState<Position | null>(null);
@@ -40,7 +43,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             if (!canvas || e.button !== 0) return;
 
             const mousePos = getMousePosition(e, canvas);
-            updateMousePosition(mousePos);
+            trackMousePosition(mousePos, setMousePosition);
 
             const nodes = getNodes(items);
             const edges = getEdges(items);
@@ -61,7 +64,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
                 }
             }
         },
-        [canvasRef, items, selectedItemIds, setSelectedItemIds, updateMousePosition],
+        [canvasRef, items, selectedItemIds, setSelectedItemIds, trackMousePosition, setMousePosition],
     );
 
     const onMouseMove = useCallback(
@@ -71,7 +74,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             if (!canvas) return;
 
             const mousePos = getMousePosition(e, canvas);
-            updateMousePosition(mousePos);
+            trackMousePosition(mousePos, setMousePosition);
 
             if (isPanningRef?.current) return;
 
@@ -127,7 +130,8 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             tempEdge,
             setItems,
             setTempEdge,
-            updateMousePosition,
+            trackMousePosition,
+            setMousePosition,
             isPanningRef,
         ],
     );
@@ -139,6 +143,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             if (!canvas) return;
 
             const mousePos = getMousePosition(e, canvas);
+            trackMousePosition(mousePos, setMousePosition);
 
             if (!isDraggingNodes && pendingClickItemId) {
                 const newSelectedIds = selectCanvasItem({
@@ -197,6 +202,8 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             setSelectedItemIds,
             setTempEdge,
             setItems,
+            trackMousePosition,
+            setMousePosition,
         ],
     );
 
