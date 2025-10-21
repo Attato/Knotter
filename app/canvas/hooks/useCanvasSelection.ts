@@ -12,7 +12,7 @@ export function useCanvasSelection() {
     const [selectionStart, setSelectionStart] = useState<Position | null>(null);
     const [selectionEnd, setSelectionEnd] = useState<Position | null>(null);
 
-    const handleSelectionArea = useCallback(
+    const selectItemsInArea = useCallback(
         (start: Position, end: Position) => {
             const items = useCanvasStore.getState().items;
             const nodes = getNodes(items);
@@ -22,5 +22,5 @@ export function useCanvasSelection() {
         [setSelectedItemIds],
     );
 
-    return { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, handleSelectionArea };
+    return { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, selectItemsInArea };
 }
