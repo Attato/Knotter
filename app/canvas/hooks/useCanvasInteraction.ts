@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, RefObject, useRef } from 'react';
-
+import { useEffect, RefObject, useRef, useMemo } from 'react';
 import { Position } from '@/canvas/canvas.types';
 
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
@@ -36,19 +35,19 @@ export function useCanvasInteraction({
 
     const { onMouseDown, onMouseMove, onMouseUp } = useCanvasMouseEvents(canvasRef, isPanningRef);
 
+    const panHandlers = useMemo(() => getPanEventHandler(isPanningRef, lastMouseRef, canvasRef), [canvasRef]);
+
+    const selectHandlers = useMemo(
+        () => getSelectionEventHandler(selectionStart, setSelectionStart, setSelectionEnd, selectItemsInArea),
+        [selectionStart, setSelectionStart, setSelectionEnd, selectItemsInArea],
+    );
+
+    const handleScroll = useMemo(() => getScrollEventHandler(), []);
+    const handleZoom = useMemo(() => (canvasRef.current ? getZoomEventHandler(canvasRef.current) : () => {}), [canvasRef]);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
-
-        const panHandlers = getPanEventHandler(isPanningRef, lastMouseRef, canvasRef);
-        const selectHandlers = getSelectionEventHandler(
-            selectionStart,
-            setSelectionStart,
-            setSelectionEnd,
-            selectItemsInArea,
-        );
-        const handleScroll = getScrollEventHandler();
-        const handleZoom = getZoomEventHandler(canvas);
 
         const handleMouseDown = (e: MouseEvent) => {
             panHandlers.handleMouseDown(e);
@@ -84,14 +83,5 @@ export function useCanvasInteraction({
             window.removeEventListener('mouseup', handleMouseUp);
             canvas.removeEventListener('wheel', handleWheel);
         };
-    }, [
-        canvasRef,
-        onMouseDown,
-        onMouseMove,
-        onMouseUp,
-        selectionStart,
-        setSelectionStart,
-        setSelectionEnd,
-        selectItemsInArea,
-    ]);
+    }, [canvasRef, panHandlers, selectHandlers, onMouseDown, onMouseMove, onMouseUp, handleScroll, handleZoom]);
 }
