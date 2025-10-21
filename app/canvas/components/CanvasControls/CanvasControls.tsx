@@ -5,25 +5,19 @@ import { useMemo, memo, useState, useEffect } from 'react';
 import { CanvasControlsMenu } from '@/canvas/components/CanvasControls/CanvasControlsMenu';
 import { CanvasControlButtons } from '@/canvas/components/CanvasControls/CanvasControlButtons';
 
+import { useCanvasStore } from '@/canvas/store/canvasStore';
+
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
 
 import { Magnet, Grid2x2, Move3d } from 'lucide-react';
 
-interface CanvasControlsProps {
-    isMagnet: boolean;
-    showGrid: boolean;
-    showAxes: boolean;
-    toggleShowGrid: () => void;
-    toggleShowAxes: () => void;
-}
+export const CanvasControls = memo(function CanvasControls() {
+    const isMagnet = useCanvasStore((s) => s.isMagnet);
+    const showGrid = useCanvasStore((s) => s.showGrid);
+    const showAxes = useCanvasStore((s) => s.showAxes);
+    const toggleShowGrid = useCanvasStore((s) => s.toggleShowGrid);
+    const toggleShowAxes = useCanvasStore((s) => s.toggleShowAxes);
 
-export const CanvasControls = memo(function CanvasControls({
-    isMagnet,
-    showGrid,
-    showAxes,
-    toggleShowGrid,
-    toggleShowAxes,
-}: CanvasControlsProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
