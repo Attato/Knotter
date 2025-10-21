@@ -15,7 +15,7 @@ export const CanvasSidebar = memo(function CanvasSidebar() {
     return (
         <Sidebar>
             <div className="flex flex-col h-full relative">
-                <div ref={topBlockRef}>
+                <div ref={topBlockRef} className="h-[42px]">
                     <div className="flex items-center gap-2 m-1">
                         <div className="relative flex-1">
                             <input
