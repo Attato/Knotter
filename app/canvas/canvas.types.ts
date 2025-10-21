@@ -1,3 +1,5 @@
+export type MouseHandler = (e: MouseEvent) => void;
+
 export type Position = { x: number; y: number };
 
 export interface CanvasState {
