@@ -23,12 +23,15 @@ export function getPanEventHandler(
         const dx = e.clientX - lastMouseRef.current.x;
         const dy = e.clientY - lastMouseRef.current.y;
 
-        const { offset, setOffset, invertY } = useCanvasStore.getState();
-
-        setOffset({
-            x: offset.x + dx,
-            y: offset.y + (invertY ? -dy : dy),
-        });
+        useCanvasStore.setState(
+            (state) => ({
+                offset: {
+                    x: state.offset.x + dx,
+                    y: state.offset.y + (state.invertY ? -dy : dy),
+                },
+            }),
+            false,
+        );
 
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
 
@@ -38,6 +41,8 @@ export function getPanEventHandler(
     const handleMouseUp = () => {
         isPanningRef.current = false;
         lastMouseRef.current = null;
+
+        if (canvasRef?.current) canvasRef.current.style.cursor = 'default';
     };
 
     return { handleMouseDown, handleMouseMove, handleMouseUp };
