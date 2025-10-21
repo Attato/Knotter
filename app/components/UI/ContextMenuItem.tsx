@@ -21,13 +21,22 @@ export const ContextMenuItem = memo(function ContextMenuItem({
     submenu,
     icon: Icon,
 }: ContextMenuItemProps) {
+    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+        if (submenu) {
+            e.stopPropagation();
+            e.preventDefault();
+            return;
+        }
+        onClick?.(e);
+    };
+
     return (
         <div className="relative group">
             <button
                 className={`flex justify-between items-center px-3 py-1 bg-card hover:bg-ui w-full text-left cursor-pointer ${
                     disabled ? 'opacity-40 cursor-not-allowed' : ''
                 }`}
-                onClick={(e) => !submenu && onClick?.(e)}
+                onClick={handleClick}
                 disabled={disabled}
             >
                 <div className="flex items-center gap-2">
