@@ -3,7 +3,7 @@
 import { useEffect, RefObject } from 'react';
 import { useTheme } from 'next-themes';
 
-import { Position, CanvasItem, Node, Edge } from '@/canvas/canvas.types';
+import { Node, Edge, Position } from '@/canvas/canvas.types';
 
 import { NODE_SIZE } from '@/canvas/constants';
 
@@ -17,21 +17,23 @@ import { drawGrid } from '@/canvas/utils/canvas/drawGrid';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';
 
-export function useCanvasRenderer(
-    canvasRef: RefObject<HTMLCanvasElement | null>,
-    selectionStart: Position | null,
-    selectionEnd: Position | null,
-    items: CanvasItem[],
-    selectedItemIds: string[],
-    tempEdge: { from: string; toPos: Position } | null,
-    showGrid: boolean,
-    showAxes: boolean,
-) {
+interface useCanvasRendererProps {
+    canvasRef: RefObject<HTMLCanvasElement | null>;
+    selectionStart: Position | null;
+    selectionEnd: Position | null;
+}
+
+export function useCanvasRenderer({ canvasRef, selectionStart, selectionEnd }: useCanvasRendererProps) {
     const { resolvedTheme } = useTheme();
 
+    const items = useCanvasStore((s) => s.items);
+    const selectedItemIds = useCanvasStore((s) => s.selectedItemIds);
     const offset = useCanvasStore((state) => state.offset);
     const zoomLevel = useCanvasStore((state) => state.zoomLevel);
     const invertY = useCanvasStore((state) => state.invertY);
+    const showGrid = useCanvasStore((s) => s.showGrid);
+    const showAxes = useCanvasStore((s) => s.showAxes);
+    const tempEdge = useCanvasStore((s) => s.tempEdge);
 
     useEffect(() => {
         const canvas = canvasRef.current;
