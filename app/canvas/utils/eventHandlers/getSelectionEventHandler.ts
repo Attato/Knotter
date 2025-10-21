@@ -1,40 +1,45 @@
 import { Position } from '@/canvas/canvas.types';
+
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
+import { findNodeUnderCursor } from '@/canvas/utils/nodes/findNodeUnderCursor';
+import { getNodes } from '@/canvas/utils/nodes/getNodes';
+
 export function getSelectionEventHandler(
+    selectionStart: Position | null,
     setSelectionStart: (value: Position | null) => void,
     setSelectionEnd: (value: Position | null) => void,
-    onSelectionComplete?: (start: Position, end: Position) => void,
+    selectItemsInArea?: (start: Position, end: Position) => void,
 ) {
-    let start: Position | null = null;
-
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 0) return;
 
         const mousePos = useCanvasStore.getState().mousePosition;
-        start = mousePos;
 
-        setSelectionStart(mousePos);
-        setSelectionEnd(mousePos);
+        const { items } = useCanvasStore.getState();
+        const nodes = getNodes(items);
+        const clickedNode = findNodeUnderCursor(nodes, mousePos);
+
+        if (!clickedNode) {
+            setSelectionStart(mousePos);
+            setSelectionEnd(mousePos);
+        }
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-        if (!start || (e.buttons & 1) !== 1) return;
+        if (!selectionStart || (e.buttons & 1) !== 1) return;
 
         const mousePos = useCanvasStore.getState().mousePosition;
-
         setSelectionEnd(mousePos);
     };
 
     const handleMouseUp = (e: MouseEvent) => {
-        if (!start || e.button !== 0) return;
+        if (!selectionStart || e.button !== 0) return;
 
         const mousePos = useCanvasStore.getState().mousePosition;
-
-        onSelectionComplete?.(start, mousePos);
+        selectItemsInArea?.(selectionStart, mousePos);
         setSelectionStart(null);
         setSelectionEnd(null);
-        start = null;
     };
 
     return { handleMouseDown, handleMouseMove, handleMouseUp };
