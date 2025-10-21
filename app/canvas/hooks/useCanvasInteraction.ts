@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, RefObject, useRef, useMemo } from 'react';
+import { useEffect, RefObject, useRef } from 'react';
 import { Position } from '@/canvas/canvas.types';
 
 import { useInitialCanvasOffset } from '@/canvas/hooks/useInitialCanvasOffset';
@@ -11,6 +11,8 @@ import { getPanEventHandler } from '@/canvas/utils/eventHandlers/getPanEventHand
 import { getScrollEventHandler } from '@/canvas/utils/eventHandlers/getScrollEventHandler';
 import { getSelectionEventHandler } from '@/canvas/utils/eventHandlers/getSelectionEventHandler';
 import { getZoomEventHandler } from '@/canvas/utils/eventHandlers/getZoomEventHandler';
+
+import { MouseHandler } from '@/canvas/canvas.types';
 
 interface useCanvasInteractionProps {
     canvasRef: RefObject<HTMLCanvasElement | null>;
@@ -35,40 +37,44 @@ export function useCanvasInteraction({
 
     const { onMouseDown, onMouseMove, onMouseUp } = useCanvasMouseEvents(canvasRef, isPanningRef);
 
-    const panHandlers = useMemo(() => getPanEventHandler(isPanningRef, lastMouseRef, canvasRef), [canvasRef]);
-
-    const selectHandlers = useMemo(
-        () => getSelectionEventHandler(selectionStart, setSelectionStart, setSelectionEnd, selectItemsInArea),
-        [selectionStart, setSelectionStart, setSelectionEnd, selectItemsInArea],
-    );
-
-    const handleScroll = useMemo(() => getScrollEventHandler(), []);
-    const handleZoom = useMemo(() => (canvasRef.current ? getZoomEventHandler(canvasRef.current) : () => {}), [canvasRef]);
+    const panHandlers = useRef<ReturnType<typeof getPanEventHandler> | null>(null);
+    const selectHandlers = useRef<ReturnType<typeof getSelectionEventHandler> | null>(null);
+    const handleScroll = useRef(getScrollEventHandler());
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const handleMouseDown = (e: MouseEvent) => {
-            panHandlers.handleMouseDown(e);
+        panHandlers.current = getPanEventHandler(isPanningRef, lastMouseRef, canvasRef);
+        selectHandlers.current = getSelectionEventHandler(
+            selectionStart,
+            setSelectionStart,
+            setSelectionEnd,
+            selectItemsInArea,
+        );
+
+        const handleZoom = getZoomEventHandler(canvas);
+
+        const handleMouseDown: MouseHandler = (e) => {
+            panHandlers.current?.handleMouseDown(e);
             onMouseDown(e);
-            selectHandlers.handleMouseDown(e);
+            selectHandlers.current?.handleMouseDown(e);
         };
 
-        const handleMouseMove = (e: MouseEvent) => {
-            panHandlers.handleMouseMove(e);
+        const handleMouseMove: MouseHandler = (e) => {
+            panHandlers.current?.handleMouseMove(e);
             onMouseMove(e);
-            selectHandlers.handleMouseMove(e);
+            selectHandlers.current?.handleMouseMove(e);
         };
 
-        const handleMouseUp = (e: MouseEvent) => {
-            panHandlers.handleMouseUp();
+        const handleMouseUp: MouseHandler = (e) => {
+            panHandlers.current?.handleMouseUp();
             onMouseUp(e);
-            selectHandlers.handleMouseUp(e);
+            selectHandlers.current?.handleMouseUp(e);
         };
 
         const handleWheel = (e: WheelEvent) => {
-            handleScroll(e);
+            handleScroll.current?.(e);
             handleZoom(e);
         };
 
@@ -83,5 +89,14 @@ export function useCanvasInteraction({
             window.removeEventListener('mouseup', handleMouseUp);
             canvas.removeEventListener('wheel', handleWheel);
         };
-    }, [canvasRef, panHandlers, selectHandlers, onMouseDown, onMouseMove, onMouseUp, handleScroll, handleZoom]);
+    }, [
+        canvasRef,
+        selectionStart,
+        setSelectionStart,
+        setSelectionEnd,
+        selectItemsInArea,
+        onMouseDown,
+        onMouseMove,
+        onMouseUp,
+    ]);
 }
