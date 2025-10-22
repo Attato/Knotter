@@ -36,3 +36,14 @@ export interface Edge {
     position: Position;
     kind: 'edge';
 }
+
+export type Enum = string[];
+export type VariableType = 'number' | 'string' | 'boolean' | 'enum';
+export type VariableValue = number | string | boolean | Enum;
+
+export interface Variable {
+    id: string;
+    name: string;
+    type: VariableType;
+    value: VariableValue;
+}
