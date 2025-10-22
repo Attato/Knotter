@@ -4,11 +4,17 @@ import { useState, useEffect, memo } from 'react';
 
 interface EditableNameProps {
     name: string;
-    isSelected: boolean;
     onChange: (newName: string) => void;
+    isSelected?: boolean;
+    className?: string;
 }
 
-export const EditableName = memo(function EditableName({ name, isSelected, onChange }: EditableNameProps) {
+export const EditableName = memo(function EditableName({
+    name,
+    onChange,
+    isSelected = false,
+    className = '',
+}: EditableNameProps) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(name);
 
@@ -53,7 +59,7 @@ export const EditableName = memo(function EditableName({ name, isSelected, onCha
         />
     ) : (
         <span
-            className={`text-sm cursor-pointer ${isSelected ? 'text-text-accent' : 'text-foreground'}`}
+            className={`text-sm cursor-pointer ${isSelected ? 'text-text-accent' : 'text-foreground'} ${className}`}
             onDoubleClick={(e) => {
                 e.stopPropagation();
                 setEditing(true);
