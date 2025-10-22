@@ -39,6 +39,9 @@ interface CanvasState {
 
     mousePosition: Position;
     setMousePosition: (pos: Position) => void;
+
+    activeTab: string;
+    setActiveTab: (tabId: string) => void;
 }
 
 export const useCanvasStore = create<CanvasState>()(
@@ -79,6 +82,9 @@ export const useCanvasStore = create<CanvasState>()(
 
             mousePosition: { x: 0, y: 0 },
             setMousePosition: (mousePosition) => set({ mousePosition }),
+
+            activeTab: '',
+            setActiveTab: (activeTab) => set({ activeTab }),
         }),
         {
             name: 'canvas-storage',
@@ -93,6 +99,7 @@ export const useCanvasStore = create<CanvasState>()(
                 showGrid: state.showGrid,
                 showAxes: state.showAxes,
                 invertY: state.invertY,
+                activeTab: state.activeTab,
             }),
         },
     ),
