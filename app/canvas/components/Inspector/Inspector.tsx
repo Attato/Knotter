@@ -43,14 +43,14 @@ export const Inspector = memo(function Inspector() {
 
     if (!selectedItem) {
         return (
-            <div className="flex justify-center items-center h-full text-gray text-sm text-center">
+            <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
                 Выберите элемент для инспектора
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col h-full overflow-y-auto m-1 gap-1">
+        <div className="flex flex-col max-h-[calc(100vh - 38px)] overflow-y-auto m-1 gap-1">
             <Input value={selectedItem.name} onChange={handleChangeName} placeholder="Название" />
             <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
 
@@ -62,12 +62,6 @@ export const Inspector = memo(function Inspector() {
 
             <hr className="border-b-0 border-border" />
 
-            {dropdowns.dynamic.map((dd) => (
-                <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
-                    <></>
-                </Dropdown>
-            ))}
-
             <button
                 onClick={addDropdown}
                 className="flex justify-start gap-2 items-center px-3 py-2 w-full text-sm cursor-pointer bg-card hover:bg-ui rounded-md"
@@ -75,6 +69,12 @@ export const Inspector = memo(function Inspector() {
                 <Plus size={16} />
                 Добавить выпадающий список
             </button>
+
+            {dropdowns.dynamic.map((dd) => (
+                <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
+                    <></>
+                </Dropdown>
+            ))}
         </div>
     );
 });
