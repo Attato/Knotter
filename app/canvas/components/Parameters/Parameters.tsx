@@ -8,17 +8,9 @@ import { DropdownAbsolute } from '@/components/UI/DropdownAbsolute';
 import { EditableName } from '@/components/UI/EditableName';
 
 import { Plus, X } from 'lucide-react';
+import { useParametersStore } from '@/canvas/store/parametersStore';
 
-type Enum = string[];
-type VariableType = 'number' | 'string' | 'boolean' | 'enum';
-type VariableValue = number | string | boolean | Enum;
-
-interface Variable {
-    id: string;
-    name: string;
-    type: VariableType;
-    value: VariableValue;
-}
+import { Enum, VariableType, VariableValue, Variable } from '@/canvas/canvas.types';
 
 const VARIABLE_TYPES: { label: string; value: VariableType }[] = [
     { label: 'Число', value: 'number' },
@@ -34,7 +26,8 @@ const NUMBER_LIMITS = {
 };
 
 export const Parameters = memo(function Parameters() {
-    const [variables, setVariables] = useState<Variable[]>([]);
+    const { variables, setVariables } = useParametersStore();
+
     const [name, setName] = useState('');
     const [type, setType] = useState<VariableType>('number');
 
@@ -66,16 +59,16 @@ export const Parameters = memo(function Parameters() {
     };
 
     const updateVariable = (id: string, value: VariableValue) => {
-        setVariables((prev) => prev.map((v) => (v.id === id ? { ...v, value } : v)));
+        setVariables(variables.map((v) => (v.id === id ? { ...v, value } : v)));
     };
 
     const updateVariableName = (id: string, newName: string) => {
-        setVariables((prev) => prev.map((v) => (v.id === id ? { ...v, name: newName } : v)));
+        setVariables(variables.map((v) => (v.id === id ? { ...v, name: newName } : v)));
     };
 
     const modifyEnum = (varId: string, modifier: (arr: Enum) => Enum) => {
-        setVariables((prev) =>
-            prev.map((v) => (v.id === varId && v.type === 'enum' ? { ...v, value: modifier(v.value as Enum) } : v)),
+        setVariables(
+            variables.map((v) => (v.id === varId && v.type === 'enum' ? { ...v, value: modifier(v.value as Enum) } : v)),
         );
     };
 
@@ -86,8 +79,9 @@ export const Parameters = memo(function Parameters() {
             return copy;
         });
 
-    const addEnumOption = (varId: string) => modifyEnum(varId, (arr) => [...arr, '']);
-    const removeEnumOption = (varId: string, index: number) => modifyEnum(varId, (arr) => arr.filter((_, i) => i !== index));
+    const addEnumOption = (variableId: string) => modifyEnum(variableId, (arr) => [...arr, '']);
+    const removeEnumOption = (variableId: string, index: number) =>
+        modifyEnum(variableId, (arr) => arr.filter((_, i) => i !== index));
 
     const handleNumberInput = (value: string, variableId: string) => {
         if (value === '' || value === '-' || value === '-.') {
@@ -113,9 +107,13 @@ export const Parameters = memo(function Parameters() {
 
         if (numValue < NUMBER_LIMITS.MIN) {
             updateVariable(variableId, NUMBER_LIMITS.MIN);
-        } else if (numValue > NUMBER_LIMITS.MAX) {
+        }
+
+        if (numValue > NUMBER_LIMITS.MAX) {
             updateVariable(variableId, NUMBER_LIMITS.MAX);
-        } else {
+        }
+
+        if (numValue >= NUMBER_LIMITS.MIN && numValue <= NUMBER_LIMITS.MAX) {
             updateVariable(variableId, numValue);
         }
     };
@@ -195,7 +193,7 @@ export const Parameters = memo(function Parameters() {
                             )}
 
                             <button
-                                onClick={() => setVariables((prev) => prev.filter((v) => v.id !== variable.id))}
+                                onClick={() => setVariables(variables.filter((v) => v.id !== variable.id))}
                                 className="ml-auto text-gray cursor-pointer"
                             >
                                 <X size={16} />
