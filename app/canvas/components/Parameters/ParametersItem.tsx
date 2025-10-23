@@ -56,6 +56,8 @@ export const ParametersItem = memo(function ParametersItem({ variableId, onRemov
                 <div className="flex flex-col gap-1 ml-32">
                     {(variable.value as string[]).map((opt, idx) => (
                         <div key={idx} className="flex gap-1 items-center">
+                            <p className="tabular-nums min-w-[4ch]">{idx + 1}.</p>
+
                             <Input
                                 value={opt}
                                 onChange={(val) => updateEnumOption(idx, val)}
@@ -65,7 +67,7 @@ export const ParametersItem = memo(function ParametersItem({ variableId, onRemov
 
                             <button
                                 onClick={() => removeEnumOption(idx)}
-                                className={`${(variable.value as string[]).length === 1 ? 'text-gray/50' : 'text-gray'}`}
+                                className={`${(variable.value as string[]).length === 1 ? 'text-gray/50' : 'text-gray'} cursor-pointer`}
                                 disabled={(variable.value as string[]).length === 1}
                             >
                                 <X size={16} />
