@@ -1,137 +1,46 @@
 'use client';
 
-import { useState, memo } from 'react';
-import { v4 as uuid } from 'uuid';
+import { memo } from 'react';
+
+import { Enum } from '@/canvas/canvas.types';
 
 import { Input } from '@/components/UI/Input';
 import { DropdownAbsolute } from '@/components/UI/DropdownAbsolute';
 import { EditableName } from '@/components/UI/EditableName';
-
-import { Plus, X } from 'lucide-react';
-import { useParametersStore } from '@/canvas/store/parametersStore';
-
-import { Enum, VariableType, VariableValue, Variable } from '@/canvas/canvas.types';
 import { Checkbox } from '@/components/UI/Checkbox';
 
-const VARIABLE_TYPES: { label: string; value: VariableType }[] = [
-    { label: 'Число', value: 'number' },
-    { label: 'Строка', value: 'string' },
-    { label: 'Логическое выражение', value: 'boolean' },
-    { label: 'Перечисление', value: 'enum' },
-];
+import { useParameters } from '@/canvas/hooks/Parameters/useParameters';
 
-const NUMBER_LIMITS = {
-    MIN: -999999999,
-    MAX: 999999999,
-    STEP: 1,
-};
+import { Plus, X } from 'lucide-react';
 
 export const Parameters = memo(function Parameters() {
-    const { variables, setVariables } = useParametersStore();
+    const {
+        name,
+        type,
+        variables,
+        variableTypes,
 
-    const [name, setName] = useState('');
-    const [type, setType] = useState<VariableType>('number');
+        setName,
+        setType,
 
-    const createInitialValue = (type: VariableType) => {
-        switch (type) {
-            case 'number':
-                return 0;
-            case 'string':
-                return '';
-            case 'boolean':
-                return false;
-            case 'enum':
-                return ['Первая опция'] as Enum;
-        }
-    };
-
-    const addVariable = () => {
-        if (!name) return;
-
-        const newVar: Variable = {
-            id: uuid(),
-            name,
-            type,
-            value: createInitialValue(type),
-        };
-
-        setVariables([...variables, newVar]);
-        setName('');
-    };
-
-    const updateVariable = (id: string, value: VariableValue) => {
-        setVariables(variables.map((v) => (v.id === id ? { ...v, value } : v)));
-    };
-
-    const updateVariableName = (id: string, newName: string) => {
-        setVariables(variables.map((v) => (v.id === id ? { ...v, name: newName } : v)));
-    };
-
-    const modifyEnum = (varId: string, modifier: (arr: Enum) => Enum) => {
-        setVariables(
-            variables.map((v) => (v.id === varId && v.type === 'enum' ? { ...v, value: modifier(v.value as Enum) } : v)),
-        );
-    };
-
-    const updateEnumOption = (varId: string, index: number, newValue: string) =>
-        modifyEnum(varId, (arr) => {
-            const copy = [...arr];
-            copy[index] = newValue;
-            return copy;
-        });
-
-    const addEnumOption = (variableId: string) => modifyEnum(variableId, (arr) => [...arr, '']);
-    const removeEnumOption = (variableId: string, index: number) =>
-        modifyEnum(variableId, (arr) => arr.filter((_, i) => i !== index));
-
-    const handleNumberInput = (value: string, variableId: string) => {
-        if (value === '' || value === '-' || value === '-.') {
-            updateVariable(variableId, 0);
-            return;
-        }
-
-        if (!/^-?\d*\.?\d*$/.test(value)) {
-            return;
-        }
-
-        if (value.endsWith('.') || value === '-.' || (value.startsWith('-') && value.endsWith('.'))) {
-            updateVariable(variableId, 0);
-            return;
-        }
-
-        const numValue = parseFloat(value);
-
-        if (isNaN(numValue)) {
-            updateVariable(variableId, 0);
-            return;
-        }
-
-        if (numValue < NUMBER_LIMITS.MIN) {
-            updateVariable(variableId, NUMBER_LIMITS.MIN);
-        }
-
-        if (numValue > NUMBER_LIMITS.MAX) {
-            updateVariable(variableId, NUMBER_LIMITS.MAX);
-        }
-
-        if (numValue >= NUMBER_LIMITS.MIN && numValue <= NUMBER_LIMITS.MAX) {
-            updateVariable(variableId, numValue);
-        }
-    };
-
-    const getDisplayValue = (variable: Variable): string => {
-        if (variable.type !== 'number') return String(variable.value);
-
-        return variable.value.toString();
-    };
+        addVariable,
+        updateVariable,
+        updateVariableName,
+        updateEnumOption,
+        addEnumOption,
+        removeEnumOption,
+        handleNumberInput,
+        getDisplayValue,
+        removeVariable,
+    } = useParameters();
 
     return (
         <div className=" flex flex-col">
             <div className="flex gap-1 items-center m-1">
                 <Input value={name} onChange={setName} placeholder="Имя переменной" className="w-48" max={16} />
 
-                <DropdownAbsolute title={VARIABLE_TYPES.find((v) => v.value === type)?.label || 'Тип'}>
-                    {VARIABLE_TYPES.map((v) => (
+                <DropdownAbsolute title={variableTypes.find((v) => v.value === type)?.label || 'Тип'}>
+                    {variableTypes.map((v) => (
                         <button
                             key={v.value}
                             onClick={() => setType(v.value)}
@@ -191,10 +100,7 @@ export const Parameters = memo(function Parameters() {
                                 />
                             )}
 
-                            <button
-                                onClick={() => setVariables(variables.filter((v) => v.id !== variable.id))}
-                                className="ml-auto text-gray cursor-pointer"
-                            >
+                            <button onClick={() => removeVariable(variable.id)} className="ml-auto text-gray cursor-pointer">
                                 <X size={16} />
                             </button>
                         </div>
