@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { LucideIcon } from 'lucide-react';
 
@@ -17,16 +18,30 @@ interface TabsProps {
 }
 
 export function Tabs({ tabs, defaultTab, className = '' }: TabsProps) {
+    const [mounted, setMounted] = useState(false);
     const activeTab = useCanvasStore((state) => state.activeTab);
     const setActiveTab = useCanvasStore((state) => state.setActiveTab);
 
-    const currentActiveTab = activeTab || defaultTab || tabs[0]?.id;
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const currentActiveTab = !mounted ? defaultTab || tabs[0]?.id : activeTab || defaultTab || tabs[0]?.id;
 
     const activeTabContent = tabs.find((tab) => tab.id === currentActiveTab)?.content;
 
     const handleTabChange = (tabId: string) => {
         setActiveTab(tabId);
     };
+
+    if (!mounted) {
+        const initialTabContent = tabs.find((tab) => tab.id === (defaultTab || tabs[0]?.id))?.content;
+        return (
+            <div className={`flex flex-col h-full ${className}`}>
+                <div className="flex-1 overflow-auto">{initialTabContent}</div>
+            </div>
+        );
+    }
 
     return (
         <div className={`flex flex-col h-full ${className}`}>
