@@ -25,7 +25,7 @@ export const Checkbox = memo(function Checkbox({ checked, onChange, className = 
                 className={`sr-only peer ${className}`}
                 {...props}
             />
-            <div className="w-5 h-5 bg-card border border-border rounded-sm peer-focus:ring-2 peer-focus:ring-bg-accent peer-checked:bg-bg-accent peer-checked:border-bg-accent transition-colors duration-200 flex items-center justify-center">
+            <div className="w-5 h-5 bg-ui rounded-sm peer-focus:ring-2 peer-focus:ring-bg-accent peer-checked:bg-bg-accent peer-checked:border-bg-accent flex items-center justify-center">
                 {checked && <Check size={16} className="text-white" />}
             </div>
         </label>
