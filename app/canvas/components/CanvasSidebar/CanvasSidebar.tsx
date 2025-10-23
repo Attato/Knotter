@@ -5,7 +5,7 @@ import { memo } from 'react';
 import { Sidebar } from '@/components/UI/Sidebar';
 import { Tabs, Tab } from '@/components/UI/Tabs';
 
-import { CanvasSidebarList } from '@/canvas/components/CanvasSidebar/CanvasSidebarList';
+import { Hierarchy } from '@/canvas/components/Hierarchy/Hierarchy';
 import { Inspector } from '@/canvas/components/Inspector/Inspector';
 import { Parameters } from '@/canvas/components/Parameters/Parameters';
 import { ListTree, Info, Variable } from 'lucide-react';
@@ -14,7 +14,7 @@ const tabs: Tab[] = [
     {
         id: 'hierarchy',
         label: 'Иерархия',
-        content: <CanvasSidebarList />,
+        content: <Hierarchy />,
         icon: ListTree,
     },
     {
