@@ -11,6 +11,7 @@ import { Plus, X } from 'lucide-react';
 import { useParametersStore } from '@/canvas/store/parametersStore';
 
 import { Enum, VariableType, VariableValue, Variable } from '@/canvas/canvas.types';
+import { Checkbox } from '@/components/UI/Checkbox';
 
 const VARIABLE_TYPES: { label: string; value: VariableType }[] = [
     { label: 'Число', value: 'number' },
@@ -184,11 +185,9 @@ export const Parameters = memo(function Parameters() {
                             ) : null}
 
                             {variable.type === 'boolean' && (
-                                <input
-                                    type="checkbox"
+                                <Checkbox
                                     checked={variable.value as boolean}
-                                    onChange={(e) => updateVariable(variable.id, e.target.checked)}
-                                    className="h-5 w-5"
+                                    onChange={(checked) => updateVariable(variable.id, checked)}
                                 />
                             )}
 
