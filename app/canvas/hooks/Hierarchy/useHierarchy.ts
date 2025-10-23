@@ -11,7 +11,7 @@ import { selectCanvasItem } from '@/canvas/utils/items/selectCanvasItem';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 
-export function useCanvasSidebarList(filterText: string) {
+export function useHierarchy(filterText: string) {
     const items = useCanvasStore((state) => state.items);
     const selectedIds = useCanvasStore((state) => state.selectedItemIds);
     const setSelectedIds = useCanvasStore((state) => state.setSelectedItemIds);

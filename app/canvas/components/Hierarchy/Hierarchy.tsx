@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 
 import { HierarchyItem } from '@/canvas/components/Hierarchy/HierarchyItem';
 
-import { useCanvasSidebarList } from '@/canvas/hooks/CanvasSidebar/useCanvasSidebarList';
+import { useHierarchy } from '@/canvas/hooks/Hierarchy/useHierarchy';
 
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -22,7 +22,7 @@ export const Hierarchy = memo(function Hierarchy() {
         handleItemKeyDown,
         handleDeselectOnEmptyClick,
         handleDragEnd,
-    } = useCanvasSidebarList(filterText);
+    } = useHierarchy(filterText);
 
     const sensors = useSensors(useSensor(PointerSensor));
 
