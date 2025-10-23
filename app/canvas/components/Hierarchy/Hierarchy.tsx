@@ -3,7 +3,7 @@
 import { memo, useState } from 'react';
 import { Search } from 'lucide-react';
 
-import { CanvasSidebarItem } from '@/canvas/components/CanvasSidebar/CanvasSidebarItem';
+import { HierarchyItem } from '@/canvas/components/Hierarchy/HierarchyItem';
 
 import { useCanvasSidebarList } from '@/canvas/hooks/CanvasSidebar/useCanvasSidebarList';
 
@@ -11,7 +11,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 
-export const CanvasSidebarList = memo(function CanvasSidebarList() {
+export const Hierarchy = memo(function Hierarchy() {
     const [filterText, setFilterText] = useState('');
 
     const {
@@ -57,7 +57,7 @@ export const CanvasSidebarList = memo(function CanvasSidebarList() {
                                 <li className="p-2 text-gray text-sm text-center">Ничего не найдено</li>
                             ) : (
                                 filteredItems.map((item) => (
-                                    <CanvasSidebarItem
+                                    <HierarchyItem
                                         key={item.id}
                                         canvasItem={item}
                                         isSelected={selectedIds.includes(item.id)}
