@@ -9,7 +9,7 @@ import { EditableName } from '@/components/UI/EditableName';
 
 import { GripVertical } from 'lucide-react';
 
-interface CanvasSidebarItemProps {
+interface HierarchyItemProps {
     canvasItem: CanvasItem;
     isSelected: boolean;
     onSelect: (e: MouseEvent<HTMLButtonElement>) => void;
@@ -18,13 +18,13 @@ interface CanvasSidebarItemProps {
     onKeyDown?: (e: KeyboardEvent<HTMLButtonElement>) => void;
 }
 
-export const CanvasSidebarItem = memo(function CanvasSidebarItem({
+export const HierarchyItem = memo(function HierarchyItem({
     canvasItem,
     isSelected,
     onSelect,
     onChange,
     onKeyDown,
-}: CanvasSidebarItemProps) {
+}: HierarchyItemProps) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: canvasItem.id });
 
     const style = {
