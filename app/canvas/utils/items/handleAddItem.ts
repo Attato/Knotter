@@ -48,6 +48,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
             shapeType: 'point',
             position: { x, y },
             kind: 'node',
+            properties: [],
         };
 
         return newNode;
@@ -77,6 +78,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
                 y: (fromNode.position.y + toNode.position.y) / 2,
             },
             kind: 'edge',
+            properties: [],
         };
 
         return newEdge;
