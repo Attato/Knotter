@@ -1,13 +1,12 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { NodeShapeType, Position, Node } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { handleItemNameChange } from '@/canvas/utils/items/handleItemNameChange';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
-import { v4 as uuidv4 } from 'uuid';
 
 export function useInspector() {
     const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
@@ -16,11 +15,6 @@ export function useInspector() {
     const nodeMoveStep = useCanvasStore((state) => state.nodeMoveStep);
 
     const { changeNodeShapeType } = useCanvasHandlers();
-
-    const [dropdowns, setDropdowns] = useState<{ id: number | string; title: string }[]>([
-        { id: 1, title: 'Форма' },
-        { id: 2, title: 'Трансформация' },
-    ]);
 
     const selectedItem = useMemo(() => {
         if (selectedItemIds.length === 0) return null;
@@ -98,23 +92,6 @@ export function useInspector() {
         [currentItem, selectedItemIds, nodeMoveStep, items, setItems],
     );
 
-    const addDropdown = useCallback(() => {
-        setDropdowns((prev) => [
-            ...prev,
-            {
-                id: uuidv4(),
-                title: `Выпадающий список (${prev.length + 1})`,
-            },
-        ]);
-    }, []);
-
-    const renameDropdown = useCallback((id: number | string, newTitle: string) => {
-        setDropdowns((prev) => prev.map((dd) => (dd.id === id ? { ...dd, title: newTitle } : dd)));
-    }, []);
-
-    const staticDropdowns = useMemo(() => dropdowns.filter((dd) => typeof dd.id === 'number'), [dropdowns]);
-    const dynamicDropdowns = useMemo(() => dropdowns.filter((dd) => typeof dd.id === 'string'), [dropdowns]);
-
     return {
         selectedItem,
         currentItem,
@@ -122,15 +99,9 @@ export function useInspector() {
         shapeType,
         positionX,
         positionY,
-        dropdowns: {
-            static: staticDropdowns,
-            dynamic: dynamicDropdowns,
-        },
         handleChangeName,
         handleChangeDescription,
         handleChangeNodeShapeType,
         handleMove,
-        addDropdown,
-        renameDropdown,
     };
 }

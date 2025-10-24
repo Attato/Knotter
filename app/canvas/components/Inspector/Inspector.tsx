@@ -12,6 +12,9 @@ import { ShapeButtons } from '@/canvas/components/Inspector/ShapeButtons';
 import { PositionInputs } from '@/canvas/components/Inspector/PositionInputs';
 
 import { Plus } from 'lucide-react';
+import { useProperty } from '@/canvas/hooks/Property/useProperty';
+
+import { IDropdown } from '@/canvas/hooks/Property/useProperty';
 
 export const Inspector = memo(function Inspector() {
     const {
@@ -20,14 +23,13 @@ export const Inspector = memo(function Inspector() {
         shapeType,
         positionX,
         positionY,
-        dropdowns,
         handleChangeName,
         handleChangeDescription,
         handleChangeNodeShapeType,
         handleMove,
-        addDropdown,
-        renameDropdown,
     } = useInspector();
+
+    const { staticDropdowns, dynamicDropdowns, addDropdown, renameDropdown } = useProperty();
 
     const shapeButtons = useMemo(() => {
         if (!selectedItem || isEdge) return null;
@@ -54,7 +56,7 @@ export const Inspector = memo(function Inspector() {
             <Input value={selectedItem.name} onChange={handleChangeName} placeholder="Название" />
             <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
 
-            {dropdowns.static.map((dd) => (
+            {staticDropdowns.map((dd: IDropdown) => (
                 <Dropdown key={dd.id} title={dd.title} disabled={isEdge}>
                     {dd.id === 1 ? shapeButtons : dd.id === 2 ? positionInputs : null}
                 </Dropdown>
@@ -70,7 +72,7 @@ export const Inspector = memo(function Inspector() {
                 Добавить выпадающий список
             </button>
 
-            {dropdowns.dynamic.map((dd) => (
+            {dynamicDropdowns.map((dd: IDropdown) => (
                 <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
                     <></>
                 </Dropdown>
