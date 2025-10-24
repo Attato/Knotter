@@ -1,33 +1,36 @@
 import { useParametersStore } from '@/canvas/store/parametersStore';
-import { VariableValue, Enum } from '@/canvas/canvas.types';
+import { ParameterValue, Enum } from '@/canvas/canvas.types';
 
 const NUMBER_LIMITS = {
     MIN: -999999999,
     MAX: 999999999,
 };
 
-export const useParametersItem = (variableId: string) => {
-    const { variables, setVariables } = useParametersStore();
+export const useParametersItem = (parameterId: string) => {
+    const parameters = useParametersStore((state) => state.parameters);
+    const setParameters = useParametersStore((state) => state.setParameters);
 
-    const variable = variables.find((v) => v.id === variableId);
+    const parameter = parameters.find((parameter) => parameter.id === parameterId);
 
-    if (!variable) {
-        throw new Error(`Variable with id ${variableId} not found`);
+    if (!parameter) {
+        throw new Error(`Variable with id ${parameterId} not found`);
     }
 
-    const updateVariable = (value: VariableValue) => {
-        setVariables(variables.map((v) => (v.id === variableId ? { ...v, value } : v)));
+    const updateParameter = (value: ParameterValue) => {
+        setParameters(parameters.map((parameter) => (parameter.id === parameterId ? { ...parameter, value } : parameter)));
     };
 
-    const updateVariableName = (newName: string) => {
-        setVariables(variables.map((v) => (v.id === variableId ? { ...v, name: newName } : v)));
+    const updateParameterName = (newName: string) => {
+        setParameters(
+            parameters.map((parameter) => (parameter.id === parameterId ? { ...parameter, name: newName } : parameter)),
+        );
     };
 
     const handleNumberInput = (value: string) => {
-        if (variable.type !== 'number') return;
+        if (parameter.type !== 'number') return;
 
         if (value === '' || value === '-' || value === '-.') {
-            updateVariable(0);
+            updateParameter(0);
             return;
         }
 
@@ -36,58 +39,58 @@ export const useParametersItem = (variableId: string) => {
         }
 
         if (value.endsWith('.') || value === '-.' || (value.startsWith('-') && value.endsWith('.'))) {
-            updateVariable(0);
+            updateParameter(0);
             return;
         }
 
         const numValue = parseFloat(value);
 
         if (isNaN(numValue)) {
-            updateVariable(0);
+            updateParameter(0);
             return;
         }
 
         if (numValue < NUMBER_LIMITS.MIN) {
-            updateVariable(NUMBER_LIMITS.MIN);
+            updateParameter(NUMBER_LIMITS.MIN);
         }
 
         if (numValue > NUMBER_LIMITS.MAX) {
-            updateVariable(NUMBER_LIMITS.MAX);
+            updateParameter(NUMBER_LIMITS.MAX);
         }
 
         if (numValue >= NUMBER_LIMITS.MIN && numValue <= NUMBER_LIMITS.MAX) {
-            updateVariable(numValue);
+            updateParameter(numValue);
         }
     };
 
     const getDisplayValue = (): string => {
-        if (variable.type !== 'number') return String(variable.value);
-        return variable.value.toString();
+        if (parameter.type !== 'number') return String(parameter.value);
+        return parameter.value.toString();
     };
 
     const updateEnumOption = (index: number, newValue: string) => {
-        if (variable.type !== 'enum') return;
+        if (parameter.type !== 'enum') return;
 
-        const newEnum = [...(variable.value as Enum)];
+        const newEnum = [...(parameter.value as Enum)];
         newEnum[index] = newValue;
-        updateVariable(newEnum);
+        updateParameter(newEnum);
     };
 
     const addEnumOption = () => {
-        if (variable.type !== 'enum') return;
-        updateVariable([...(variable.value as Enum), '']);
+        if (parameter.type !== 'enum') return;
+        updateParameter([...(parameter.value as Enum), '']);
     };
 
     const removeEnumOption = (index: number) => {
-        if (variable.type !== 'enum') return;
-        const newEnum = (variable.value as Enum).filter((_, i) => i !== index);
-        updateVariable(newEnum);
+        if (parameter.type !== 'enum') return;
+        const newEnum = (parameter.value as Enum).filter((_, i) => i !== index);
+        updateParameter(newEnum);
     };
 
     return {
-        variable,
-        updateVariable,
-        updateVariableName,
+        parameter,
+        updateParameter,
+        updateParameterName,
         updateEnumOption,
         addEnumOption,
         removeEnumOption,
