@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Variable } from '@/canvas/canvas.types';
+import { Parameter } from '@/canvas/canvas.types';
 
 interface ParametersState {
-    variables: Variable[];
-    setVariables: (variables: Variable[]) => void;
+    parameters: Parameter[];
+    setParameters: (parameters: Parameter[]) => void;
 }
 
 export const useParametersStore = create<ParametersState>()(
     persist(
         (set) => ({
-            variables: [],
-            setVariables: (variables) => set({ variables }),
+            parameters: [],
+            setParameters: (parameters) => set({ parameters }),
         }),
         {
             name: 'parameters-storage',
