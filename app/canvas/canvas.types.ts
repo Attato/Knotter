@@ -25,7 +25,7 @@ export interface Node {
     shapeType: NodeShapeType;
     position: Position;
     kind: 'node';
-    properties: Property[];
+    properties: PropertyType[];
 }
 
 export interface Edge {
@@ -36,7 +36,7 @@ export interface Edge {
     to: string;
     position: Position;
     kind: 'edge';
-    properties: Property[];
+    properties: PropertyType[];
 }
 
 export type Enum = string[];
@@ -50,7 +50,7 @@ export interface Parameter {
     value: ParameterValue;
 }
 
-export interface Property {
+export interface PropertyType {
     id: string;
     name: string;
     parameters: Parameter[];
