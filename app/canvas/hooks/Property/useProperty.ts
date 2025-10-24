@@ -13,13 +13,17 @@ export function useProperty() {
     ]);
 
     const addDropdown = useCallback(() => {
-        setDropdowns((prev) => [
-            ...prev,
-            {
-                id: uuidv4(),
-                title: `Выпадающий список (${prev.length + 1})`,
-            },
-        ]);
+        setDropdowns((prev) => {
+            const dynamicCount = prev.filter((dd) => typeof dd.id === 'string').length;
+
+            return [
+                ...prev,
+                {
+                    id: uuidv4(),
+                    title: `Свойства (${dynamicCount + 1})`,
+                },
+            ];
+        });
     }, []);
 
     const renameDropdown = useCallback((id: number | string, newTitle: string) => {
