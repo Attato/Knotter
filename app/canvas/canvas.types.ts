@@ -25,6 +25,7 @@ export interface Node {
     shapeType: NodeShapeType;
     position: Position;
     kind: 'node';
+    properties: Property[];
 }
 
 export interface Edge {
@@ -35,15 +36,22 @@ export interface Edge {
     to: string;
     position: Position;
     kind: 'edge';
+    properties: Property[];
 }
 
 export type Enum = string[];
-export type VariableType = 'number' | 'string' | 'boolean' | 'enum';
-export type VariableValue = number | string | boolean | Enum;
+export type ParameterType = 'number' | 'string' | 'boolean' | 'enum';
+export type ParameterValue = number | string | boolean | Enum;
 
-export interface Variable {
+export interface Parameter {
     id: string;
     name: string;
-    type: VariableType;
-    value: VariableValue;
+    type: ParameterType;
+    value: ParameterValue;
+}
+
+export interface Property {
+    id: string;
+    name: string;
+    parameters: Parameter[];
 }
