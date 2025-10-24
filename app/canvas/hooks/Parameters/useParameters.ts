@@ -3,9 +3,9 @@ import { v4 as uuid } from 'uuid';
 
 import { useParametersStore } from '@/canvas/store/parametersStore';
 
-import { Enum, VariableType, VariableValue, Variable } from '@/canvas/canvas.types';
+import { Enum, ParameterType, ParameterValue, Parameter } from '@/canvas/canvas.types';
 
-const VARIABLE_TYPES: { label: string; value: VariableType }[] = [
+const PARAMETER_TYPES: { label: string; value: ParameterType }[] = [
     { label: 'Число', value: 'number' },
     { label: 'Строка', value: 'string' },
     { label: 'Логическое выражение', value: 'boolean' },
@@ -13,11 +13,11 @@ const VARIABLE_TYPES: { label: string; value: VariableType }[] = [
 ];
 
 export const useParameters = () => {
-    const { variables, setVariables } = useParametersStore();
+    const { parameters, setParameters } = useParametersStore();
     const [name, setName] = useState('');
-    const [type, setType] = useState<VariableType>('number');
+    const [type, setType] = useState<ParameterType>('number');
 
-    const createInitialValue = (type: VariableType): VariableValue => {
+    const createInitialValue = (type: ParameterType): ParameterValue => {
         switch (type) {
             case 'number':
                 return 0;
@@ -30,33 +30,33 @@ export const useParameters = () => {
         }
     };
 
-    const addVariable = () => {
+    const addParameter = () => {
         if (!name) return;
 
-        const newVar: Variable = {
+        const newParameter: Parameter = {
             id: uuid(),
             name,
             type,
             value: createInitialValue(type),
         };
 
-        setVariables([...variables, newVar]);
+        setParameters([...parameters, newParameter]);
         setName('');
     };
 
-    const removeVariable = (id: string) => {
-        setVariables(variables.filter((v) => v.id !== id));
+    const removeParameter = (id: string) => {
+        setParameters(parameters.filter((p) => p.id !== id));
     };
 
     return {
         name,
         type,
-        variables,
-        variableTypes: VARIABLE_TYPES,
+        parameters,
+        parameterTypes: PARAMETER_TYPES,
 
         setName,
         setType,
-        addVariable,
-        removeVariable,
+        addParameter,
+        removeParameter,
     };
 };
