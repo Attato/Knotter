@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,7 +11,7 @@ import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
-import { NodeShapeType, Position, Node } from '@/canvas/canvas.types';
+import { NodeShapeType, Position, Node, PropertyType } from '@/canvas/canvas.types';
 
 export interface IDropdown {
     id: number | string;
@@ -19,11 +19,6 @@ export interface IDropdown {
 }
 
 export function useProperty() {
-    const [dropdowns, setDropdowns] = useState<IDropdown[]>([
-        { id: 1, title: 'Форма' },
-        { id: 2, title: 'Трансформация' },
-    ]);
-
     const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
     const items = useCanvasStore((state) => state.items);
     const setItems = useCanvasStore((state) => state.setItems);
@@ -47,28 +42,86 @@ export function useProperty() {
         return selectedItem.kind === 'node' ? (nodesMap.get(selectedItem.id) ?? selectedItem) : selectedItem;
     }, [selectedItem, nodesMap]);
 
+    const staticDropdowns = useMemo(
+        (): IDropdown[] => [
+            { id: 1, title: 'Форма' },
+            { id: 2, title: 'Трансформация' },
+        ],
+        [],
+    );
+
+    const dynamicDropdowns = useMemo((): IDropdown[] => {
+        if (!currentItem) return [];
+        return currentItem.properties.map((prop) => ({
+            id: prop.id,
+            title: prop.name,
+        }));
+    }, [currentItem]);
+
     const isEdge = selectedItem?.kind === 'edge';
     const shapeType = currentItem?.kind === 'node' ? currentItem.shapeType : null;
     const positionX = currentItem?.position.x ?? 0;
     const positionY = currentItem?.position.y ?? 0;
 
     const addDropdown = useCallback(() => {
-        setDropdowns((prev) => {
-            const dynamicCount = prev.filter((dd) => typeof dd.id === 'string').length;
+        if (!currentItem) return;
 
-            return [
-                ...prev,
-                {
-                    id: uuidv4(),
-                    title: `Свойства (${dynamicCount + 1})`,
-                },
-            ];
-        });
-    }, []);
+        const newProperty: PropertyType = {
+            id: uuidv4(),
+            name: `Свойства ${dynamicDropdowns.length + 1}`,
+            parameters: [],
+        };
 
-    const renameDropdown = useCallback((id: number | string, newTitle: string) => {
-        setDropdowns((prev) => prev.map((dd) => (dd.id === id ? { ...dd, title: newTitle } : dd)));
-    }, []);
+        const updatedItems = items.map((item) =>
+            item.id === currentItem.id
+                ? {
+                      ...item,
+                      properties: [...item.properties, newProperty],
+                  }
+                : item,
+        );
+
+        setItems(updatedItems);
+    }, [currentItem, items, setItems, dynamicDropdowns.length]);
+
+    const renameDropdown = useCallback(
+        (id: number | string, newTitle: string) => {
+            if (!currentItem) return;
+
+            if (typeof id === 'string') {
+                const updatedItems = items.map((item) =>
+                    item.id === currentItem.id
+                        ? {
+                              ...item,
+                              properties: item.properties.map((prop) =>
+                                  prop.id === id ? { ...prop, name: newTitle } : prop,
+                              ),
+                          }
+                        : item,
+                );
+                setItems(updatedItems);
+            }
+        },
+        [currentItem, items, setItems],
+    );
+
+    const deleteDropdown = useCallback(
+        (id: string) => {
+            if (!currentItem) return;
+
+            const updatedItems = items.map((item) =>
+                item.id === currentItem.id
+                    ? {
+                          ...item,
+                          properties: item.properties.filter((prop) => prop.id !== id),
+                      }
+                    : item,
+            );
+
+            setItems(updatedItems);
+        },
+        [currentItem, items, setItems],
+    );
 
     const handleChangeNodeShapeType = useCallback(
         (type: NodeShapeType) => {
@@ -101,11 +154,7 @@ export function useProperty() {
         [currentItem, selectedItemIds, nodeMoveStep, items, setItems],
     );
 
-    const staticDropdowns = dropdowns.filter((dd) => typeof dd.id === 'number');
-    const dynamicDropdowns = dropdowns.filter((dd) => typeof dd.id === 'string');
-
     return {
-        dropdowns,
         staticDropdowns,
         dynamicDropdowns,
 
@@ -119,6 +168,7 @@ export function useProperty() {
 
         addDropdown,
         renameDropdown,
+        deleteDropdown,
         handleChangeNodeShapeType,
         handleMove,
     };
