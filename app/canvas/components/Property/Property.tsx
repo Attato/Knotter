@@ -2,17 +2,16 @@
 
 import { memo, useMemo } from 'react';
 
-import { useInspector } from '@/canvas/hooks/Inspector/useInspector';
-
 import { Dropdown } from '@/components/UI/Dropdown';
 
 import { ShapeButtons } from '@/canvas/components/Inspector/ShapeButtons';
 import { PositionInputs } from '@/canvas/components/Inspector/PositionInputs';
 
-import { Plus } from 'lucide-react';
 import { useProperty } from '@/canvas/hooks/Property/useProperty';
 
-import { IDropdown } from '@/canvas/hooks/Property/useProperty';
+import type { IDropdown } from '@/canvas/hooks/Property/useProperty';
+
+import { Plus } from 'lucide-react';
 
 export const Property = memo(function PropertyEditor() {
     const {
@@ -26,21 +25,20 @@ export const Property = memo(function PropertyEditor() {
         handleMove,
         addDropdown,
         renameDropdown,
+        deleteDropdown,
     } = useProperty();
 
-    const { selectedItem } = useInspector();
-
     const shapeButtons = useMemo(() => {
-        if (!selectedItem || isEdge) return null;
+        if (isEdge) return null;
 
         return <ShapeButtons shapeType={shapeType} onTypeChange={handleChangeNodeShapeType} />;
-    }, [selectedItem, isEdge, shapeType, handleChangeNodeShapeType]);
+    }, [isEdge, shapeType, handleChangeNodeShapeType]);
 
     const positionInputs = useMemo(() => {
-        if (!selectedItem || isEdge) return null;
+        if (isEdge) return null;
 
         return <PositionInputs positionX={positionX} positionY={positionY} onMove={handleMove} />;
-    }, [selectedItem, isEdge, positionX, positionY, handleMove]);
+    }, [isEdge, positionX, positionY, handleMove]);
 
     return (
         <div className="flex flex-col gap-1">
@@ -62,7 +60,12 @@ export const Property = memo(function PropertyEditor() {
 
             {dynamicDropdowns.map((dd: IDropdown) => {
                 return (
-                    <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
+                    <Dropdown
+                        key={dd.id}
+                        title={dd.title}
+                        onRename={(newTitle) => renameDropdown(dd.id, newTitle)}
+                        onDelete={() => deleteDropdown(dd.id as string)}
+                    >
                         <></>
                     </Dropdown>
                 );
