@@ -25,7 +25,6 @@ export const Property = memo(function PropertyEditor() {
         handleMove,
         addDropdown,
         renameDropdown,
-        deleteDropdown,
     } = useProperty();
 
     const shapeButtons = useMemo(() => {
@@ -60,12 +59,7 @@ export const Property = memo(function PropertyEditor() {
 
             {dynamicDropdowns.map((dd: IDropdown) => {
                 return (
-                    <Dropdown
-                        key={dd.id}
-                        title={dd.title}
-                        onRename={(newTitle) => renameDropdown(dd.id, newTitle)}
-                        onDelete={() => deleteDropdown(dd.id as string)}
-                    >
+                    <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
                         <></>
                     </Dropdown>
                 );
