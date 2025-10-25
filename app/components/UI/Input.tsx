@@ -21,14 +21,12 @@ export const Input = memo(function Input({ value, onChange, className = '', ...p
     );
 
     return (
-        <div className="relative w-full">
-            <input
-                type="text"
-                value={value}
-                onChange={handleChange}
-                className={`w-full py-2 bg-card text-foreground placeholder-gray px-3 text-sm rounded-md focus:outline-none pr-12 ${className}`}
-                {...props}
-            />
-        </div>
+        <input
+            type="text"
+            value={value}
+            onChange={handleChange}
+            className={`w-full py-2 bg-card text-foreground placeholder-gray px-3 text-sm rounded-md focus:outline-none ${className}`}
+            {...props}
+        />
     );
 });
