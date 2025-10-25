@@ -1,9 +1,13 @@
 'use client';
 
 import { memo } from 'react';
+
+import { Parameter } from '@/canvas/canvas.types';
+
 import { Input } from '@/components/UI/Input';
 import { Checkbox } from '@/components/UI/Checkbox';
-import { Parameter } from '@/canvas/canvas.types';
+import { Select } from '@/components/UI/Select';
+
 import { X } from 'lucide-react';
 
 interface PropertyParameterItemProps {
@@ -17,16 +21,8 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
     onUpdate,
     onRemove,
 }: PropertyParameterItemProps) {
-    const handleValueChange = (value: string | number | boolean) => {
+    const handleValueChange = (value: string | number | boolean | string[]) => {
         onUpdate({ value });
-    };
-
-    const updateEnumOption = (index: number, value: string) => {
-        if (parameter.type !== 'enum' || !Array.isArray(parameter.value)) return;
-
-        const newOptions = [...parameter.value];
-        newOptions[index] = value;
-        onUpdate({ value: newOptions });
     };
 
     const renderParameterInput = () => {
@@ -52,20 +48,24 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                     </div>
                 );
 
-            case 'enum':
+            case 'enum': {
+                const options = Array.isArray(parameter.value) ? parameter.value : [];
+                const selected = options[0] || '';
+
+                const availableOptions = options.filter((opt) => opt !== selected);
+
                 return (
-                    <div className="flex flex-col gap-1 w-full">
-                        {(parameter.value as string[]).map((option, index) => (
-                            <div key={index} className="flex gap-2 items-center">
-                                <Input
-                                    value={option}
-                                    onChange={(val) => updateEnumOption(index, val)}
-                                    className="bg-ui w-full min-w-[220px]"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    <Select
+                        value={selected}
+                        onChange={(val) => {
+                            const newValue = [val, ...options.filter((opt) => opt !== val)];
+                            handleValueChange(newValue);
+                        }}
+                        options={availableOptions}
+                        className="w-full min-w-[220px]"
+                    />
                 );
+            }
         }
     };
 
