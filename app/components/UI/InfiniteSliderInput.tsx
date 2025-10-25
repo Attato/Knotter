@@ -53,7 +53,7 @@ export const InfiniteSliderInput = memo(function InfiniteSliderInput({
 
             <div
                 onMouseDown={handleMouseDown}
-                className="w-full bg-ui h-8 px-2 flex items-center cursor-ew-resize rounded select-none"
+                className="w-full bg-ui h-8 px-2 flex items-center cursor-ew-resize text-sm rounded-md select-none"
             >
                 {Number.isInteger(value) ? value : value.toFixed(2)}
             </div>
