@@ -34,7 +34,7 @@ export const PropertyParameters = memo(function PropertyParameters({
                             <button
                                 key={param.id}
                                 onClick={() => onAddParameter(dropdownId, param.id)}
-                                className="px-3 py-2 w-full flex justify-between bg-border hover:bg-ui rounded-md cursor-pointer mb-1"
+                                className="px-3 py-2 w-full flex justify-between bg-ui-hover hover:bg-border-light rounded-md cursor-pointer mb-1"
                             >
                                 <span>{param.name}</span>
                                 <span className="text-gray text-sm">({param.type})</span>
