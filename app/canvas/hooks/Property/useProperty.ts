@@ -5,13 +5,14 @@ import { useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
+import { useParametersStore } from '@/canvas/store/parametersStore';
 
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
-import { NodeShapeType, Position, Node, PropertyType } from '@/canvas/canvas.types';
+import { NodeShapeType, Position, Node, PropertyType, Parameter } from '@/canvas/canvas.types';
 
 export interface IDropdown {
     id: number | string;
@@ -23,6 +24,7 @@ export function useProperty() {
     const items = useCanvasStore((state) => state.items);
     const setItems = useCanvasStore((state) => state.setItems);
     const nodeMoveStep = useCanvasStore((state) => state.nodeMoveStep);
+    const parameters = useParametersStore((state) => state.parameters);
 
     const { changeNodeShapeType } = useCanvasHandlers();
 
@@ -62,6 +64,84 @@ export function useProperty() {
     const shapeType = currentItem?.kind === 'node' ? currentItem.shapeType : null;
     const positionX = currentItem?.position.x ?? 0;
     const positionY = currentItem?.position.y ?? 0;
+
+    const addParameterToDropdown = useCallback(
+        (dropdownId: string, parameterId: string) => {
+            if (!currentItem) return;
+
+            const originalParameter = parameters.find((p) => p.id === parameterId);
+
+            if (!originalParameter) return;
+
+            const parameterCopy: Parameter = {
+                ...originalParameter,
+                id: uuidv4(),
+            };
+
+            const updatedItems = items.map((item) =>
+                item.id === currentItem.id
+                    ? {
+                          ...item,
+                          properties: item.properties.map((prop) =>
+                              prop.id === dropdownId ? { ...prop, parameters: [...prop.parameters, parameterCopy] } : prop,
+                          ),
+                      }
+                    : item,
+            );
+
+            setItems(updatedItems);
+        },
+        [currentItem, items, parameters, setItems],
+    );
+
+    const removeParameterFromDropdown = useCallback(
+        (dropdownId: string, parameterId: string) => {
+            if (!currentItem) return;
+
+            const updatedItems = items.map((item) =>
+                item.id === currentItem.id
+                    ? {
+                          ...item,
+                          properties: item.properties.map((prop) =>
+                              prop.id === dropdownId
+                                  ? { ...prop, parameters: prop.parameters.filter((p) => p.id !== parameterId) }
+                                  : prop,
+                          ),
+                      }
+                    : item,
+            );
+
+            setItems(updatedItems);
+        },
+        [currentItem, items, setItems],
+    );
+
+    const updateParameterInDropdown = useCallback(
+        (dropdownId: string, parameterId: string, updates: Partial<Parameter>) => {
+            if (!currentItem) return;
+
+            const updatedItems = items.map((item) =>
+                item.id === currentItem.id
+                    ? {
+                          ...item,
+                          properties: item.properties.map((prop) =>
+                              prop.id === dropdownId
+                                  ? {
+                                        ...prop,
+                                        parameters: prop.parameters.map((p) =>
+                                            p.id === parameterId ? { ...p, ...updates } : p,
+                                        ),
+                                    }
+                                  : prop,
+                          ),
+                      }
+                    : item,
+            );
+
+            setItems(updatedItems);
+        },
+        [currentItem, items, setItems],
+    );
 
     const addDropdown = useCallback(() => {
         if (!currentItem) return;
@@ -169,6 +249,9 @@ export function useProperty() {
         addDropdown,
         renameDropdown,
         deleteDropdown,
+        addParameterToDropdown,
+        removeParameterFromDropdown,
+        updateParameterInDropdown,
         handleChangeNodeShapeType,
         handleMove,
     };
