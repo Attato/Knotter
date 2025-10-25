@@ -59,7 +59,7 @@ export const EditableName = memo(function EditableName({
         />
     ) : (
         <span
-            className={`text-sm cursor-pointer ${isSelected ? 'text-text-accent' : 'text-foreground'} ${className}`}
+            className={`text-sm cursor-pointer text-left w-full ${isSelected ? 'text-text-accent' : 'text-foreground'} ${className}`}
             onDoubleClick={(e) => {
                 e.stopPropagation();
                 setEditing(true);
