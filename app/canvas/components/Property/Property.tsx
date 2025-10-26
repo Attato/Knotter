@@ -47,37 +47,41 @@ export const Property = memo(function Property() {
 
     return (
         <div className="flex flex-col gap-1">
-            {staticDropdowns.map((dd: IDropdown) => (
-                <Dropdown key={dd.id} title={dd.title} disabled={isEdge}>
-                    {dd.id === 1 ? shapeButtons : dd.id === 2 ? positionInputs : null}
-                </Dropdown>
-            ))}
+            <div className="mx-1 flex flex-col gap-1">
+                {staticDropdowns.map((dd: IDropdown) => (
+                    <Dropdown key={dd.id} title={dd.title} disabled={isEdge}>
+                        {dd.id === 1 ? shapeButtons : dd.id === 2 ? positionInputs : null}
+                    </Dropdown>
+                ))}
+            </div>
 
             <hr className="border-b-0 border-border" />
 
-            <button
-                onClick={addDropdown}
-                className="flex justify-start gap-2 items-center px-3 py-2 w-full text-sm cursor-pointer bg-card hover:bg-ui rounded-md"
-            >
-                <Plus size={16} />
-                Создать пользовательские свойства
-            </button>
+            <div className="mx-1 flex flex-col gap-1">
+                <button
+                    onClick={addDropdown}
+                    className="flex justify-start gap-2 items-center px-3 py-2 w-full text-sm cursor-pointer bg-card hover:bg-ui rounded-md"
+                >
+                    <Plus size={16} />
+                    Создать пользовательские свойства
+                </button>
 
-            {dynamicDropdowns.map((dd: IDropdown) => {
-                const property = currentItem?.properties.find((p) => p.id === dd.id);
+                {dynamicDropdowns.map((dd: IDropdown) => {
+                    const property = currentItem?.properties.find((p) => p.id === dd.id);
 
-                return (
-                    <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
-                        <PropertyParameters
-                            dropdownId={dd.id as string}
-                            propertyParameters={property?.parameters || []}
-                            onAddParameter={addParameterToDropdown}
-                            onRemoveParameter={removeParameterFromDropdown}
-                            onUpdateParameter={updateParameterInDropdown}
-                        />
-                    </Dropdown>
-                );
-            })}
+                    return (
+                        <Dropdown key={dd.id} title={dd.title} onRename={(newTitle) => renameDropdown(dd.id, newTitle)}>
+                            <PropertyParameters
+                                dropdownId={dd.id as string}
+                                propertyParameters={property?.parameters || []}
+                                onAddParameter={addParameterToDropdown}
+                                onRemoveParameter={removeParameterFromDropdown}
+                                onUpdateParameter={updateParameterInDropdown}
+                            />
+                        </Dropdown>
+                    );
+                })}
+            </div>
         </div>
     );
 });
