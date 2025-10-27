@@ -12,7 +12,7 @@ import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
-import { NodeShapeType, Position, Node, PropertyType, Parameter } from '@/canvas/canvas.types';
+import { NodeShapeType, Position, Node, PropertyType } from '@/canvas/canvas.types'; // Импортируем PropertyType
 
 export interface IDropdown {
     id: number | string;
@@ -52,12 +52,9 @@ export function useProperty() {
         [],
     );
 
-    const dynamicDropdowns = useMemo((): IDropdown[] => {
+    const itemParameters = useMemo((): PropertyType[] => {
         if (!currentItem) return [];
-        return currentItem.properties.map((prop) => ({
-            id: prop.id,
-            title: prop.name,
-        }));
+        return (currentItem.properties as PropertyType[]) || [];
     }, [currentItem]);
 
     const isEdge = selectedItem?.kind === 'edge';
@@ -65,26 +62,25 @@ export function useProperty() {
     const positionX = currentItem?.position.x ?? 0;
     const positionY = currentItem?.position.y ?? 0;
 
-    const addParameterToDropdown = useCallback(
-        (dropdownId: string, parameterId: string) => {
+    const addParameterById = useCallback(
+        (parameterId: string) => {
             if (!currentItem) return;
 
             const originalParameter = parameters.find((p) => p.id === parameterId);
 
             if (!originalParameter) return;
 
-            const parameterCopy: Parameter = {
+            const property: PropertyType = {
                 ...originalParameter,
                 id: uuidv4(),
+                parentId: parameterId,
             };
 
             const updatedItems = items.map((item) =>
                 item.id === currentItem.id
                     ? {
                           ...item,
-                          properties: item.properties.map((prop) =>
-                              prop.id === dropdownId ? { ...prop, parameters: [...prop.parameters, parameterCopy] } : prop,
-                          ),
+                          properties: [...(item.properties || []), property],
                       }
                     : item,
             );
@@ -94,19 +90,15 @@ export function useProperty() {
         [currentItem, items, parameters, setItems],
     );
 
-    const removeParameterFromDropdown = useCallback(
-        (dropdownId: string, parameterId: string) => {
+    const removeParameter = useCallback(
+        (propertyId: string) => {
             if (!currentItem) return;
 
             const updatedItems = items.map((item) =>
                 item.id === currentItem.id
                     ? {
                           ...item,
-                          properties: item.properties.map((prop) =>
-                              prop.id === dropdownId
-                                  ? { ...prop, parameters: prop.parameters.filter((p) => p.id !== parameterId) }
-                                  : prop,
-                          ),
+                          properties: (item.properties || []).filter((p) => p.id !== propertyId),
                       }
                     : item,
             );
@@ -116,84 +108,15 @@ export function useProperty() {
         [currentItem, items, setItems],
     );
 
-    const updateParameterInDropdown = useCallback(
-        (dropdownId: string, parameterId: string, updates: Partial<Parameter>) => {
+    const updateParameter = useCallback(
+        (propertyId: string, updates: Partial<PropertyType>) => {
             if (!currentItem) return;
 
             const updatedItems = items.map((item) =>
                 item.id === currentItem.id
                     ? {
                           ...item,
-                          properties: item.properties.map((prop) =>
-                              prop.id === dropdownId
-                                  ? {
-                                        ...prop,
-                                        parameters: prop.parameters.map((p) =>
-                                            p.id === parameterId ? { ...p, ...updates } : p,
-                                        ),
-                                    }
-                                  : prop,
-                          ),
-                      }
-                    : item,
-            );
-
-            setItems(updatedItems);
-        },
-        [currentItem, items, setItems],
-    );
-
-    const addDropdown = useCallback(() => {
-        if (!currentItem) return;
-
-        const newProperty: PropertyType = {
-            id: uuidv4(),
-            name: `Свойства ${dynamicDropdowns.length + 1}`,
-            parameters: [],
-        };
-
-        const updatedItems = items.map((item) =>
-            item.id === currentItem.id
-                ? {
-                      ...item,
-                      properties: [...item.properties, newProperty],
-                  }
-                : item,
-        );
-
-        setItems(updatedItems);
-    }, [currentItem, items, setItems, dynamicDropdowns.length]);
-
-    const renameDropdown = useCallback(
-        (id: number | string, newTitle: string) => {
-            if (!currentItem) return;
-
-            if (typeof id === 'string') {
-                const updatedItems = items.map((item) =>
-                    item.id === currentItem.id
-                        ? {
-                              ...item,
-                              properties: item.properties.map((prop) =>
-                                  prop.id === id ? { ...prop, name: newTitle } : prop,
-                              ),
-                          }
-                        : item,
-                );
-                setItems(updatedItems);
-            }
-        },
-        [currentItem, items, setItems],
-    );
-
-    const deleteDropdown = useCallback(
-        (id: string) => {
-            if (!currentItem) return;
-
-            const updatedItems = items.map((item) =>
-                item.id === currentItem.id
-                    ? {
-                          ...item,
-                          properties: item.properties.filter((prop) => prop.id !== id),
+                          properties: (item.properties || []).map((p) => (p.id === propertyId ? { ...p, ...updates } : p)),
                       }
                     : item,
             );
@@ -236,7 +159,7 @@ export function useProperty() {
 
     return {
         staticDropdowns,
-        dynamicDropdowns,
+        parameters: itemParameters,
 
         selectedItem,
         currentItem,
@@ -246,12 +169,9 @@ export function useProperty() {
         positionX,
         positionY,
 
-        addDropdown,
-        renameDropdown,
-        deleteDropdown,
-        addParameterToDropdown,
-        removeParameterFromDropdown,
-        updateParameterInDropdown,
+        addParameterById,
+        removeParameter,
+        updateParameter,
         handleChangeNodeShapeType,
         handleMove,
     };
