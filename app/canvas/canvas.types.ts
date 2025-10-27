@@ -50,8 +50,6 @@ export interface Parameter {
     value: ParameterValue;
 }
 
-export interface PropertyType {
-    id: string;
-    name: string;
-    parameters: Parameter[];
+export interface PropertyType extends Parameter {
+    parentId: string;
 }
