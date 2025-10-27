@@ -58,6 +58,8 @@ export const Parameters = memo(function Parameters() {
                 {parameters.map((parameter) => (
                     <ParametersItem key={parameter.id} parameterId={parameter.id} onRemoveParameter={removeParameter} />
                 ))}
+
+                {parameters.length === 0 && <div className="p-2 text-gray text-sm text-center">Ничего не найдено</div>}
             </div>
         </div>
     );
