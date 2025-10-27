@@ -1,58 +1,94 @@
 'use client';
 
-import { memo } from 'react';
+import { useState, memo } from 'react';
 import { DropdownAbsolute } from '@/components/UI/DropdownAbsolute';
 import { useParametersStore } from '@/canvas/store/parametersStore';
-import { Parameter } from '@/canvas/canvas.types';
+import { PropertyType } from '@/canvas/canvas.types';
 
 import { PropertyParameterItem } from '@/canvas/components/Property/PropertyParameterItem';
+import { Plus } from 'lucide-react';
 
 interface PropertyParametersProps {
-    dropdownId: string;
-    propertyParameters: Parameter[];
-    onAddParameter: (dropdownId: string, parameterId: string) => void;
-    onRemoveParameter: (dropdownId: string, parameterId: string) => void;
-    onUpdateParameter: (dropdownId: string, parameterId: string, updates: Partial<Parameter>) => void;
+    parameters: PropertyType[];
+    onAddParameter?: (parameterId: string) => void;
+    onRemoveParameter?: (parameterId: string) => void;
+    onUpdateParameter: (parameterId: string, updates: Partial<PropertyType>) => void;
 }
 
 export const PropertyParameters = memo(function PropertyParameters({
-    dropdownId,
-    propertyParameters,
+    parameters,
     onAddParameter,
     onRemoveParameter,
     onUpdateParameter,
 }: PropertyParametersProps) {
-    const parameters = useParametersStore((state) => state.parameters);
+    const availableParameters = useParametersStore((state) => state.parameters);
+    const [selectedParamId, setSelectedParamId] = useState<string>('');
+
+    const filteredAvailableParameters = availableParameters.filter(
+        (param) => !parameters.some((p) => p.name === param.name),
+    );
+
+    const selectedParameter = filteredAvailableParameters.find((param) => param.id === selectedParamId);
+
+    const dropdownTitle = selectedParameter ? `${selectedParameter.name} (${selectedParameter.type})` : 'Выбрать параметр';
+
+    const handleAddParameter = () => {
+        if (selectedParamId && onAddParameter) {
+            onAddParameter(selectedParamId);
+            setSelectedParamId('');
+        }
+    };
+
+    const handleRemoveParameter = (parameterId: string) => {
+        if (onRemoveParameter) {
+            onRemoveParameter(parameterId);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-1">
-            <DropdownAbsolute title="Добавить параметр" light>
-                <div className="max-h-48 overflow-y-auto">
-                    {parameters
-                        .filter((param) => !propertyParameters.some((p) => p.name === param.name))
-                        .map((param) => (
-                            <button
-                                key={param.id}
-                                onClick={() => onAddParameter(dropdownId, param.id)}
-                                className="px-3 py-2 w-full flex justify-between bg-ui-hover hover:bg-border-light rounded-md cursor-pointer mb-1"
-                            >
-                                <span>{param.name}</span>
-                                <span className="text-gray text-sm">({param.type})</span>
-                            </button>
-                        ))}
+            {onAddParameter && (
+                <div className="flex gap-1">
+                    <DropdownAbsolute title={dropdownTitle} light>
+                        <div className="max-h-48 overflow-y-auto">
+                            {filteredAvailableParameters.map((param) => (
+                                <div
+                                    key={param.id}
+                                    onClick={() => setSelectedParamId(param.id)}
+                                    className={`px-3 py-2 w-full flex justify-between rounded-md cursor-pointer mb-1 ${
+                                        selectedParamId === param.id
+                                            ? 'bg-bg-accent text-white'
+                                            : 'bg-ui-hover hover:bg-border-light'
+                                    }`}
+                                >
+                                    <span>{param.name}</span>
+                                    <span className="text-sm">({param.type})</span>
+                                </div>
+                            ))}
 
-                    {parameters.filter((param) => !propertyParameters.some((p) => p.name === param.name)).length === 0 && (
-                        <div className="px-3 py-2 text-gray text-sm text-center">Все параметры добавлены</div>
-                    )}
+                            {filteredAvailableParameters.length === 0 && (
+                                <div className="px-3 py-2 text-gray text-sm text-center">Все параметры добавлены</div>
+                            )}
+                        </div>
+                    </DropdownAbsolute>
+
+                    <button
+                        onClick={handleAddParameter}
+                        disabled={!selectedParamId}
+                        className={`${!selectedParamId ? 'bg-ui/50 text-foreground/50' : 'bg-ui '}  flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
+                        title="Добавить выбранный параметр"
+                    >
+                        <Plus size={16} />
+                    </button>
                 </div>
-            </DropdownAbsolute>
+            )}
 
-            {propertyParameters.map((param) => (
+            {parameters.map((param) => (
                 <PropertyParameterItem
                     key={param.id}
                     parameter={param}
-                    onUpdate={(updates) => onUpdateParameter(dropdownId, param.id, updates)}
-                    onRemove={() => onRemoveParameter(dropdownId, param.id)}
+                    onRemove={() => handleRemoveParameter(param.id)}
+                    onUpdate={(updates) => onUpdateParameter(param.id, updates)}
                 />
             ))}
         </div>
