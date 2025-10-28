@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CanvasItem, Position } from '@/canvas/canvas.types';
+import { CanvasItem, Position, TooltipMode } from '@/canvas/canvas.types';
 import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/constants';
 
 interface CanvasState {
@@ -34,11 +34,17 @@ interface CanvasState {
     showAxes: boolean;
     toggleShowAxes: () => void;
 
+    tooltipMode: TooltipMode;
+    setTooltipMode: (mode: TooltipMode) => void;
+
     invertY: boolean;
     setInvertY: (value: boolean) => void;
 
     mousePosition: Position;
     setMousePosition: (pos: Position) => void;
+
+    hoveredNodeId: string | null;
+    setHoveredNodeId: (id: string | null) => void;
 
     activeTab: string;
     setActiveTab: (tabId: string) => void;
@@ -77,11 +83,17 @@ export const useCanvasStore = create<CanvasState>()(
             showAxes: false,
             toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
 
+            tooltipMode: 'always',
+            setTooltipMode: (tooltipMode) => set({ tooltipMode }),
+
             invertY: true,
             setInvertY: (value) => set({ invertY: value }),
 
             mousePosition: { x: 0, y: 0 },
             setMousePosition: (mousePosition) => set({ mousePosition }),
+
+            hoveredNodeId: null,
+            setHoveredNodeId: (hoveredNodeId) => set({ hoveredNodeId }),
 
             activeTab: '',
             setActiveTab: (activeTab) => set({ activeTab }),
@@ -98,6 +110,7 @@ export const useCanvasStore = create<CanvasState>()(
                 isMagnet: state.isMagnet,
                 showGrid: state.showGrid,
                 showAxes: state.showAxes,
+                tooltipMode: state.tooltipMode,
                 invertY: state.invertY,
                 activeTab: state.activeTab,
             }),
