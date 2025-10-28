@@ -11,6 +11,8 @@ export type CanvasItem = Node | Edge;
 
 export type NodeShapeType = 'octagon' | 'circle' | 'diamond' | 'triangle' | 'hexagon' | 'squircle' | 'point';
 
+export type TooltipMode = 'always' | 'hover' | 'never';
+
 export interface DrawOptions {
     fillStyle?: string;
     strokeStyle?: string;
