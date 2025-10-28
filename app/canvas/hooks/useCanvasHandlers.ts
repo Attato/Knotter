@@ -13,6 +13,7 @@ import { getSelectedEdges } from '@/canvas/utils/edges/getSelectedEdges';
 import { cloneNodesWithInsertionGap } from '@/canvas/utils/nodes/cloneNodesWithInsertionGap ';
 import { cloneEdgesForNewNodes } from '@/canvas/utils/edges/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
+import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
@@ -23,17 +24,18 @@ export function useCanvasHandlers() {
     const setItems = useCanvasStore((state) => state.setItems);
     const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
     const setTempEdge = useCanvasStore((state) => state.setTempEdge);
-    const toggleShowGrid = useCanvasStore((state) => state.toggleShowGrid);
-    const toggleShowAxes = useCanvasStore((state) => state.toggleShowAxes);
+    const toggleGrid = useCanvasStore((state) => state.toggleShowGrid);
+    const toggleAxes = useCanvasStore((state) => state.toggleShowAxes);
 
     const clipboardRef = useRef<CanvasState>({ nodes: [], edges: [] });
 
     const { pushHistory } = useCanvasHistory();
 
     return {
-        toggleMagnet: toggleMagnetMode,
-        toggleGrid: toggleShowGrid,
-        toggleAxes: toggleShowAxes,
+        toggleTooltipMode,
+        toggleMagnetMode,
+        toggleGrid,
+        toggleAxes,
 
         delete: () => {
             const newItems = handleDeleteItems(items, selectedItemIds);
