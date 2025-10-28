@@ -13,6 +13,7 @@ import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
 import { NodeShapeType, Position, Node, PropertyType } from '@/canvas/canvas.types'; // Импортируем PropertyType
+import { useInspector } from '../Inspector/useInspector';
 
 export interface IDropdown {
     id: number | string;
@@ -28,10 +29,7 @@ export function useProperty() {
 
     const { changeNodeShapeType } = useCanvasHandlers();
 
-    const selectedItem = useMemo(() => {
-        if (selectedItemIds.length === 0) return null;
-        return items.find((i) => i.id === selectedItemIds[0]) ?? null;
-    }, [items, selectedItemIds]);
+    const { selectedItem } = useInspector();
 
     const nodesMap = useMemo(() => {
         const map = new Map<string, Node>();
