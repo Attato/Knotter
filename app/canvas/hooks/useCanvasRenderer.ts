@@ -71,7 +71,15 @@ export function useCanvasRenderer({ canvasRef, selectionStart, selectionEnd }: u
             const edges: Edge[] = getEdges(items);
 
             drawEdges(ctx, nodes, selectedItemIds, edges);
-            drawNodes(ctx, nodes, selectedItemIds, NODE_SIZE);
+            drawNodes({
+                ctx,
+                nodes,
+                selectedNodeIds: selectedItemIds,
+                nodeSize: NODE_SIZE,
+                invertY,
+                zoomLevel,
+                offset,
+            });
 
             if (selectionStart && selectionEnd) {
                 drawSelectionBox(ctx, selectionStart, selectionEnd);
