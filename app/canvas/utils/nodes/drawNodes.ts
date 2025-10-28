@@ -1,4 +1,5 @@
 import { Node } from '@/canvas/canvas.types';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import {
     drawOctagon,
     drawCircle,
@@ -17,6 +18,7 @@ interface DrawNodesProps {
     invertY: boolean;
     zoomLevel: number;
     offset: { x: number; y: number };
+    hoveredNodeId?: string | null;
 }
 
 interface DrawTooltipProps {
@@ -30,7 +32,15 @@ interface DrawTooltipProps {
     invertY: boolean;
 }
 
-export function drawNodes({ ctx, nodes, selectedNodeIds, nodeSize, invertY = false, zoomLevel = 1 }: DrawNodesProps) {
+export function drawNodes({
+    ctx,
+    nodes,
+    selectedNodeIds,
+    nodeSize,
+    invertY = false,
+    zoomLevel = 1,
+    hoveredNodeId = null,
+}: DrawNodesProps) {
     const padding = 4;
 
     const rootStyles = getComputedStyle(document.documentElement);
@@ -39,8 +49,11 @@ export function drawNodes({ ctx, nodes, selectedNodeIds, nodeSize, invertY = fal
     const fillColor = rootStyles.getPropertyValue('--background').trim();
     const textColor = rootStyles.getPropertyValue('--foreground').trim();
 
+    const tooltipMode = useCanvasStore.getState().tooltipMode;
+
     for (const node of nodes) {
         const isSelected = selectedNodeIds.includes(node.id);
+        const isHovered = hoveredNodeId === node.id;
         const { x, y } = node.position;
 
         const options = { fillStyle: fillColor, strokeStyle: strokeColor, lineWidth: 2 };
@@ -79,7 +92,10 @@ export function drawNodes({ ctx, nodes, selectedNodeIds, nodeSize, invertY = fal
             ctx.restore();
         }
 
-        if (node.name && zoomLevel > 0.3) {
+        const shouldShowTooltip =
+            node.name && zoomLevel > 0.3 && (tooltipMode === 'always' || (tooltipMode === 'hover' && isHovered));
+
+        if (shouldShowTooltip) {
             drawTooltip({
                 ctx,
                 text: node.name,
