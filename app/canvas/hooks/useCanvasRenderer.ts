@@ -34,6 +34,8 @@ export function useCanvasRenderer({ canvasRef, selectionStart, selectionEnd }: u
     const showGrid = useCanvasStore((s) => s.showGrid);
     const showAxes = useCanvasStore((s) => s.showAxes);
     const tempEdge = useCanvasStore((s) => s.tempEdge);
+    const hoveredNodeId = useCanvasStore((s) => s.hoveredNodeId);
+    const tooltipMode = useCanvasStore((s) => s.tooltipMode);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -79,6 +81,7 @@ export function useCanvasRenderer({ canvasRef, selectionStart, selectionEnd }: u
                 invertY,
                 zoomLevel,
                 offset,
+                hoveredNodeId,
             });
 
             if (selectionStart && selectionEnd) {
@@ -122,5 +125,7 @@ export function useCanvasRenderer({ canvasRef, selectionStart, selectionEnd }: u
         offset,
         invertY,
         resolvedTheme,
+        hoveredNodeId,
+        tooltipMode,
     ]);
 }
