@@ -39,8 +39,10 @@ export function useCanvasHotkeys(canvasRef: RefObject<HTMLCanvasElement | null>)
             }
 
             const toggleMap: Record<string, () => void> = {
-                m: handlers.toggleMagnet,
-                ь: handlers.toggleMagnet,
+                t: handlers.toggleTooltipMode,
+                е: handlers.toggleTooltipMode,
+                m: handlers.toggleMagnetMode,
+                ь: handlers.toggleMagnetMode,
                 g: handlers.toggleGrid,
                 п: handlers.toggleGrid,
                 a: handlers.toggleAxes,
