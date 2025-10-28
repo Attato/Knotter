@@ -28,6 +28,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
     const tempEdge = useCanvasStore((state) => state.tempEdge);
     const setTempEdge = useCanvasStore((state) => state.setTempEdge);
     const setMousePosition = useCanvasStore((state) => state.setMousePosition);
+    const setHoveredNodeId = useCanvasStore((state) => state.setHoveredNodeId);
 
     const { trackMousePosition } = useMousePosition();
 
@@ -35,6 +36,15 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
     const [dragStartMouse, setDragStartMouse] = useState<Position | null>(null);
     const [isDraggingNodes, setIsDraggingNodes] = useState(false);
     const [initialNodePositions, setInitialNodePositions] = useState<Map<string, Position>>(new Map());
+
+    const updateHoveredNodeId = useCallback(
+        (mousePos: Position) => {
+            const nodes = getNodes(items);
+            const hoveredNode = findNodeUnderCursor(nodes, mousePos);
+            setHoveredNodeId(hoveredNode?.id || null);
+        },
+        [items, setHoveredNodeId],
+    );
 
     const onMouseDown = useCallback(
         (e: MouseEvent) => {
@@ -75,6 +85,10 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             const mousePos = getMousePosition(e, canvas);
             trackMousePosition(mousePos, setMousePosition);
+
+            if (!isPanningRef?.current && !isDraggingNodes && !tempEdge) {
+                updateHoveredNodeId(mousePos);
+            }
 
             if (isPanningRef?.current) return;
 
@@ -133,6 +147,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             trackMousePosition,
             setMousePosition,
             isPanningRef,
+            updateHoveredNodeId,
         ],
     );
 
@@ -144,6 +159,8 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             const mousePos = getMousePosition(e, canvas);
             trackMousePosition(mousePos, setMousePosition);
+
+            updateHoveredNodeId(mousePos);
 
             if (!isDraggingNodes && pendingClickItemId) {
                 const newSelectedIds = selectCanvasItem({
@@ -204,6 +221,7 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             setItems,
             trackMousePosition,
             setMousePosition,
+            updateHoveredNodeId,
         ],
     );
 
