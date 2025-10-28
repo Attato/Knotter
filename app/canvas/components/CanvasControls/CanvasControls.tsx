@@ -8,6 +8,7 @@ import { CanvasControlButtons } from '@/canvas/components/CanvasControls/CanvasC
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
+import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode'; // Импортируем новую утилиту
 
 import { Magnet, Grid2x2, Move3d, Eye, EyeOff, EyeClosed } from 'lucide-react';
 
@@ -16,7 +17,6 @@ export const CanvasControls = memo(function CanvasControls() {
     const showGrid = useCanvasStore((s) => s.showGrid);
     const showAxes = useCanvasStore((s) => s.showAxes);
     const tooltipMode = useCanvasStore((s) => s.tooltipMode);
-    const setTooltipMode = useCanvasStore((s) => s.setTooltipMode);
     const toggleShowGrid = useCanvasStore((s) => s.toggleShowGrid);
     const toggleShowAxes = useCanvasStore((s) => s.toggleShowAxes);
 
@@ -25,13 +25,6 @@ export const CanvasControls = memo(function CanvasControls() {
     useEffect(() => {
         setMounted(true);
     }, []);
-
-    const handleTooltipModeToggle = useCallback(() => {
-        const modes = ['always', 'hover', 'never'] as const;
-        const currentIndex = modes.indexOf(tooltipMode);
-        const nextIndex = (currentIndex + 1) % modes.length;
-        setTooltipMode(modes[nextIndex]);
-    }, [tooltipMode, setTooltipMode]);
 
     const getTooltipIcon = useCallback(() => {
         switch (tooltipMode) {
@@ -63,7 +56,7 @@ export const CanvasControls = memo(function CanvasControls() {
         () => [
             {
                 active: tooltipMode !== 'never',
-                onClick: handleTooltipModeToggle,
+                onClick: toggleTooltipMode,
                 Icon: getTooltipIcon(),
                 label: getTooltipLabel(),
             },
@@ -71,17 +64,7 @@ export const CanvasControls = memo(function CanvasControls() {
             { active: showGrid, onClick: toggleShowGrid, Icon: Grid2x2, label: 'Сетка (G)' },
             { active: showAxes, onClick: toggleShowAxes, Icon: Move3d, label: 'Оси (A)' },
         ],
-        [
-            isMagnet,
-            showGrid,
-            showAxes,
-            tooltipMode,
-            handleTooltipModeToggle,
-            getTooltipIcon,
-            getTooltipLabel,
-            toggleShowGrid,
-            toggleShowAxes,
-        ],
+        [isMagnet, showGrid, showAxes, tooltipMode, getTooltipIcon, getTooltipLabel, toggleShowGrid, toggleShowAxes],
     );
 
     if (!mounted) return null;
