@@ -45,7 +45,7 @@ export const Parameters = memo(function Parameters() {
 
                 <button
                     onClick={addParameter}
-                    className={`${name.length === 0 ? 'bg-card/50 text-white/50' : 'bg-card text-white'} flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
+                    className={`${name.length === 0 ? 'bg-card/50 text-foreground/50' : 'bg-card text-foreground'} flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
                     disabled={name.length === 0}
                 >
                     <Plus size={16} />
