@@ -10,9 +10,9 @@ export default function Home() {
         <>
             <Header />
 
-            <div className="flex flex-col items-center justify-center gap-6 h-[calc(100vh-64px-56px-1px)]">
+            <div className="flex flex-col items-center justify-center gap-6 h-[calc(100vh-64px-56px-1px)] px-4">
                 <div className="flex flex-col items-center justify-center gap-2">
-                    <GitCommitHorizontal size={48} color="#1f6feb" />
+                    <GitCommitHorizontal size={48} className="text-text-accent" />
 
                     <h1 className="text-6xl font-extrabold uppercase">Knotter</h1>
                 </div>
