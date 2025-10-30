@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'], weight: ['100', '400', '700'] });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning translate="no">
             <body className={inter.className}>
                 <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem={true}>
                     {children}

@@ -62,7 +62,7 @@ export default function CanvasLayout({ children }: { children: ReactNode }) {
 
     if (isMobile) {
         return (
-            <div className="flex flex-col  gap-6 h-screen items-center justify-center">
+            <div className="flex flex-col  gap-6 h-screen items-center justify-center" translate="no">
                 <div className="flex justify-center items-center flex-col gap-6 max-w-2xl px-4 text-lg text-center">
                     <Frown size={48} className="text-text-accent" />
 
@@ -90,7 +90,7 @@ export default function CanvasLayout({ children }: { children: ReactNode }) {
 
     return (
         <ToastProvider>
-            <div className="flex overflow-hidden">
+            <div className="flex overflow-hidden" translate="no">
                 <main className="h-full w-full">{children}</main>
                 <CanvasSidebar />
             </div>
