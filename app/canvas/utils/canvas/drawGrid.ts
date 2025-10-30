@@ -21,6 +21,7 @@ export function drawGrid(
     const worldBottom = worldTop + canvasHeight / zoomLevel;
 
     const styles = getComputedStyle(document.documentElement);
+
     const gridColor1 = styles.getPropertyValue('--grid-color-1').trim();
     const gridColor2 = styles.getPropertyValue('--grid-color-2').trim();
     const gridColor3 = styles.getPropertyValue('--grid-color-3').trim();
@@ -41,12 +42,14 @@ export function drawGrid(
             ctx.strokeStyle = color;
 
             const startX = Math.floor(worldLeft / step) * step;
+
             for (let x = startX; x <= worldRight; x += step) {
                 ctx.moveTo(x, worldTop);
                 ctx.lineTo(x, worldBottom);
             }
 
             const startY = Math.floor(worldTop / step) * step;
+
             for (let y = startY; y <= worldBottom; y += step) {
                 ctx.moveTo(worldLeft, y);
                 ctx.lineTo(worldRight, y);
