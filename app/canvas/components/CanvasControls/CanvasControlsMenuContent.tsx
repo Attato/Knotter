@@ -1,7 +1,12 @@
 import { memo } from 'react';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { FolderOpen, Download, Home } from 'lucide-react';
+
 import Link from 'next/link';
+
+import { ThemeToggle } from '@/components/ThemeToggle';
+
+import { useCanvasStore } from '@/canvas/store/canvasStore';
+
+import { FolderOpen, Download, FlipVertical2, Home } from 'lucide-react';
 
 interface MenuContentProps {
     onOpenProject: () => void;
@@ -21,6 +26,9 @@ const HomeLink = memo(function HomeLink() {
 });
 
 export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }: MenuContentProps) {
+    const invertY = useCanvasStore((state) => state.invertY);
+    const setInvertY = useCanvasStore((state) => state.setInvertY);
+
     return (
         <div className="flex flex-col bg-background-alt rounded-md shadow w-full text-nowrap">
             <div className="flex flex-col gap-1 m-1">
@@ -38,6 +46,14 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
                 >
                     Сохранить как
                     <Download size={16} />
+                </button>
+
+                <button
+                    onClick={() => setInvertY(!invertY)}
+                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
+                >
+                    Инвертировать Y
+                    <FlipVertical2 size={16} className={`${invertY ? 'text-foreground' : 'text-gray'}`} />
                 </button>
 
                 <ThemeToggle label="Ночной режим" className="px-3 py-2 w-full flex justify-between" />
