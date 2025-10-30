@@ -9,6 +9,7 @@ import { PositionInputs } from '@/canvas/components/Inspector/PositionInputs';
 import { PropertyParameters } from '@/canvas/components/Property/PropertyParameters';
 
 import { useProperty } from '@/canvas/hooks/Property/useProperty';
+import { useDropdownStore } from '@/canvas/store/dropdownStore';
 
 export const Property = memo(function Property() {
     const {
@@ -20,11 +21,12 @@ export const Property = memo(function Property() {
         parameters,
         handleChangeNodeShapeType,
         handleMove,
-
         addParameterById,
         removeParameter,
         updateParameter,
     } = useProperty();
+
+    const { toggleDropdown, isDropdownOpen } = useDropdownStore();
 
     const shapeButtons = useMemo(() => {
         if (isEdge) return null;
@@ -42,7 +44,13 @@ export const Property = memo(function Property() {
         <div className="flex flex-col gap-1">
             <div className="mx-1 flex flex-col gap-1">
                 {staticDropdowns.map((dd) => (
-                    <Dropdown key={dd.id} title={dd.title} disabled={isEdge}>
+                    <Dropdown
+                        key={dd.id}
+                        title={dd.title}
+                        disabled={isEdge}
+                        isOpen={isDropdownOpen(dd.id)}
+                        onToggle={() => toggleDropdown(dd.id)}
+                    >
                         {dd.id === 1 ? shapeButtons : dd.id === 2 ? positionInputs : null}
                     </Dropdown>
                 ))}
@@ -51,7 +59,11 @@ export const Property = memo(function Property() {
             <hr className="border-b-0 border-border" />
 
             <div className="mx-1 flex flex-col gap-1">
-                <Dropdown title="Пользовательские свойства">
+                <Dropdown
+                    title="Пользовательские свойства"
+                    isOpen={isDropdownOpen(staticDropdowns.length + 1)}
+                    onToggle={() => toggleDropdown(staticDropdowns.length + 1)}
+                >
                     <PropertyParameters
                         parameters={parameters}
                         onAddParameter={addParameterById}
