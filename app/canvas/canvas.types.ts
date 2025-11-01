@@ -41,9 +41,17 @@ export interface Edge {
     properties: PropertyType[];
 }
 
-export type Enum = string[];
-export type ParameterType = 'number' | 'string' | 'boolean' | 'enum';
-export type ParameterValue = number | string | boolean | Enum;
+export type PrimitiveType = 'number' | 'string' | 'boolean';
+export type ParameterType = PrimitiveType | 'array';
+
+export interface ArrayItem {
+    id: string;
+    name: string;
+    type: PrimitiveType;
+    value: number | string | boolean;
+}
+
+export type ParameterValue = number | string | boolean | ArrayItem[];
 
 export interface Parameter {
     id: string;
