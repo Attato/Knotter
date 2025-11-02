@@ -1,15 +1,21 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, memo } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, LucideProps } from 'lucide-react';
 
 type DropdownProps = {
     title: string;
     children: React.ReactNode;
     light?: boolean;
+    icon?: React.ComponentType<LucideProps>;
 };
 
-export const DropdownAbsolute = memo(function DropdownAbsolute({ title, children, light = false }: DropdownProps) {
+export const DropdownAbsolute = memo(function DropdownAbsolute({
+    title,
+    children,
+    light = false,
+    icon: Icon,
+}: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -43,9 +49,12 @@ export const DropdownAbsolute = memo(function DropdownAbsolute({ title, children
         <div ref={dropdownRef} className="relative w-full">
             <button
                 onClick={toggle}
-                className={`flex justify-between items-center  px-3 py-2 w-full text-sm rounded-md cursor-pointer ${light ? 'bg-ui hover:bg-ui-hover' : 'bg-card hover:bg-ui'}`}
+                className={`flex justify-between items-center px-3 py-1.5 w-full text-sm rounded-md cursor-pointer ${light ? 'bg-ui hover:bg-ui-hover' : 'bg-card hover:bg-ui'}`}
             >
-                {title}
+                <div className="flex items-center gap-2">
+                    {Icon && <Icon size={16} />}
+                    {title}
+                </div>
                 <ChevronDown className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} size={16} />
             </button>
 
