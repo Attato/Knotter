@@ -7,6 +7,8 @@ interface EditableNameProps {
     onChange: (newName: string) => void;
     isSelected?: boolean;
     className?: string;
+    maxWidth?: string;
+    maxLength?: number;
 }
 
 export const EditableName = memo(function EditableName({
@@ -14,6 +16,7 @@ export const EditableName = memo(function EditableName({
     onChange,
     isSelected = false,
     className = '',
+    maxLength = 25,
 }: EditableNameProps) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(name);
@@ -54,16 +57,21 @@ export const EditableName = memo(function EditableName({
             onChange={(e) => setValue(e.target.value)}
             onBlur={finishEditing}
             onKeyDown={handleInputKeyDown}
-            className="bg-card border border-bg-accent rounded px-1 py-0.5 text-foreground text-sm outline-none w-full"
+            className="bg-card border border-bg-accent rounded px-1 py-0.5 text-foreground text-sm outline-none"
             onDoubleClick={(e) => e.stopPropagation()}
+            maxLength={maxLength}
         />
     ) : (
         <span
-            className={`text-sm cursor-pointer text-left w-full ${isSelected ? 'text-text-accent' : 'text-foreground'} ${className}`}
+            className={`block px-[5px] text-sm cursor-pointer text-left overflow-hidden text-ellipsis whitespace-nowrap ${isSelected ? 'text-text-accent' : 'text-foreground'} ${className}`}
+            style={{
+                minWidth: 0,
+            }}
             onDoubleClick={(e) => {
                 e.stopPropagation();
                 setEditing(true);
             }}
+            title={name}
         >
             {name}
         </span>
