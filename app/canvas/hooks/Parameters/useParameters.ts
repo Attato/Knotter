@@ -3,13 +3,14 @@ import { v4 as uuid } from 'uuid';
 
 import { useParametersStore } from '@/canvas/store/parametersStore';
 
-import { Enum, ParameterType, ParameterValue, Parameter } from '@/canvas/canvas.types';
+import { ParameterType, ParameterValue, Parameter } from '@/canvas/canvas.types';
 
 const PARAMETER_TYPES: { label: string; value: ParameterType }[] = [
     { label: 'Число', value: 'number' },
     { label: 'Строка', value: 'string' },
     { label: 'Логическое выражение', value: 'boolean' },
-    { label: 'Перечисление', value: 'enum' },
+    { label: 'Список', value: 'enum' },
+    { label: 'Массив', value: 'array' },
 ];
 
 export const useParameters = () => {
@@ -18,6 +19,14 @@ export const useParameters = () => {
     const [type, setType] = useState<ParameterType>('number');
 
     const createInitialValue = (type: ParameterType): ParameterValue => {
+        const initialEnumValue = {
+            options: {
+                id: uuid(),
+                values: [''],
+            },
+            selectedId: null,
+        };
+
         switch (type) {
             case 'number':
                 return 0;
@@ -26,7 +35,9 @@ export const useParameters = () => {
             case 'boolean':
                 return false;
             case 'enum':
-                return ['Первая опция'] as Enum;
+                return initialEnumValue;
+            case 'array':
+                return [];
         }
     };
 
