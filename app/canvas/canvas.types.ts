@@ -41,17 +41,17 @@ export interface Edge {
     properties: PropertyType[];
 }
 
-export type PrimitiveType = 'number' | 'string' | 'boolean';
-export type ParameterType = PrimitiveType | 'array';
+export type ParameterType = 'number' | 'string' | 'boolean' | 'enum' | 'array';
 
-export interface ArrayItem {
+export type Enum = { options: { id: string; values: string[] }; selectedId: string | null };
+
+export type ArrayItem = {
     id: string;
     name: string;
-    type: PrimitiveType;
     value: number | string | boolean;
-}
+};
 
-export type ParameterValue = number | string | boolean | ArrayItem[];
+export type ParameterValue = number | string | boolean | Enum | ArrayItem[];
 
 export interface Parameter {
     id: string;
