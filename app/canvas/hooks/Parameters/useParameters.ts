@@ -8,7 +8,7 @@ import { ParameterType, ParameterValue, Parameter } from '@/canvas/canvas.types'
 const PARAMETER_TYPES: { label: string; value: ParameterType }[] = [
     { label: 'Число', value: 'number' },
     { label: 'Строка', value: 'string' },
-    { label: 'Логическое выражение', value: 'boolean' },
+    { label: 'Флаг', value: 'boolean' },
     { label: 'Список', value: 'enum' },
     { label: 'Массив', value: 'array' },
 ];
