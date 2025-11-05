@@ -3,6 +3,7 @@
 import { memo, useState } from 'react';
 import { Search } from 'lucide-react';
 
+import { EmptyState } from '@/components/UI/EmptyState';
 import { HierarchyItem } from '@/canvas/components/Hierarchy/HierarchyItem';
 
 import { useHierarchy } from '@/canvas/hooks/Hierarchy/useHierarchy';
@@ -69,16 +70,10 @@ export const Hierarchy = memo(function Hierarchy() {
                             </ul>
                         )}
 
-                        {items.length === 0 && (
-                            <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
-                                Создайте элемент, нажав ПКМ по холсту.
-                            </div>
-                        )}
+                        {items.length === 0 && <EmptyState message="Создайте элемент, нажав ПКМ по холсту." />}
 
                         {filteredItems.length === 0 && items.length !== 0 && (
-                            <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
-                                Элемент с этим именем не найден.
-                            </div>
+                            <EmptyState message="Элемент с этим именем не найден." />
                         )}
                     </SortableContext>
                 </DndContext>

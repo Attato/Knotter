@@ -4,6 +4,7 @@ import { memo } from 'react';
 
 import { useInspector } from '@/canvas/hooks/Inspector/useInspector';
 
+import { EmptyState } from '@/components/UI/EmptyState';
 import { Input } from '@/components/UI/Input';
 import { Textarea } from '@/components/UI/Textarea';
 
@@ -17,11 +18,7 @@ export const Inspector = memo(function Inspector() {
     const Icon = getDynamicIcon(selectedItem?.kind || 'bug');
 
     if (!selectedItem) {
-        return (
-            <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
-                Выберите элемент для инспектора
-            </div>
-        );
+        return <EmptyState message="Выберите элемент для инспектора" />;
     }
 
     return (

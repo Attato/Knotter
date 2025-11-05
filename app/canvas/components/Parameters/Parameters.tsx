@@ -4,12 +4,13 @@ import { memo } from 'react';
 
 import { Input } from '@/components/UI/Input';
 import { DropdownAbsolute } from '@/components/UI/DropdownAbsolute';
+import { EmptyState } from '@/components/UI/EmptyState';
+
+import { ParametersItem } from '@/canvas/components/Parameters/ParametersItem';
 
 import { useParameters } from '@/canvas/hooks/Parameters/useParameters';
 
 import { Plus } from 'lucide-react';
-import { ParametersItem } from './ParametersItem';
-
 export const Parameters = memo(function Parameters() {
     const {
         name,
@@ -62,11 +63,7 @@ export const Parameters = memo(function Parameters() {
                 </div>
             )}
 
-            {parameters.length === 0 && (
-                <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
-                    Создайте переменную для использования в инспекторе
-                </div>
-            )}
+            {parameters.length === 0 && <EmptyState message="Создайте переменную для использования в инспекторе" />}
         </div>
     );
 });
