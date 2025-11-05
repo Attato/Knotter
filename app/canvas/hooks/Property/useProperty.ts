@@ -8,12 +8,12 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { useParametersStore } from '@/canvas/store/parametersStore';
 
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
+import { useInspector } from '@/canvas/hooks/Inspector/useInspector';
 
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
-import { NodeShapeType, Position, Node, PropertyType } from '@/canvas/canvas.types'; // Импортируем PropertyType
-import { useInspector } from '../Inspector/useInspector';
+import { NodeShapeType, Position, Node, PropertyType } from '@/canvas/canvas.types';
 
 export interface IDropdown {
     id: number | string;

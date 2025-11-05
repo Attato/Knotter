@@ -1,9 +1,12 @@
 'use client';
 
 import { memo } from 'react';
+
+import { getShape } from '@/canvas/utils/nodes/getShape';
+
 import { NODE_SHAPE_TYPES } from '@/canvas/constants';
-import { getShape } from '../../utils/nodes/getShape';
-import { NodeShapeType } from '../../canvas.types';
+
+import { NodeShapeType } from '@/canvas/canvas.types';
 
 interface ShapeButtonsProps {
     shapeType: NodeShapeType | null;
@@ -28,6 +31,7 @@ export const ShapeButtons = memo(function ShapeButtons({ shapeType, onTypeChange
                         }`}
                     >
                         <Icon size={24} />
+
                         <span className="text-xs truncate overflow-hidden w-full text-center">{label}</span>
                     </button>
                 );
