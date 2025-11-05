@@ -7,6 +7,7 @@ import { EditableName } from '@/components/UI/EditableName';
 import { Checkbox } from '@/components/UI/Checkbox';
 
 import { useParametersItem } from '@/canvas/hooks/Parameters/useParametersItem';
+import { useDynamicIcon } from '@/canvas/hooks/useDynamicIcon';
 
 import { isNumberValue, isStringValue, isBooleanValue, isEnumValue } from '@/canvas/hooks/Parameters/useParametersItem';
 
@@ -20,6 +21,7 @@ interface ParametersItemProps {
 export const ParametersItem = memo(function ParametersItem({ parameterId, onRemoveParameter }: ParametersItemProps) {
     const {
         parameter,
+        parameterType,
         updateParameter,
         updateParameterName,
         updateEnumOption,
@@ -29,11 +31,14 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         getDisplayValue,
     } = useParametersItem(parameterId);
 
+    const Icon = useDynamicIcon(parameterType);
     const parameterValue = parameter.value;
 
     return (
-        <div className="flex flex-col justify-center gap-2 px-3 py-1 min-h-[44px] text-sm bg-card rounded-md">
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col justify-center gap-2 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md">
+            <div className="flex items-center gap-1 h-[36px]">
+                <Icon size={16} className="min-w-4" />
+
                 <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
 
                 {isNumberValue(parameterValue) && (
@@ -48,11 +53,19 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 )}
 
                 {isStringValue(parameterValue) && (
-                    <Input value={parameterValue} onChange={(val) => updateParameter(val)} className="bg-ui w-48" max={16} />
+                    <Input
+                        value={parameterValue}
+                        onChange={(val) => updateParameter(val)}
+                        className="bg-ui w-48"
+                        max={16}
+                        placeholder="Введите текст..."
+                    />
                 )}
 
                 {isBooleanValue(parameterValue) && (
-                    <Checkbox checked={parameterValue} onChange={(checked) => updateParameter(checked)} />
+                    <div className="w-full">
+                        <Checkbox checked={parameterValue} onChange={(checked) => updateParameter(checked)} />
+                    </div>
                 )}
 
                 <button onClick={() => onRemoveParameter(parameter.id)} className="ml-auto text-gray cursor-pointer">
