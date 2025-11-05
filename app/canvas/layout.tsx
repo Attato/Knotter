@@ -8,9 +8,11 @@ import { CanvasSidebar } from '@/canvas/components/CanvasSidebar/CanvasSidebar';
 import { ToastProvider } from '@/components/UI/Toast';
 
 import { LoaderCircle, Frown, X } from 'lucide-react';
+import { useCanvasStore } from './store/canvasStore';
 
 const isMobileDevice = (): boolean => {
     const userAgent = navigator.userAgent.toLowerCase();
+
     const mobileKeywords = [
         'mobile',
         'android',
@@ -37,6 +39,8 @@ const isMobileDevice = (): boolean => {
 
 export default function CanvasLayout({ children }: { children: ReactNode }) {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+    const isFullScreen = useCanvasStore((state) => state.isFullScreen);
 
     useEffect(() => {
         setIsMobile(isMobileDevice());
@@ -92,7 +96,7 @@ export default function CanvasLayout({ children }: { children: ReactNode }) {
         <ToastProvider>
             <div className="flex overflow-hidden" translate="no">
                 <main className="h-full w-full">{children}</main>
-                <CanvasSidebar />
+                {!isFullScreen && <CanvasSidebar />}
             </div>
         </ToastProvider>
     );
