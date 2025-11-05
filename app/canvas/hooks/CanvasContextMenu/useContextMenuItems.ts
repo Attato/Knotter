@@ -71,9 +71,9 @@ export function useContextMenuItems() {
             createItem('Выбрать все связи', handlers.selectAllEdges, { disabled: edges.length === 0, shortcut: 'Ctrl + E' }),
         ];
 
-        const addGroup: MenuItem[] = [
-            createItem('Добавить узел', handlers.addNode, { shortcut: 'Shift + A' }),
-            createItem('Добавить связь', handlers.startEdge, {
+        const createGroup: MenuItem[] = [
+            createItem('Создать узел', handlers.addNode, { shortcut: 'Shift + A' }),
+            createItem('Создать связь', handlers.startEdge, {
                 disabled: selectedItemIds.length !== 1 || !nodes.some((n) => n.id === selectedItemIds[0]),
                 shortcut: 'Shift + E',
             }),
@@ -85,13 +85,15 @@ export function useContextMenuItems() {
 
         return [
             { label: 'Выбрать', submenu: selectGroup },
-            { label: 'Добавить', submenu: addGroup },
+            { label: 'Создать', submenu: createGroup },
             {
                 label: 'Изменить форму',
                 submenu: shapeGroup,
                 disabled: !onlyNodesSelected,
             },
+
             createDivider(),
+
             ...deleteGroup,
         ];
     }, [items, nodes, edges, selectedItemIds, handlers]);
