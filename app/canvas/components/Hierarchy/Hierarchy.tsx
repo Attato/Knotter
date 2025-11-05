@@ -10,8 +10,11 @@ import { useHierarchy } from '@/canvas/hooks/Hierarchy/useHierarchy';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export const Hierarchy = memo(function Hierarchy() {
+    const items = useCanvasStore((state) => state.items);
+
     const [filterText, setFilterText] = useState('');
 
     const {
@@ -27,7 +30,7 @@ export const Hierarchy = memo(function Hierarchy() {
     const sensors = useSensors(useSensor(PointerSensor));
 
     return (
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col flex-1 h-full">
             <div className="flex items-center gap-2 m-1">
                 <div className="relative flex-1">
                     <input
@@ -43,7 +46,7 @@ export const Hierarchy = memo(function Hierarchy() {
 
             <hr className="border-b-0 border-border" />
 
-            <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2" onClick={handleDeselectOnEmptyClick}>
+            <div className="flex flex-col flex-1 overflow-y-auto  gap-2" onClick={handleDeselectOnEmptyClick}>
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
@@ -51,11 +54,9 @@ export const Hierarchy = memo(function Hierarchy() {
                     modifiers={[restrictToParentElement]}
                 >
                     <SortableContext items={filteredItems.map((i) => i.id)} strategy={verticalListSortingStrategy}>
-                        <ul className="flex flex-col gap-1">
-                            {filteredItems.length === 0 ? (
-                                <li className="p-2 text-gray text-sm text-center">Ничего не найдено</li>
-                            ) : (
-                                filteredItems.map((item) => (
+                        {filteredItems.length !== 0 && (
+                            <ul className="flex flex-col gap-1 m-1">
+                                {filteredItems.map((item) => (
                                     <HierarchyItem
                                         key={item.id}
                                         canvasItem={item}
@@ -64,9 +65,21 @@ export const Hierarchy = memo(function Hierarchy() {
                                         onChange={handleItemChange}
                                         onKeyDown={(e) => handleItemKeyDown(e, item)}
                                     />
-                                ))
-                            )}
-                        </ul>
+                                ))}
+                            </ul>
+                        )}
+
+                        {items.length === 0 && (
+                            <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
+                                Создайте элемент, нажав ПКМ по холсту.
+                            </div>
+                        )}
+
+                        {filteredItems.length === 0 && items.length !== 0 && (
+                            <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
+                                Элемент с этим именем не найден.
+                            </div>
+                        )}
                     </SortableContext>
                 </DndContext>
             </div>
