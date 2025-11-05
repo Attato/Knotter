@@ -25,7 +25,7 @@ export const Input = memo(function Input({ value, onChange, className = '', ...p
             type="text"
             value={value}
             onChange={handleChange}
-            className={`w-full h-8 bg-card text-foreground placeholder-gray px-3 text-sm rounded-md focus:outline-none ${className}`}
+            className={`w-full h-9 bg-card text-foreground placeholder-gray px-3 text-sm rounded-md focus:outline-none ${className}`}
             {...props}
         />
     );

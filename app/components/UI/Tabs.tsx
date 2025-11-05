@@ -54,7 +54,7 @@ export function Tabs({ tabs, defaultTab, className = '' }: TabsProps) {
                         <button
                             key={tab.id}
                             onClick={() => handleTabChange(tab.id)}
-                            className={`flex items-center gap-2 px-3 py-1 text-sm rounded-md outline-none tabular-nums cursor-pointer ${isActive ? 'bg-bg-accent/15 text-text-accent' : 'bg-card hover:bg-ui focus-visible:bg-ui'}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 text-sm rounded-md outline-none tabular-nums cursor-pointer ${isActive ? 'bg-bg-accent/15 text-text-accent' : 'bg-card hover:bg-ui focus-visible:bg-ui'}`}
                         >
                             {Icon && <Icon size={14} />}
                             {tab.label}

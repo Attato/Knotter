@@ -49,7 +49,7 @@ export const DropdownAbsolute = memo(function DropdownAbsolute({
         <div ref={dropdownRef} className="relative w-full">
             <button
                 onClick={toggle}
-                className={`flex justify-between items-center px-3 py-1.5 w-full text-sm rounded-md cursor-pointer ${light ? 'bg-ui hover:bg-ui-hover' : 'bg-card hover:bg-ui'}`}
+                className={`flex justify-between items-center px-3 py-2 w-full text-sm rounded-md cursor-pointer ${light ? 'bg-ui hover:bg-ui-hover' : 'bg-card hover:bg-ui'}`}
             >
                 <div className="flex items-center gap-2">
                     {Icon && <Icon size={16} />}

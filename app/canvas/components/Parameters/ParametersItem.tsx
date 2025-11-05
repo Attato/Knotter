@@ -89,7 +89,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
                     <button
                         onClick={addEnumOption}
-                        className="text-sm bg-ui hover:bg-ui-hover rounded-md px-3 py-1 cursor-pointer mr-5"
+                        className="text-sm bg-ui hover:bg-ui-hover rounded-md px-3 py-2 cursor-pointer mr-5"
                     >
                         + Добавить опцию
                     </button>

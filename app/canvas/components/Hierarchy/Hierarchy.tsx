@@ -28,21 +28,20 @@ export const Hierarchy = memo(function Hierarchy() {
 
     return (
         <div className="flex flex-col flex-1 overflow-hidden">
-            <div className="h-[42px]">
-                <div className="flex items-center gap-2 m-1">
-                    <div className="relative flex-1">
-                        <input
-                            type="text"
-                            placeholder="Поиск..."
-                            value={filterText}
-                            onChange={(e) => setFilterText(e.target.value)}
-                            className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-9 text-sm rounded-md focus:outline-none"
-                        />
-                        <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray" size={14} />
-                    </div>
+            <div className="flex items-center gap-2 m-1">
+                <div className="relative flex-1">
+                    <input
+                        type="text"
+                        placeholder="Поиск..."
+                        value={filterText}
+                        onChange={(e) => setFilterText(e.target.value)}
+                        className="w-full h-9 bg-card text-foreground placeholder-gray pl-3 pr-9 text-sm rounded-md focus:outline-none"
+                    />
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray" size={14} />
                 </div>
-                <hr className="border-b-0 border-border" />
             </div>
+
+            <hr className="border-b-0 border-border" />
 
             <div className="flex flex-col flex-1 overflow-y-auto m-1 gap-2" onClick={handleDeselectOnEmptyClick}>
                 <DndContext
