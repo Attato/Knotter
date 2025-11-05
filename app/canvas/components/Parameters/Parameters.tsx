@@ -25,7 +25,7 @@ export const Parameters = memo(function Parameters() {
     } = useParameters();
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col h-full">
             <div className="flex gap-1 items-center m-1">
                 <Input value={name} onChange={setName} placeholder="Имя переменной" className="w-48" max={16} />
 
@@ -54,13 +54,19 @@ export const Parameters = memo(function Parameters() {
 
             <hr className="border-b-0 border-border" />
 
-            <div className="flex flex-col gap-1 m-1">
-                {parameters.map((parameter) => (
-                    <ParametersItem key={parameter.id} parameterId={parameter.id} onRemoveParameter={removeParameter} />
-                ))}
+            {parameters.length !== 0 && (
+                <div className="flex flex-col gap-1 m-1">
+                    {parameters.map((parameter) => (
+                        <ParametersItem key={parameter.id} parameterId={parameter.id} onRemoveParameter={removeParameter} />
+                    ))}
+                </div>
+            )}
 
-                {parameters.length === 0 && <div className="p-2 text-gray text-sm text-center">Ничего не найдено</div>}
-            </div>
+            {parameters.length === 0 && (
+                <div className="flex flex-col justify-center items-center h-full text-gray text-sm text-center">
+                    Создайте переменную для использования в инспекторе
+                </div>
+            )}
         </div>
     );
 });
