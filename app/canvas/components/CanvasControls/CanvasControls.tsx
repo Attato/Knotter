@@ -8,8 +8,7 @@ import { CanvasControlButtons } from '@/canvas/components/CanvasControls/CanvasC
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
-import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode'; // Импортируем новую утилиту
-
+import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode';
 import { Magnet, Grid2x2, Move3d, Eye, EyeOff, EyeClosed } from 'lucide-react';
 
 export const CanvasControls = memo(function CanvasControls() {
