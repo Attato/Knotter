@@ -6,6 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import { CanvasItem } from '@/canvas/canvas.types';
 import { EditableName } from '@/components/UI/EditableName';
+import { useDynamicIcon } from '@/canvas/hooks/useDynamicIcon';
 
 import { GripVertical } from 'lucide-react';
 
@@ -32,6 +33,8 @@ export const HierarchyItem = memo(function HierarchyItem({
         transition,
     };
 
+    const Icon = useDynamicIcon(canvasItem.kind);
+
     return (
         <li ref={setNodeRef} style={style}>
             <button
@@ -45,11 +48,15 @@ export const HierarchyItem = memo(function HierarchyItem({
                 onKeyDown={onKeyDown}
             >
                 <div className="flex items-center justify-between gap-2">
-                    <EditableName
-                        name={canvasItem.name}
-                        isSelected={isSelected}
-                        onChange={(newName) => onChange?.({ ...canvasItem, name: newName })}
-                    />
+                    <div className="flex items-center gap-1">
+                        <Icon size={16} className={`${isSelected ? 'text-text-accent' : 'text-foreground'}`} />
+
+                        <EditableName
+                            name={canvasItem.name}
+                            isSelected={isSelected}
+                            onChange={(newName) => onChange?.({ ...canvasItem, name: newName })}
+                        />
+                    </div>
 
                     <span {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
                         <GripVertical className="text-gray" size={16} />
