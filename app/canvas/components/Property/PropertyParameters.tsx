@@ -7,6 +7,7 @@ import { PropertyType } from '@/canvas/canvas.types';
 
 import { PropertyParameterItem } from '@/canvas/components/Property/PropertyParameterItem';
 import { Plus } from 'lucide-react';
+import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
 
 interface PropertyParametersProps {
     parameters: PropertyType[];
@@ -22,6 +23,7 @@ export const PropertyParameters = memo(function PropertyParameters({
     onUpdateParameter,
 }: PropertyParametersProps) {
     const availableParameters = useParametersStore((state) => state.parameters);
+
     const [selectedParamId, setSelectedParamId] = useState<string>('');
 
     const filteredAvailableParameters = availableParameters.filter(
@@ -30,7 +32,9 @@ export const PropertyParameters = memo(function PropertyParameters({
 
     const selectedParameter = filteredAvailableParameters.find((param) => param.id === selectedParamId);
 
-    const dropdownTitle = selectedParameter ? `${selectedParameter.name} (${selectedParameter.type})` : 'Выбрать параметр';
+    const SelectedTypeIcon = selectedParameter ? getDynamicIcon(selectedParameter.type) : undefined;
+
+    const dropdownTitle = selectedParameter ? selectedParameter.name : 'Выбрать параметр';
 
     const handleAddParameter = () => {
         if (selectedParamId && onAddParameter) {
@@ -49,22 +53,25 @@ export const PropertyParameters = memo(function PropertyParameters({
         <div className="flex flex-col gap-1">
             {onAddParameter && (
                 <div className="flex gap-1">
-                    <DropdownAbsolute title={dropdownTitle} light>
-                        <div className="max-h-48 overflow-y-auto">
-                            {filteredAvailableParameters.map((param) => (
-                                <div
-                                    key={param.id}
-                                    onClick={() => setSelectedParamId(param.id)}
-                                    className={`px-3 py-2 w-full flex justify-between rounded-md cursor-pointer mb-1 ${
-                                        selectedParamId === param.id
-                                            ? 'bg-bg-accent text-white'
-                                            : 'bg-ui-hover hover:bg-border-light'
-                                    }`}
-                                >
-                                    <span>{param.name}</span>
-                                    <span className="text-sm">({param.type})</span>
-                                </div>
-                            ))}
+                    <DropdownAbsolute title={dropdownTitle} icon={SelectedTypeIcon} light>
+                        <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
+                            {filteredAvailableParameters.map((param) => {
+                                const Icon = getDynamicIcon(param.type);
+                                return (
+                                    <div
+                                        key={param.id}
+                                        onClick={() => setSelectedParamId(param.id)}
+                                        className={`px-3 py-2 w-full flex items-center gap-2 rounded-md cursor-pointer  ${
+                                            selectedParamId === param.id
+                                                ? 'bg-bg-accent text-white'
+                                                : 'bg-ui-hover hover:bg-border-light'
+                                        }`}
+                                    >
+                                        <Icon size={16} />
+                                        <span className="flex-1">{param.name}</span>
+                                    </div>
+                                );
+                            })}
 
                             {filteredAvailableParameters.length === 0 && (
                                 <div className="px-3 py-2 text-gray text-sm text-center">Все параметры добавлены</div>
