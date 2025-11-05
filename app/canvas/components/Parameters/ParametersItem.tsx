@@ -7,7 +7,7 @@ import { EditableName } from '@/components/UI/EditableName';
 import { Checkbox } from '@/components/UI/Checkbox';
 
 import { useParametersItem } from '@/canvas/hooks/Parameters/useParametersItem';
-import { useDynamicIcon } from '@/canvas/hooks/useDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
 
 import { isNumberValue, isStringValue, isBooleanValue, isEnumValue } from '@/canvas/hooks/Parameters/useParametersItem';
 
@@ -31,7 +31,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         getDisplayValue,
     } = useParametersItem(parameterId);
 
-    const Icon = useDynamicIcon(parameterType);
+    const Icon = getDynamicIcon(parameterType);
     const parameterValue = parameter.value;
 
     return (

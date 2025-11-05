@@ -14,6 +14,6 @@ const dynamicIconMap: Record<string, LucideIcon> = {
     bug: Bug,
 };
 
-export function useDynamicIcon(props: string): LucideIcon {
-    return dynamicIconMap[props] || dynamicIconMap.bug;
+export function getDynamicIcon(type: string): LucideIcon {
+    return dynamicIconMap[type] || dynamicIconMap.bug;
 }

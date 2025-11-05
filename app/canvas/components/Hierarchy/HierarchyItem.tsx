@@ -6,7 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import { CanvasItem } from '@/canvas/canvas.types';
 import { EditableName } from '@/components/UI/EditableName';
-import { useDynamicIcon } from '@/canvas/hooks/useDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
 
 import { GripVertical } from 'lucide-react';
 
@@ -33,7 +33,7 @@ export const HierarchyItem = memo(function HierarchyItem({
         transition,
     };
 
-    const Icon = useDynamicIcon(canvasItem.kind);
+    const Icon = getDynamicIcon(canvasItem.kind);
 
     return (
         <li ref={setNodeRef} style={style}>

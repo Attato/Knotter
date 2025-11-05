@@ -9,12 +9,12 @@ import { Textarea } from '@/components/UI/Textarea';
 
 import { Property } from '@/canvas/components/Property/Property';
 
-import { useDynamicIcon } from '@/canvas/hooks/useDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
 
 export const Inspector = memo(function Inspector() {
     const { selectedItem, handleChangeName, handleChangeDescription } = useInspector();
 
-    const Icon = useDynamicIcon(selectedItem?.kind || 'bug');
+    const Icon = getDynamicIcon(selectedItem?.kind || 'bug');
 
     if (!selectedItem) {
         return (
