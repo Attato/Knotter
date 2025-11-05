@@ -10,7 +10,10 @@ import { ParametersItem } from '@/canvas/components/Parameters/ParametersItem';
 
 import { useParameters } from '@/canvas/hooks/Parameters/useParameters';
 
+import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
+
 import { Plus } from 'lucide-react';
+
 export const Parameters = memo(function Parameters() {
     const {
         name,
@@ -33,15 +36,20 @@ export const Parameters = memo(function Parameters() {
                 <DropdownAbsolute
                     title={parameterTypes.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
                 >
-                    {parameterTypes.map((parameterType) => (
-                        <button
-                            key={parameterType.value}
-                            onClick={() => setType(parameterType.value)}
-                            className="px-3 py-2 w-full flex justify-between bg-border hover:bg-ui rounded-md cursor-pointer"
-                        >
-                            {parameterType.label}
-                        </button>
-                    ))}
+                    {parameterTypes.map((parameterType) => {
+                        const Icon = getDynamicIcon(parameterType.value);
+
+                        return (
+                            <button
+                                key={parameterType.value}
+                                onClick={() => setType(parameterType.value)}
+                                className="px-3 py-2 w-full flex items-center gap-2 text-left bg-border hover:bg-ui rounded-md cursor-pointer"
+                            >
+                                <Icon size={16} className="min-w-4" />
+                                <p className="w-max">{parameterType.label}</p>
+                            </button>
+                        );
+                    })}
                 </DropdownAbsolute>
 
                 <button
