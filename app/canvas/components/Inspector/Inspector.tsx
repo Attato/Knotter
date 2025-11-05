@@ -9,8 +9,12 @@ import { Textarea } from '@/components/UI/Textarea';
 
 import { Property } from '@/canvas/components/Property/Property';
 
+import { useDynamicIcon } from '@/canvas/hooks/useDynamicIcon';
+
 export const Inspector = memo(function Inspector() {
     const { selectedItem, handleChangeName, handleChangeDescription } = useInspector();
+
+    const Icon = useDynamicIcon(selectedItem?.kind || 'bug');
 
     if (!selectedItem) {
         return (
@@ -23,7 +27,7 @@ export const Inspector = memo(function Inspector() {
     return (
         <div className="flex flex-col h-[calc(100vh-46px)] overflow-y-auto">
             <div className="flex flex-col gap-1 m-1">
-                <Input value={selectedItem.name} onChange={handleChangeName} placeholder="Название" />
+                <Input value={selectedItem.name} onChange={handleChangeName} placeholder="Название" icon={Icon} />
                 <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
             </div>
 
