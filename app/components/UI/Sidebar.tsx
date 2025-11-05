@@ -10,9 +10,9 @@ type SidebarProps = {
     children: ReactNode;
 };
 
-const SIDEBAR_MIN_WIDTH = 320;
-const SIDEBAR_BASE_WIDTH = 480;
-const SIDEBAR_MAX_WIDTH = typeof window !== 'undefined' ? window.innerWidth * 0.8 : 1600;
+const SIDEBAR_MIN_WIDTH = 12;
+const SIDEBAR_BASE_WIDTH = 14;
+const SIDEBAR_MAX_WIDTH = 80;
 
 export const Sidebar = memo(function Sidebar({
     minWidth = SIDEBAR_MIN_WIDTH,
@@ -24,7 +24,7 @@ export const Sidebar = memo(function Sidebar({
 
     return (
         <aside
-            style={{ width }}
+            style={{ width: `${width}vw` }}
             className="h-screen border-l border-border bg-background-alt select-none flex-shrink-0 z-50"
         >
             <div className="flex flex-col h-full overflow-hidden relative">
