@@ -2,11 +2,19 @@
 
 import { memo } from 'react';
 import { X, OctagonAlert } from 'lucide-react';
-import { PropertyType } from '@/canvas/canvas.types';
+import { PropertyType, ParameterValue, Enum } from '@/canvas/canvas.types';
 import { Input } from '@/components/UI/Input';
 import { Checkbox } from '@/components/UI/Checkbox';
 import { Select } from '@/components/UI/Select';
-import { useParametersStore } from '@/canvas/store/parametersStore'; // Добавляем импорт
+import { useParametersStore } from '@/canvas/store/parametersStore';
+
+import {
+    isNumberValue,
+    isStringValue,
+    isBooleanValue,
+    isEnumValue,
+    isArrayValue,
+} from '@/canvas/hooks/Parameters/useParametersItem';
 
 interface PropertyParameterItemProps {
     parameter: PropertyType;
@@ -39,52 +47,68 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
         );
     }
 
-    const handleValueChange = (value: string | number | boolean | string[]) => {
+    const handleValueChange = (value: ParameterValue) => {
         onUpdate({ value });
     };
 
     const renderParameterInput = () => {
-        switch (parameter.type) {
-            case 'number':
-                return (
-                    <Input
-                        value={String(parameter.value || 0)}
-                        onChange={(val) => handleValueChange(Number(val))}
-                        className="w-full bg-ui"
-                        type="text"
-                        inputMode="decimal"
-                    />
-                );
+        const { value } = parameter;
 
-            case 'string':
-                return <Input value={String(parameter.value || '')} onChange={handleValueChange} className="bg-ui" />;
-
-            case 'boolean':
-                return (
-                    <div className="flex items-center h-[36px]">
-                        <Checkbox checked={Boolean(parameter.value)} onChange={handleValueChange} />
-                    </div>
-                );
-
-            case 'enum': {
-                const options = Array.isArray(parameter.value) ? parameter.value : [];
-                const selected = options[0] || '';
-
-                const availableOptions = options.filter((opt) => opt !== selected);
-
-                return (
-                    <Select
-                        value={selected}
-                        onChange={(val) => {
-                            const newValue = [val, ...options.filter((opt) => opt !== val)];
-                            handleValueChange(newValue);
-                        }}
-                        options={availableOptions}
-                        className="w-full"
-                    />
-                );
-            }
+        if (isNumberValue(value)) {
+            return (
+                <Input
+                    value={String(value || 0)}
+                    onChange={(val) => handleValueChange(Number(val))}
+                    className="w-full bg-ui"
+                    type="text"
+                    inputMode="decimal"
+                />
+            );
         }
+
+        if (isStringValue(value)) {
+            return <Input value={String(value || '')} onChange={handleValueChange} className="bg-ui" />;
+        }
+
+        if (isBooleanValue(value)) {
+            return (
+                <div className="flex items-center h-[36px]">
+                    <Checkbox checked={Boolean(value)} onChange={handleValueChange} />
+                </div>
+            );
+        }
+
+        if (isEnumValue(value)) {
+            const options = value.options?.values || [];
+            const selectedValue = value.selectedId
+                ? options.find((opt) => opt === value.selectedId) || options[0]
+                : options[0];
+
+            return (
+                <Select
+                    value={selectedValue}
+                    onChange={(val) => {
+                        const newValue: Enum = {
+                            ...value,
+                            selectedId: val,
+                        };
+                        handleValueChange(newValue);
+                    }}
+                    options={options}
+                    className="w-full"
+                />
+            );
+        }
+
+        if (isArrayValue(value)) {
+            return <></>;
+        }
+
+        return (
+            <div className="flex items-center h-[36px] px-3 bg-ui rounded-md border border-border">
+                <span className="text-sm text-gray">Неподдерживаемый тип</span>
+            </div>
+        );
     };
 
     return (
