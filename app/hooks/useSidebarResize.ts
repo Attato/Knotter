@@ -1,7 +1,10 @@
 import { useState, useRef } from 'react';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-export default function useSidebarResize(minWidth: number, baseWidth: number, maxWidth: number) {
-    const [width, setWidth] = useState(baseWidth);
+export default function useSidebarResize(minWidth: number, maxWidth: number) {
+    const sidebarWidth = useCanvasStore((state) => state.sidebarWidth);
+    const setSidebarWidth = useCanvasStore((state) => state.setSidebarWidth);
+
     const [isResizing, setIsResizing] = useState(false);
     const resizeRef = useRef(false);
 
@@ -20,7 +23,7 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
             if (newWidth < minWidth) newWidth = minWidth;
             if (newWidth > maxWidth) newWidth = maxWidth;
 
-            setWidth(newWidth);
+            setSidebarWidth(newWidth);
         };
 
         const handleMouseUp = () => {
@@ -36,5 +39,5 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
         document.addEventListener('mouseup', handleMouseUp);
     };
 
-    return { width, isResizing, startResize };
+    return { width: sidebarWidth, isResizing, startResize };
 }
