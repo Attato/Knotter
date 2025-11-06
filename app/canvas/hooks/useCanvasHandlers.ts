@@ -1,5 +1,8 @@
 import { useRef } from 'react';
+
 import { CanvasState, Position, NodeShapeType } from '@/canvas/canvas.types';
+
+import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
@@ -21,6 +24,7 @@ export function useCanvasHandlers() {
     const items = useCanvasStore((state) => state.items);
     const selectedItemIds = useCanvasStore((state) => state.selectedItemIds);
     const mousePosition = useCanvasStore((state) => state.mousePosition);
+    const isMagnet = useCanvasStore((state) => state.isMagnet);
     const setItems = useCanvasStore((state) => state.setItems);
     const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
     const setTempEdge = useCanvasStore((state) => state.setTempEdge);
@@ -79,10 +83,17 @@ export function useCanvasHandlers() {
         addNode: () => {
             pushHistory();
 
+            const adjustedMousePosition = isMagnet
+                ? {
+                      x: Math.round(mousePosition.x / NODE_MOVE_MAX_STEP) * NODE_MOVE_MAX_STEP,
+                      y: Math.round(mousePosition.y / NODE_MOVE_MAX_STEP) * NODE_MOVE_MAX_STEP,
+                  }
+                : mousePosition;
+
             const newNode = handleAddItem({
                 type: 'node',
                 state: { nodes: getNodes(items), edges: getEdges(items) },
-                position: mousePosition,
+                position: adjustedMousePosition,
             });
 
             if (!newNode) return;
