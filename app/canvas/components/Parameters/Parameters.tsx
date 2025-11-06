@@ -35,6 +35,7 @@ export const Parameters = memo(function Parameters() {
 
                 <DropdownAbsolute
                     title={parameterTypes.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
+                    icon={getDynamicIcon(type)}
                 >
                     {parameterTypes.map((parameterType) => {
                         const Icon = getDynamicIcon(parameterType.value);
