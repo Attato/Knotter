@@ -40,6 +40,7 @@ export function useCanvasInteraction({
     const panHandlers = useRef<ReturnType<typeof getPanEventHandler> | null>(null);
     const selectHandlers = useRef<ReturnType<typeof getSelectionEventHandler> | null>(null);
     const handleScroll = useRef(getScrollEventHandler());
+    const handleZoom = useRef<((e: WheelEvent) => void) | null>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -52,8 +53,7 @@ export function useCanvasInteraction({
             setSelectionEnd,
             selectItemsInArea,
         );
-
-        const handleZoom = getZoomEventHandler(canvas);
+        handleZoom.current = getZoomEventHandler(canvas);
 
         const handleMouseDown: MouseHandler = (e) => {
             panHandlers.current?.handleMouseDown(e);
@@ -74,20 +74,19 @@ export function useCanvasInteraction({
         };
 
         const handleWheel = (e: WheelEvent) => {
-            handleScroll.current?.(e);
-            handleZoom(e);
-        };
+            if (e.ctrlKey) {
+                e.preventDefault();
+                handleZoom.current?.(e);
+                return;
+            }
 
-        const handleTouchStart = (e: TouchEvent) => {
-            panHandlers.current?.handleTouchStart(e);
-        };
+            const isTouchpadPan = panHandlers.current?.handleWheelForTouchpad(e);
 
-        const handleTouchMove = (e: TouchEvent) => {
-            panHandlers.current?.handleTouchMove(e);
-        };
-
-        const handleTouchEnd = (e: TouchEvent) => {
-            panHandlers.current?.handleTouchEnd();
+            if (isTouchpadPan) {
+                e.preventDefault();
+            } else {
+                handleScroll.current?.(e);
+            }
         };
 
         canvas.addEventListener('mousedown', handleMouseDown);
@@ -95,19 +94,11 @@ export function useCanvasInteraction({
         window.addEventListener('mouseup', handleMouseUp);
         canvas.addEventListener('wheel', handleWheel, { passive: false });
 
-        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-        canvas.addEventListener('touchend', handleTouchEnd);
-
         return () => {
             canvas.removeEventListener('mousedown', handleMouseDown);
             canvas.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
             canvas.removeEventListener('wheel', handleWheel);
-
-            canvas.removeEventListener('touchstart', handleTouchStart);
-            canvas.removeEventListener('touchmove', handleTouchMove);
-            canvas.removeEventListener('touchend', handleTouchEnd);
         };
     }, [
         canvasRef,

@@ -45,65 +45,29 @@ export function getPanEventHandler(
         if (canvasRef?.current) canvasRef.current.style.cursor = 'default';
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
-        if (e.touches.length !== 2) return;
+    const handleWheelForTouchpad = (e: WheelEvent) => {
+        const isLikelyTouchpad = Math.abs(e.deltaX) > 0 || Math.abs(e.deltaY) % 1 !== 0;
 
-        e.preventDefault();
-        isPanningRef.current = true;
+        if (isLikelyTouchpad && !e.ctrlKey) {
+            useCanvasStore.setState(
+                (state) => ({
+                    offset: {
+                        x: state.offset.x - e.deltaX,
+                        y: state.offset.y - (state.invertY ? -e.deltaY : e.deltaY),
+                    },
+                }),
+                false,
+            );
+            return true;
+        }
 
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
-
-        lastMouseRef.current = {
-            x: (touch1.clientX + touch2.clientX) / 2,
-            y: (touch1.clientY + touch2.clientY) / 2,
-        };
-
-        if (canvasRef?.current) canvasRef.current.style.cursor = 'grabbing';
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-        if (!isPanningRef.current || !lastMouseRef.current || e.touches.length !== 2) return;
-
-        e.preventDefault();
-
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
-
-        const currentMidpoint = {
-            x: (touch1.clientX + touch2.clientX) / 2,
-            y: (touch1.clientY + touch2.clientY) / 2,
-        };
-
-        const dx = currentMidpoint.x - lastMouseRef.current.x;
-        const dy = currentMidpoint.y - lastMouseRef.current.y;
-
-        useCanvasStore.setState(
-            (state) => ({
-                offset: {
-                    x: state.offset.x + dx,
-                    y: state.offset.y + (state.invertY ? -dy : dy),
-                },
-            }),
-            false,
-        );
-
-        lastMouseRef.current = currentMidpoint;
-    };
-
-    const handleTouchEnd = () => {
-        isPanningRef.current = false;
-        lastMouseRef.current = null;
-
-        if (canvasRef?.current) canvasRef.current.style.cursor = 'default';
+        return false;
     };
 
     return {
         handleMouseDown,
         handleMouseMove,
         handleMouseUp,
-        handleTouchStart,
-        handleTouchMove,
-        handleTouchEnd,
+        handleWheelForTouchpad,
     };
 }
