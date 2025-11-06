@@ -51,6 +51,9 @@ interface CanvasState {
 
     activeTab: string;
     setActiveTab: (tabId: string) => void;
+
+    sidebarWidth: number;
+    setSidebarWidth: (width: number) => void;
 }
 
 export const useCanvasStore = create<CanvasState>()(
@@ -103,6 +106,9 @@ export const useCanvasStore = create<CanvasState>()(
 
             activeTab: '',
             setActiveTab: (activeTab) => set({ activeTab }),
+
+            sidebarWidth: 380,
+            setSidebarWidth: (sidebarWidth) => set({ sidebarWidth }),
         }),
         {
             name: 'canvas-storage',
@@ -120,6 +126,7 @@ export const useCanvasStore = create<CanvasState>()(
                 tooltipMode: state.tooltipMode,
                 invertY: state.invertY,
                 activeTab: state.activeTab,
+                sidebarWidth: state.sidebarWidth,
             }),
         },
     ),
