@@ -11,20 +11,18 @@ type SidebarProps = {
 };
 
 const SIDEBAR_MIN_WIDTH = 380;
-const SIDEBAR_BASE_WIDTH = SIDEBAR_MIN_WIDTH;
 const SIDEBAR_MAX_WIDTH = typeof window !== 'undefined' ? window.innerWidth * 0.8 : 1600;
 
 export const Sidebar = memo(function Sidebar({
     minWidth = SIDEBAR_MIN_WIDTH,
-    baseWidth = SIDEBAR_BASE_WIDTH,
     maxWidth = SIDEBAR_MAX_WIDTH,
     children,
 }: SidebarProps) {
-    const { width, isResizing, startResize } = useSidebarResize(minWidth, baseWidth, maxWidth);
+    const { width, isResizing, startResize } = useSidebarResize(minWidth, maxWidth);
 
     return (
         <aside
-            style={{ width }}
+            style={{ width: `${width}px` }}
             className="h-screen border-l border-border bg-background-alt select-none flex-shrink-0 z-50"
         >
             <div className="flex flex-col h-full overflow-hidden relative">
