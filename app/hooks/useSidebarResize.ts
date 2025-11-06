@@ -15,7 +15,7 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
         const handleMouseMove = (e: MouseEvent) => {
             if (!resizeRef.current) return;
 
-            let newWidth = ((window.innerWidth - e.clientX) / window.innerWidth) * 100;
+            let newWidth = window.innerWidth - e.clientX;
 
             if (newWidth < minWidth) newWidth = minWidth;
             if (newWidth > maxWidth) newWidth = maxWidth;
