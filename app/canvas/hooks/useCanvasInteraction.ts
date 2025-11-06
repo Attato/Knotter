@@ -78,16 +78,36 @@ export function useCanvasInteraction({
             handleZoom(e);
         };
 
+        const handleTouchStart = (e: TouchEvent) => {
+            panHandlers.current?.handleTouchStart(e);
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            panHandlers.current?.handleTouchMove(e);
+        };
+
+        const handleTouchEnd = (e: TouchEvent) => {
+            panHandlers.current?.handleTouchEnd();
+        };
+
         canvas.addEventListener('mousedown', handleMouseDown);
         canvas.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
         canvas.addEventListener('wheel', handleWheel, { passive: false });
+
+        canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvas.addEventListener('touchend', handleTouchEnd);
 
         return () => {
             canvas.removeEventListener('mousedown', handleMouseDown);
             canvas.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
             canvas.removeEventListener('wheel', handleWheel);
+
+            canvas.removeEventListener('touchstart', handleTouchStart);
+            canvas.removeEventListener('touchmove', handleTouchMove);
+            canvas.removeEventListener('touchend', handleTouchEnd);
         };
     }, [
         canvasRef,
