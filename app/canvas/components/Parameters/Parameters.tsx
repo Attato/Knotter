@@ -32,7 +32,7 @@ export const Parameters = memo(function Parameters() {
     return (
         <div className="flex flex-col h-full">
             <div className="flex gap-1 items-center m-1">
-                <Input value={name} onChange={setName} placeholder="Имя переменной" className="w-48" max={16} />
+                <Input value={name} onChange={setName} placeholder="Имя переменной" className="h-9" max={16} />
 
                 <DropdownAbsolute
                     title={PARAMETER_TYPES.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
@@ -48,6 +48,7 @@ export const Parameters = memo(function Parameters() {
                                 className="px-3 py-2 w-full flex items-center gap-2 text-left bg-border hover:bg-ui rounded-md cursor-pointer"
                             >
                                 <Icon size={16} className="min-w-4" />
+
                                 <p className="w-max">{parameterType.label}</p>
                             </button>
                         );
