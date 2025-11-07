@@ -1,5 +1,6 @@
 import { useParametersStore } from '@/canvas/store/parametersStore';
 import { ParameterValue, Enum, ArrayItem } from '@/canvas/canvas.types';
+import { v4 as uuid } from 'uuid';
 
 const NUMBER_LIMITS = {
     MIN: -999999999,
@@ -51,37 +52,8 @@ export const useParametersItem = (parameterId: string) => {
 
     const handleNumberInput = (value: string) => {
         if (!isNumberValue(parameter.value)) return;
-
-        if (value === '' || value === '-' || value === '-.') {
-            updateParameter(0);
-            return;
-        }
-
-        if (!/^-?\d*\.?\d*$/.test(value)) {
-            return;
-        }
-
-        if (value.endsWith('.') || value === '-.' || (value.startsWith('-') && value.endsWith('.'))) {
-            updateParameter(0);
-            return;
-        }
-
         const numValue = parseFloat(value);
-
-        if (isNaN(numValue)) {
-            updateParameter(0);
-            return;
-        }
-
-        if (numValue < NUMBER_LIMITS.MIN) {
-            updateParameter(NUMBER_LIMITS.MIN);
-        }
-
-        if (numValue > NUMBER_LIMITS.MAX) {
-            updateParameter(NUMBER_LIMITS.MAX);
-        }
-
-        if (numValue >= NUMBER_LIMITS.MIN && numValue <= NUMBER_LIMITS.MAX) {
+        if (!isNaN(numValue) && numValue >= NUMBER_LIMITS.MIN && numValue <= NUMBER_LIMITS.MAX) {
             updateParameter(numValue);
         }
     };
@@ -94,74 +66,112 @@ export const useParametersItem = (parameterId: string) => {
         }
 
         if (isEnumValue(value)) {
-            return value.selectedId || 'Не выбрано';
+            const selectedOption = value.options.values.find((opt) => opt.id === value.selectedId);
+            return selectedOption?.name || selectedOption?.value || 'Не выбрано';
         }
-
         return String(value);
     };
 
-    const updateEnumOption = (index: number, newValue: string) => {
+    const updateEnumOption = (itemId: string, newValue: string) => {
         if (!isEnumValue(parameter.value)) return;
 
-        const newOptions: Enum = {
+        const updated: Enum = {
             ...parameter.value,
             options: {
                 ...parameter.value.options,
-                values: parameter.value.options.values.map((value, i) => (i === index ? newValue : value)),
+                values: parameter.value.options.values.map((item) =>
+                    item.id === itemId ? { ...item, value: newValue } : item,
+                ),
             },
         };
-        updateParameter(newOptions);
+        updateParameter(updated);
     };
 
-    const addEnumOption = () => {
+    const updateEnumOptionName = (index: number, newName: string) => {
         if (!isEnumValue(parameter.value)) return;
-
-        const newOptions: Enum = {
+        const updated: Enum = {
             ...parameter.value,
             options: {
                 ...parameter.value.options,
-                values: [...parameter.value.options.values, ''],
+                values: parameter.value.options.values.map((o, i) => (i === index ? { ...o, name: newName } : o)),
             },
         };
-        updateParameter(newOptions);
+        updateParameter(updated);
     };
 
-    const removeEnumOption = (index: number) => {
+    const getEnumOptionName = (index: number): string => {
+        if (!isEnumValue(parameter.value)) return `Опция ${index + 1}`;
+
+        return parameter.value.options.values[index]?.name || `Опция ${index + 1}`;
+    };
+
+    const handleDropToEnum = (droppedId: string) => {
+        const droppedParam = parameters.find((p) => p.id === droppedId);
+
+        if (!droppedParam || !isStringValue(droppedParam.value)) return;
+
         if (!isEnumValue(parameter.value)) return;
 
-        const newValues = parameter.value.options.values.filter((_, i) => i !== index);
-        const removedValue = parameter.value.options.values[index];
-        const newSelectedId = parameter.value.selectedId === removedValue ? null : parameter.value.selectedId;
+        const newOption = {
+            id: uuid(),
+            name: droppedParam.name,
+            value: droppedParam.value,
+        };
 
-        const newOptions: Enum = {
+        const updatedEnum: Enum = {
             ...parameter.value,
             options: {
                 ...parameter.value.options,
-                values: newValues,
+                values: [...parameter.value.options.values, newOption],
             },
-            selectedId: newSelectedId,
         };
-        updateParameter(newOptions);
+
+        const filtered = parameters.filter((p) => p.id !== droppedId);
+
+        setParameters(filtered.map((p) => (p.id === parameter.id ? { ...parameter, value: updatedEnum } : p)));
     };
 
-    const addArrayItem = (item: ArrayItem) => {
+    const handleDropToArray = (droppedId: string) => {
+        const droppedParam = parameters.find((p) => p.id === droppedId);
+
+        if (!droppedParam) return;
+
         if (!isArrayValue(parameter.value)) return;
-        updateParameter([...parameter.value, item]);
+
+        const newItem: ArrayItem = {
+            id: uuid(),
+            name: droppedParam.name,
+            value: droppedParam.value as string | number | boolean,
+        };
+
+        const updatedArray = [...parameter.value, newItem];
+        const filtered = parameters.filter((p) => p.id !== droppedId);
+
+        setParameters(filtered.map((p) => (p.id === parameter.id ? { ...parameter, value: updatedArray } : p)));
     };
 
-    const updateArrayItem = (itemId: string, updates: Partial<ArrayItem>) => {
+    const parameterType = getParameterType();
+
+    const updateArrayItemValue = (itemId: string, newValue: string | number | boolean) => {
         if (!isArrayValue(parameter.value)) return;
-        const newArray = parameter.value.map((item) => (item.id === itemId ? { ...item, ...updates } : item));
-        updateParameter(newArray);
+
+        const updated = parameter.value.map((item) => (item.id === itemId ? { ...item, value: newValue } : item));
+        updateParameter(updated);
+    };
+
+    const updateArrayItemName = (itemId: string, newName: string) => {
+        if (!isArrayValue(parameter.value)) return;
+
+        const updated = parameter.value.map((item) => (item.id === itemId ? { ...item, name: newName } : item));
+        updateParameter(updated);
     };
 
     const removeArrayItem = (itemId: string) => {
         if (!isArrayValue(parameter.value)) return;
-        const newArray = parameter.value.filter((item) => item.id !== itemId);
-        updateParameter(newArray);
-    };
 
-    const parameterType = getParameterType();
+        const updated = parameter.value.filter((item) => item.id !== itemId);
+        updateParameter(updated);
+    };
 
     return {
         parameter,
@@ -169,12 +179,14 @@ export const useParametersItem = (parameterId: string) => {
         updateParameter,
         updateParameterName,
         updateEnumOption,
-        addEnumOption,
-        removeEnumOption,
-        addArrayItem,
-        updateArrayItem,
-        removeArrayItem,
+        updateEnumOptionName,
+        getEnumOptionName,
         handleNumberInput,
         getDisplayValue,
+        handleDropToEnum,
+        handleDropToArray,
+        updateArrayItemValue,
+        updateArrayItemName,
+        removeArrayItem,
     };
 };
