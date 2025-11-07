@@ -32,7 +32,7 @@ export const Input = memo(function Input({ value, onChange, icon: Icon, classNam
                 type="text"
                 value={value}
                 onChange={handleChange}
-                className={`w-full h-9 bg-card text-foreground placeholder-gray px-3 text-sm rounded-md focus:outline-none ${
+                className={`w-full bg-card text-foreground placeholder-gray px-3 py-1 text-sm rounded-md focus:outline-none ${
                     hasIcon ? 'pr-9' : ''
                 } ${className}`}
                 {...props}
