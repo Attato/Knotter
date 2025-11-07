@@ -55,11 +55,10 @@ export type Enum = {
     selectedId: string | null;
 };
 
-export type ArrayItem = {
-    id: string;
-    name: string;
-    value: number | string | boolean;
-};
+export type ArrayItem =
+    | { id: string; name: string; type: 'number'; value: number }
+    | { id: string; name: string; type: 'string'; value: string }
+    | { id: string; name: string; type: 'boolean'; value: boolean };
 
 export type ParameterValue = number | string | boolean | Enum | ArrayItem[];
 
