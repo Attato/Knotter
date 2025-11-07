@@ -37,6 +37,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         updateArrayItemValue,
         updateArrayItemName,
         removeArrayItem,
+        removeEnumItem,
     } = useParametersItem(parameterId);
 
     const parameterValue = parameter.value;
@@ -54,7 +55,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 e.dataTransfer.setData('application/parameter-type', parameterType);
             }}
         >
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex items-center gap-1 h-[32px]">
                 <Icon size={16} className="min-w-4" />
 
                 <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
@@ -95,53 +96,26 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
     const renderEnumParameter = () => {
         if (!isEnumValue(parameterValue)) return null;
+
         const enumValue = parameterValue;
 
         return (
             <div
                 draggable={false}
-                className="flex flex-col gap-2 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md transition-all"
+                className="flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md transition-all"
             >
                 <div className="flex items-center gap-1 h-[36px]">
                     <Icon size={16} className="min-w-4" />
 
                     <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
 
-                    <button onClick={() => onRemoveParameter(parameter.id)} className="ml-auto text-gray cursor-pointer">
+                    <button onClick={() => onRemoveParameter(parameter.id)} className="ml-auto text-gray cursor-pointer ">
                         <X size={16} />
                     </button>
                 </div>
 
-                <div
-                    className={`flex flex-col gap-2 rounded-md p-2 border-2 border-dashed transition-all ${
-                        isEnumDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
-                    }`}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDragEnter={() => setIsEnumDragOver(true)}
-                    onDragLeave={() => setIsEnumDragOver(false)}
-                    onDrop={(e) => {
-                        setIsEnumDragOver(false);
-
-                        const droppedId = e.dataTransfer.getData('application/parameter-id');
-                        const droppedType = e.dataTransfer.getData('application/parameter-type');
-
-                        if (droppedType === 'string') handleDropToEnum(droppedId);
-                    }}
-                >
-                    <div className="flex flex-wrap items-center justify-center gap-2 text-gray text-center pointer-events-none">
-                        Перетащите сюда
-                        <div className="flex items-center gap-2 bg-ui px-2 py-1 rounded-md">
-                            {(() => {
-                                const Icon = getDynamicIcon('string');
-                                return <Icon size={16} />;
-                            })()}
-                            Текст
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-1 mt-2">
-                    {enumValue.options.values.map((item, idx) => {
+                <div className="flex flex-col gap-1">
+                    {enumValue.options.map((item, idx) => {
                         const Icon = getDynamicIcon('string');
 
                         return (
@@ -161,9 +135,41 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                                     max={16}
                                     placeholder="Введите значение..."
                                 />
+
+                                <button onClick={() => removeEnumItem(item.id)} className="text-gray cursor-pointer">
+                                    <X size={16} />
+                                </button>
                             </div>
                         );
                     })}
+                </div>
+
+                <div
+                    className={`flex flex-col gap-1 rounded-md p-2  border border-dashed transition-all ${
+                        isEnumDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
+                    } ${enumValue.options.length > 0 && 'mt-2'}`}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnter={() => setIsEnumDragOver(true)}
+                    onDragLeave={() => setIsEnumDragOver(false)}
+                    onDrop={(e) => {
+                        setIsEnumDragOver(false);
+
+                        const droppedId = e.dataTransfer.getData('application/parameter-id');
+                        const droppedType = e.dataTransfer.getData('application/parameter-type');
+
+                        if (droppedType === 'string') handleDropToEnum(droppedId);
+                    }}
+                >
+                    <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
+                        Перетащите сюда
+                        <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
+                            {(() => {
+                                const Icon = getDynamicIcon('string');
+                                return <Icon size={16} className="t" />;
+                            })()}
+                            Текст
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -188,50 +194,8 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                         <X size={16} />
                     </button>
                 </div>
-                <div
-                    className={`flex flex-col gap-2 rounded-md p-2 border-2 border-dashed transition-all ${
-                        isArrayDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
-                    }`}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDragEnter={() => setIsArrayDragOver(true)}
-                    onDragLeave={() => setIsArrayDragOver(false)}
-                    onDrop={(e) => {
-                        setIsArrayDragOver(false);
 
-                        const droppedId = e.dataTransfer.getData('application/parameter-id');
-                        const droppedType = e.dataTransfer.getData('application/parameter-type');
-
-                        if (['string', 'number', 'boolean'].includes(droppedType)) handleDropToArray(droppedId);
-                    }}
-                >
-                    <div className="flex flex-wrap items-center justify-center gap-2 text-gray text-center pointer-events-none">
-                        Перетащите сюда
-                        {['number', 'string', 'boolean'].map((type, idx, arr) => {
-                            const Icon = getDynamicIcon(type as 'number' | 'string' | 'boolean');
-
-                            const label = (() => {
-                                if (type === 'number') return 'Число';
-                                if (type === 'string') return 'Текст';
-                                if (type === 'boolean') return 'Флаг';
-
-                                return '';
-                            })();
-
-                            return (
-                                <span key={type} className="flex items-center gap-2">
-                                    <div className="flex items-center gap-2 bg-ui px-2 py-1 rounded-md">
-                                        <Icon size={16} />
-                                        {label}
-                                    </div>
-
-                                    {idx < arr.length - 1 && <span> или</span>}
-                                </span>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-1 mt-2">
+                <div className="flex flex-col gap-1">
                     {arrayValue.map((item) => {
                         const Icon = getDynamicIcon(typeof item.value as 'number' | 'string' | 'boolean');
 
@@ -263,7 +227,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                                     <Input
                                         value={item.value}
                                         onChange={(val) => updateArrayItemValue(item.id, val)}
-                                        className="bg-ui border border-ui-hover"
+                                        className="bg-ui border border-ui-hover h-8"
                                         placeholder="Введите текст..."
                                     />
                                 )}
@@ -284,6 +248,49 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                             </div>
                         );
                     })}
+                </div>
+
+                <div
+                    className={`flex flex-col gap-2 rounded-md p-2 border border-dashed transition-all ${
+                        isArrayDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
+                    } ${arrayValue.length > 0 && 'mt-2'}`}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnter={() => setIsArrayDragOver(true)}
+                    onDragLeave={() => setIsArrayDragOver(false)}
+                    onDrop={(e) => {
+                        setIsArrayDragOver(false);
+
+                        const droppedId = e.dataTransfer.getData('application/parameter-id');
+                        const droppedType = e.dataTransfer.getData('application/parameter-type');
+
+                        if (['string', 'number', 'boolean'].includes(droppedType)) handleDropToArray(droppedId);
+                    }}
+                >
+                    <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
+                        Перетащите сюда
+                        {['number', 'string', 'boolean'].map((type, idx, arr) => {
+                            const Icon = getDynamicIcon(type as 'number' | 'string' | 'boolean');
+
+                            const label = (() => {
+                                if (type === 'number') return 'Число';
+                                if (type === 'string') return 'Текст';
+                                if (type === 'boolean') return 'Флаг';
+
+                                return '';
+                            })();
+
+                            return (
+                                <div key={type} className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
+                                        <Icon size={16} />
+                                        {label}
+                                    </div>
+
+                                    {idx < arr.length - 1 && <span> или</span>}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
         );
