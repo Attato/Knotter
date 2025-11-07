@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { ParameterType, ParameterValue, Enum } from '@/canvas/canvas.types';
 
 export const getTypeLabel = (type: string): string => {
@@ -27,7 +26,7 @@ export const PARAMETER_TYPES: { label: string; value: ParameterType }[] = [
 ];
 
 export const EMPTY_ENUM: Enum = {
-    options: { id: uuid(), values: [] },
+    options: [],
     selectedId: null,
 };
 

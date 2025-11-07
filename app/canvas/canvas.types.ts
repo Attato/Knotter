@@ -44,14 +44,11 @@ export interface Edge {
 export type ParameterType = 'number' | 'string' | 'boolean' | 'enum' | 'array';
 
 export type Enum = {
-    options: {
+    options: Array<{
         id: string;
-        values: Array<{
-            id: string;
-            name: string;
-            value: string;
-        }>;
-    };
+        name: string;
+        value: string;
+    }>;
     selectedId: string | null;
 };
 
