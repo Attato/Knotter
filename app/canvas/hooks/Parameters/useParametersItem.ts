@@ -1,5 +1,5 @@
 import { useParametersStore } from '@/canvas/store/parametersStore';
-import { ParameterValue, Enum, ArrayItem } from '@/canvas/canvas.types';
+import { ParameterValue, Enum, ArrayItem, ParameterType } from '@/canvas/canvas.types';
 import { v4 as uuid } from 'uuid';
 
 const NUMBER_LIMITS = {
@@ -38,7 +38,7 @@ export const useParametersItem = (parameterId: string) => {
         );
     };
 
-    const getParameterType = (): 'number' | 'string' | 'boolean' | 'enum' | 'array' => {
+    const getParameterType = (): ParameterType => {
         const { value } = parameter;
 
         if (isNumberValue(value)) return 'number';
@@ -138,11 +138,16 @@ export const useParametersItem = (parameterId: string) => {
 
         if (!isArrayValue(parameter.value)) return;
 
+        if (droppedParam.type !== 'number' && droppedParam.type !== 'string' && droppedParam.type !== 'boolean') {
+            return;
+        }
+
         const newItem: ArrayItem = {
             id: uuid(),
             name: droppedParam.name,
-            value: droppedParam.value as string | number | boolean,
-        };
+            type: droppedParam.type,
+            value: droppedParam.value as number | string | boolean,
+        } as ArrayItem;
 
         const updatedArray = [...parameter.value, newItem];
         const filtered = parameters.filter((p) => p.id !== droppedId);
@@ -152,10 +157,56 @@ export const useParametersItem = (parameterId: string) => {
 
     const parameterType = getParameterType();
 
+    const convertToNumber = (value: string | number | boolean): number => {
+        if (typeof value === 'number') return value;
+        if (typeof value === 'string') return parseFloat(value) || 0;
+
+        return value ? 1 : 0;
+    };
+
+    const convertToBoolean = (value: string | number | boolean): boolean => {
+        if (typeof value === 'boolean') return value;
+        if (typeof value === 'string') return value.toLowerCase() === 'true';
+
+        return Boolean(value);
+    };
+
+    const convertToString = (value: string | number | boolean): string => {
+        return String(value);
+    };
+
+    const convertArrayItemValue = (item: ArrayItem, newValue: string | number | boolean): ArrayItem => {
+        switch (item.type) {
+            case 'number':
+                return {
+                    ...item,
+                    value: convertToNumber(newValue),
+                };
+
+            case 'boolean':
+                return {
+                    ...item,
+                    value: convertToBoolean(newValue),
+                };
+
+            case 'string':
+            default:
+                return {
+                    ...item,
+                    value: convertToString(newValue),
+                };
+        }
+    };
+
     const updateArrayItemValue = (itemId: string, newValue: string | number | boolean) => {
         if (!isArrayValue(parameter.value)) return;
 
-        const updated = parameter.value.map((item) => (item.id === itemId ? { ...item, value: newValue } : item));
+        const updated = parameter.value.map((item) => {
+            if (item.id !== itemId) return item;
+
+            return convertArrayItemValue(item, newValue);
+        });
+
         updateParameter(updated);
     };
 
