@@ -43,7 +43,17 @@ export interface Edge {
 
 export type ParameterType = 'number' | 'string' | 'boolean' | 'enum' | 'array';
 
-export type Enum = { options: { id: string; values: string[] }; selectedId: string | null };
+export type Enum = {
+    options: {
+        id: string;
+        values: Array<{
+            id: string;
+            name: string;
+            value: string;
+        }>;
+    };
+    selectedId: string | null;
+};
 
 export type ArrayItem = {
     id: string;
