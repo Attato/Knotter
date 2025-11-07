@@ -7,7 +7,7 @@ import { PropertyType } from '@/canvas/canvas.types';
 
 import { PropertyParameterItem } from '@/canvas/components/Property/PropertyParameterItem';
 import { Plus } from 'lucide-react';
-import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
 interface PropertyParametersProps {
     parameters: PropertyType[];

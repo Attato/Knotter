@@ -6,7 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import { CanvasItem } from '@/canvas/canvas.types';
 import { EditableName } from '@/components/UI/EditableName';
-import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
 import { GripVertical } from 'lucide-react';
 

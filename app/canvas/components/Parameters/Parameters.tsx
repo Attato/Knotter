@@ -10,16 +10,17 @@ import { ParametersItem } from '@/canvas/components/Parameters/ParametersItem';
 
 import { useParameters } from '@/canvas/hooks/Parameters/useParameters';
 
-import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
 import { Plus } from 'lucide-react';
+
+import { PARAMETER_TYPES } from '@/canvas/utils/items/parameters.utils';
 
 export const Parameters = memo(function Parameters() {
     const {
         name,
         type,
         parameters,
-        parameterTypes,
 
         setName,
         setType,
@@ -34,10 +35,10 @@ export const Parameters = memo(function Parameters() {
                 <Input value={name} onChange={setName} placeholder="Имя переменной" className="w-48" max={16} />
 
                 <DropdownAbsolute
-                    title={parameterTypes.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
+                    title={PARAMETER_TYPES.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
                     icon={getDynamicIcon(type)}
                 >
-                    {parameterTypes.map((parameterType) => {
+                    {PARAMETER_TYPES.map((parameterType) => {
                         const Icon = getDynamicIcon(parameterType.value);
 
                         return (

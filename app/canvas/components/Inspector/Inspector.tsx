@@ -10,7 +10,7 @@ import { Textarea } from '@/components/UI/Textarea';
 
 import { Property } from '@/canvas/components/Property/Property';
 
-import { getDynamicIcon } from '@/canvas/utils/canvas/getDynamicIcon';
+import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
 export const Inspector = memo(function Inspector() {
     const { selectedItem, handleChangeName, handleChangeDescription } = useInspector();
