@@ -79,21 +79,27 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
         }
 
         if (isEnumValue(value)) {
-            const options = value.options?.values || [];
-            const selectedOption = value.selectedId ? options.find((option) => option.id === value.selectedId) : options[0];
+            const optionsIterator = value.options?.values || [];
+            const optionsArray = Array.isArray(optionsIterator) ? optionsIterator : Array.from(optionsIterator());
 
-            const selectOptions = options.map((option) => option.value);
-            const selectedValue = selectedOption?.value || options[0]?.value || '';
+            const selectedOption = value.selectedId
+                ? optionsArray.find((option) => option.id === value.selectedId)
+                : optionsArray[0];
+
+            const selectOptions = optionsArray.map((option) => option.value);
+            const selectedValue = selectedOption?.value || optionsArray[0]?.value || '';
 
             return (
                 <Select
                     value={selectedValue}
                     onChange={(val) => {
-                        const selectedOption = options.find((option) => option.value === val);
+                        const selectedOption = optionsArray.find((option) => option.value === val);
+
                         const newValue: Enum = {
                             ...value,
                             selectedId: selectedOption?.id || null,
                         };
+
                         handleValueChange(newValue);
                     }}
                     options={selectOptions}
