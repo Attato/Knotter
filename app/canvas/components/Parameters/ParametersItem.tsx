@@ -48,7 +48,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
     const renderBaseParameter = () => (
         <div
-            className="flex flex-col justify-center gap-2 px-3 py-1 min-h-[44px] text-sm bg-card rounded-md transition-all"
+            className="flex flex-col justify-center gap-2 px-3 py-1 min-h-[44px] text-sm bg-card rounded-md"
             draggable
             onDragStart={(e) => {
                 e.dataTransfer.setData('application/parameter-id', parameter.id);
@@ -64,7 +64,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                     <Input
                         value={getDisplayValue()}
                         onChange={handleNumberInput}
-                        className="bg-ui w-24"
+                        className="bg-ui"
                         max={16}
                         type="text"
                         inputMode="decimal"
@@ -75,7 +75,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                     <Input
                         value={parameterValue}
                         onChange={(val) => updateParameter(val)}
-                        className="bg-ui w-48"
+                        className="bg-ui"
                         max={16}
                         placeholder="Введите текст..."
                     />
@@ -100,10 +100,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         const enumValue = parameterValue;
 
         return (
-            <div
-                draggable={false}
-                className="flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md transition-all"
-            >
+            <div draggable={false} className="flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md">
                 <div className="flex items-center gap-1 h-[36px]">
                     <Icon size={16} className="min-w-4" />
 
@@ -145,7 +142,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 </div>
 
                 <div
-                    className={`flex flex-col gap-1 rounded-md p-2  border border-dashed transition-all ${
+                    className={`flex flex-col gap-1 rounded-md p-2  border border-dashed ${
                         isEnumDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
                     } ${enumValue.options.length > 0 && 'mt-2'}`}
                     onDragOver={(e) => e.preventDefault()}
@@ -181,10 +178,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         const arrayValue = parameterValue;
 
         return (
-            <div
-                draggable={false}
-                className="flex flex-col gap-1 px-3 py-2 min-h-[44px] bg-card text-sm rounded-md transition-all"
-            >
+            <div draggable={false} className="flex flex-col gap-1 px-3 py-2 min-h-[44px] bg-card text-sm rounded-md">
                 <div className="flex items-center gap-1 h-[36px]">
                     <Icon size={16} className="min-w-4" />
 
@@ -251,7 +245,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 </div>
 
                 <div
-                    className={`flex flex-col gap-2 rounded-md p-2 border border-dashed transition-all ${
+                    className={`flex flex-col gap-2 rounded-md p-2 border border-dashed ${
                         isArrayDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
                     } ${arrayValue.length > 0 && 'mt-2'}`}
                     onDragOver={(e) => e.preventDefault()}
