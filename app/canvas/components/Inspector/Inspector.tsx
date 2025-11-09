@@ -11,9 +11,12 @@ import { Textarea } from '@/components/UI/Textarea';
 import { Property } from '@/canvas/components/Property/Property';
 
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export const Inspector = memo(function Inspector() {
-    const { selectedItem, handleChangeName, handleChangeDescription } = useInspector();
+    const { handleChangeName, handleChangeDescription } = useInspector();
+
+    const selectedItem = useCanvasStore((state) => state.selectedItem);
 
     const Icon = getDynamicIcon(selectedItem?.kind || 'bug');
 
