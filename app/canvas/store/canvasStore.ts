@@ -13,6 +13,8 @@ interface CanvasState {
     selectedItemIds: string[];
     setSelectedItemIds: (ids: string[]) => void;
 
+    selectedItem: CanvasItem | null;
+
     tempEdge: { from: string; toPos: Position } | null;
     setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
 
@@ -58,15 +60,28 @@ interface CanvasState {
 
 export const useCanvasStore = create<CanvasState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             items: [],
-            setItems: (items) => set({ items }),
+            setItems: (items) =>
+                set({
+                    items,
+                    selectedItem:
+                        get().selectedItemIds.length > 0
+                            ? (items.find((item) => item.id === get().selectedItemIds[0]) ?? null)
+                            : null,
+                }),
 
             savedItems: [],
             setSavedItems: (items) => set({ savedItems: items }),
 
             selectedItemIds: [],
-            setSelectedItemIds: (ids) => set({ selectedItemIds: ids }),
+            setSelectedItemIds: (ids) =>
+                set({
+                    selectedItemIds: ids,
+                    selectedItem: ids.length > 0 ? (get().items.find((item) => item.id === ids[0]) ?? null) : null,
+                }),
+
+            selectedItem: null,
 
             tempEdge: null,
             setTempEdge: (tempEdge) => set({ tempEdge }),
@@ -116,6 +131,7 @@ export const useCanvasStore = create<CanvasState>()(
                 items: state.items,
                 savedItems: state.savedItems,
                 selectedItemIds: state.selectedItemIds,
+                selectedItem: state.selectedItem,
                 nodeMoveStep: state.nodeMoveStep,
                 offset: state.offset,
                 zoomLevel: state.zoomLevel,
