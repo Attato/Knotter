@@ -64,7 +64,7 @@ export const PropertyParameters = memo(function PropertyParameters({
                                         className={`px-3 py-2 w-full flex items-center gap-2 rounded-md cursor-pointer  ${
                                             selectedParamId === param.id
                                                 ? 'bg-bg-accent text-white'
-                                                : 'bg-ui-hover hover:bg-border-light'
+                                                : 'bg-ui hover:bg-ui-hover'
                                         }`}
                                     >
                                         <Icon size={16} />
