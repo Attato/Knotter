@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 import { Dropdown } from '@/components/UI/Dropdown';
 
@@ -12,33 +12,10 @@ import { useProperty } from '@/canvas/hooks/Property/useProperty';
 import { useDropdownStore } from '@/canvas/store/dropdownStore';
 
 export const Property = memo(function Property() {
-    const {
-        staticDropdowns,
-        isEdge,
-        shapeType,
-        positionX,
-        positionY,
-        parameters,
-        handleChangeNodeShapeType,
-        handleMove,
-        addParameterById,
-        removeParameter,
-        updateParameter,
-    } = useProperty();
+    const { staticDropdowns, isEdge, shapeType, positionX, positionY, handleChangeNodeShapeType, handleMove } =
+        useProperty();
 
     const { toggleDropdown, isDropdownOpen } = useDropdownStore();
-
-    const shapeButtons = useMemo(() => {
-        if (isEdge) return null;
-
-        return <ShapeButtons shapeType={shapeType} onTypeChange={handleChangeNodeShapeType} />;
-    }, [isEdge, shapeType, handleChangeNodeShapeType]);
-
-    const positionInputs = useMemo(() => {
-        if (isEdge) return null;
-
-        return <PositionInputs positionX={positionX} positionY={positionY} onMove={handleMove} />;
-    }, [isEdge, positionX, positionY, handleMove]);
 
     return (
         <div className="flex flex-col gap-1">
@@ -51,7 +28,13 @@ export const Property = memo(function Property() {
                         isOpen={isDropdownOpen(dd.id)}
                         onToggle={() => toggleDropdown(dd.id)}
                     >
-                        {dd.id === 1 ? shapeButtons : dd.id === 2 ? positionInputs : null}
+                        {dd.id === 1 && !isEdge && (
+                            <ShapeButtons shapeType={shapeType} onTypeChange={handleChangeNodeShapeType} />
+                        )}
+
+                        {dd.id === 2 && !isEdge && (
+                            <PositionInputs positionX={positionX} positionY={positionY} onMove={handleMove} />
+                        )}
                     </Dropdown>
                 ))}
             </div>
@@ -64,12 +47,7 @@ export const Property = memo(function Property() {
                     isOpen={isDropdownOpen(staticDropdowns.length + 1)}
                     onToggle={() => toggleDropdown(staticDropdowns.length + 1)}
                 >
-                    <PropertyParameters
-                        parameters={parameters}
-                        onAddParameter={addParameterById}
-                        onRemoveParameter={removeParameter}
-                        onUpdateParameter={updateParameter}
-                    />
+                    <PropertyParameters />
                 </Dropdown>
             </div>
         </div>
