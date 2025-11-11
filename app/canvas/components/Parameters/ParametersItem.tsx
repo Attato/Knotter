@@ -1,9 +1,14 @@
 'use client';
 
 import { memo, useState } from 'react';
+
+import { v4 as uuid } from 'uuid';
+
 import { Input } from '@/components/UI/Input';
 import { EditableName } from '@/components/UI/EditableName';
 import { Checkbox } from '@/components/UI/Checkbox';
+import { Enum } from '@/canvas/canvas.types';
+
 import { X } from 'lucide-react';
 
 import {
@@ -99,6 +104,21 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
         const enumValue = parameterValue;
 
+        const handleAddDefaultOption = () => {
+            const newOption = {
+                id: uuid(),
+                name: 'Текст',
+                value: '',
+            };
+
+            const updatedEnum: Enum = {
+                ...parameterValue,
+                options: [...parameterValue.options, newOption],
+            };
+
+            updateParameter(updatedEnum);
+        };
+
         return (
             <div draggable={false} className="flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md">
                 <div className="flex items-center gap-1 h-[36px]">
@@ -142,8 +162,8 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 </div>
 
                 <div
-                    className={`flex flex-col gap-1 rounded-md p-2  border border-dashed ${
-                        isEnumDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
+                    className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-border-light hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
+                        isEnumDragOver && 'bg-bg-accent/10 border-text-accent'
                     } ${enumValue.options.length > 0 && 'mt-2'}`}
                     onDragOver={(e) => e.preventDefault()}
                     onDragEnter={() => setIsEnumDragOver(true)}
@@ -156,16 +176,20 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
                         if (droppedType === 'string') handleDropToEnum(droppedId);
                     }}
+                    onClick={handleAddDefaultOption}
                 >
-                    <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
-                        Перетащите сюда
+                    <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center pointer-events-none">
+                        <span>Кликните чтобы добавить параметр</span>
+
                         <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
                             {(() => {
                                 const Icon = getDynamicIcon('string');
-                                return <Icon size={16} className="t" />;
+                                return <Icon size={16} />;
                             })()}
                             Текст
                         </div>
+
+                        <span className="text-xs text-gray">или перетащите сюда готовый текстовый параметр</span>
                     </div>
                 </div>
             </div>
@@ -245,8 +269,8 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 </div>
 
                 <div
-                    className={`flex flex-col gap-2 rounded-md p-2 border border-dashed ${
-                        isArrayDragOver ? 'bg-ui-hover border-primary' : 'border-border-light'
+                    className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-border-light ${
+                        isArrayDragOver && 'bg-bg-accent/10 border-text-accent'
                     } ${arrayValue.length > 0 && 'mt-2'}`}
                     onDragOver={(e) => e.preventDefault()}
                     onDragEnter={() => setIsArrayDragOver(true)}
