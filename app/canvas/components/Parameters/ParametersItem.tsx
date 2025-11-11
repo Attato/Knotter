@@ -7,7 +7,8 @@ import { v4 as uuid } from 'uuid';
 import { Input } from '@/components/UI/Input';
 import { EditableName } from '@/components/UI/EditableName';
 import { Checkbox } from '@/components/UI/Checkbox';
-import { Enum } from '@/canvas/canvas.types';
+
+import { Enum, ArrayItem } from '@/canvas/canvas.types';
 
 import { X } from 'lucide-react';
 
@@ -27,28 +28,257 @@ interface ParametersItemProps {
     onRemoveParameter: (id: string) => void;
 }
 
+interface EnumContentProps {
+    enumValue: Enum;
+    name: string;
+    parameterId?: string;
+    onUpdateName: (name: string) => void;
+    onUpdateEnum: (updatedEnum: Enum) => void;
+    onRemove?: () => void;
+    isInsideArray?: boolean;
+    onDropToEnum?: (droppedId: string) => void;
+}
+
+const EnumContent = memo(function EnumContent({
+    enumValue,
+    name,
+    parameterId,
+    onUpdateName,
+    onUpdateEnum,
+    onRemove,
+    isInsideArray = false,
+    onDropToEnum,
+}: EnumContentProps) {
+    const Icon = getDynamicIcon('enum');
+    const [isDragOver, setIsDragOver] = useState(false);
+
+    const handleAddDefaultOption = () => {
+        const newOption = {
+            id: uuid(),
+            name: 'Текст',
+            value: '',
+        };
+
+        const updatedEnum: Enum = {
+            ...enumValue,
+            options: [...enumValue.options, newOption],
+        };
+
+        onUpdateEnum(updatedEnum);
+    };
+
+    const updateEnumOption = (itemId: string, newValue: string) => {
+        const updated: Enum = {
+            ...enumValue,
+            options: enumValue.options.map((item) => (item.id === itemId ? { ...item, value: newValue } : item)),
+        };
+        onUpdateEnum(updated);
+    };
+
+    const updateEnumOptionName = (index: number, newName: string) => {
+        const updated: Enum = {
+            ...enumValue,
+            options: enumValue.options.map((o, i) => (i === index ? { ...o, name: newName } : o)),
+        };
+        onUpdateEnum(updated);
+    };
+
+    const removeEnumItem = (itemId: string) => {
+        const updated: Enum = {
+            ...enumValue,
+            options: enumValue.options.filter((item) => item.id !== itemId),
+        };
+
+        if (enumValue.selectedId === itemId) {
+            updated.selectedId = updated.options[0]?.id || null;
+        }
+
+        onUpdateEnum(updated);
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        setIsDragOver(false);
+        const droppedId = e.dataTransfer.getData('application/parameter-id');
+        const droppedType = e.dataTransfer.getData('application/parameter-type');
+
+        if (droppedType === 'string' && onDropToEnum) {
+            onDropToEnum(droppedId);
+        }
+    };
+
+    return (
+        <div
+            className={`flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm rounded-md ${
+                isInsideArray ? 'border border-border bg-border' : 'bg-card'
+            }`}
+            draggable={!isInsideArray}
+            onDragStart={(e) => {
+                if (!isInsideArray && parameterId) {
+                    e.dataTransfer.setData('application/parameter-id', parameterId);
+                    e.dataTransfer.setData('application/parameter-type', 'enum');
+                }
+            }}
+        >
+            <div className="flex items-center gap-1 h-[36px]">
+                <Icon size={16} className="min-w-4" />
+                <EditableName name={name} onChange={onUpdateName} className="w-full" />
+                {onRemove && (
+                    <button onClick={onRemove} className="ml-auto text-gray cursor-pointer">
+                        <X size={16} />
+                    </button>
+                )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+                {enumValue.options.map((item, idx) => {
+                    const OptionIcon = getDynamicIcon('string');
+                    return (
+                        <div
+                            key={item.id}
+                            className={`flex gap-2 items-center  rounded-md px-3 py-1 ${isInsideArray ? 'bg-ui' : 'bg-border'}`}
+                        >
+                            <OptionIcon size={16} className="min-w-4" />
+                            <EditableName
+                                name={item.name}
+                                onChange={(newName) => updateEnumOptionName(idx, newName)}
+                                className="w-full"
+                            />
+                            <Input
+                                value={item.value}
+                                onChange={(val) => updateEnumOption(item.id, val)}
+                                className={`border  ${isInsideArray ? 'bg-ui-hover border-border-light' : 'bg-ui border-ui-hover'}`}
+                                max={16}
+                                placeholder="Введите значение..."
+                            />
+                            <button onClick={() => removeEnumItem(item.id)} className="text-gray cursor-pointer">
+                                <X size={16} />
+                            </button>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <div
+                className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-border-light hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
+                    isDragOver && 'bg-bg-accent/10 border-text-accent'
+                } ${enumValue.options.length > 0 && 'mt-2'}`}
+                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={() => setIsDragOver(true)}
+                onDragLeave={() => setIsDragOver(false)}
+                onDrop={handleDrop}
+                onClick={handleAddDefaultOption}
+            >
+                <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center pointer-events-none">
+                    <span>Кликните чтобы добавить параметр</span>
+                    <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
+                        {(() => {
+                            const StringIcon = getDynamicIcon('string');
+                            return <StringIcon size={16} />;
+                        })()}
+                        Текст
+                    </div>
+                    <span className="text-xs text-gray">или перетащите сюда готовый текстовый параметр</span>
+                </div>
+            </div>
+        </div>
+    );
+});
+
+interface ArrayItemContentProps {
+    item: ArrayItem;
+    onUpdateName: (name: string) => void;
+    onUpdateValue: (value: number | string | boolean | Enum) => void;
+    onRemove: () => void;
+    onDropToEnum?: (arrayItemId: string, droppedId: string) => void;
+}
+
+const ArrayItemContent = memo(function ArrayItemContent({
+    item,
+    onUpdateName,
+    onUpdateValue,
+    onRemove,
+    onDropToEnum,
+}: ArrayItemContentProps) {
+    const Icon = getDynamicIcon(item.type);
+
+    if (item.type === 'enum') {
+        return (
+            <EnumContent
+                enumValue={item.value as Enum}
+                name={item.name}
+                onUpdateName={onUpdateName}
+                onUpdateEnum={onUpdateValue}
+                onRemove={onRemove}
+                isInsideArray={true}
+                onDropToEnum={(droppedId) => onDropToEnum?.(item.id, droppedId)}
+            />
+        );
+    }
+
+    return (
+        <div className="flex gap-2 items-center bg-border rounded-md px-3 py-1">
+            <Icon size={16} className="min-w-4" />
+            <EditableName name={item.name} onChange={onUpdateName} className="w-full" />
+
+            {item.type === 'number' && (
+                <Input
+                    value={item.value.toString()}
+                    onChange={(val) => {
+                        const num = parseFloat(val);
+                        if (!isNaN(num)) onUpdateValue(num);
+                    }}
+                    className="bg-ui border border-ui-hover"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0"
+                />
+            )}
+
+            {item.type === 'string' && (
+                <Input
+                    value={item.value as string}
+                    onChange={(val) => onUpdateValue(val)}
+                    className="bg-ui border border-ui-hover h-8"
+                    placeholder="Введите текст..."
+                />
+            )}
+
+            {item.type === 'boolean' && (
+                <div className="flex items-center w-full h-9">
+                    <Checkbox
+                        checked={item.value as boolean}
+                        onChange={(checked) => onUpdateValue(checked)}
+                        className="bg-ui border border-ui-hover"
+                    />
+                </div>
+            )}
+
+            <button onClick={onRemove} className="text-gray cursor-pointer">
+                <X size={16} />
+            </button>
+        </div>
+    );
+});
+
 export const ParametersItem = memo(function ParametersItem({ parameterId, onRemoveParameter }: ParametersItemProps) {
     const {
         parameter,
         parameterType,
         updateParameter,
         updateParameterName,
-        updateEnumOption,
-        updateEnumOptionName,
         handleNumberInput,
         getDisplayValue,
         handleDropToEnum,
         handleDropToArray,
+        handleDropToArrayEnum,
         updateArrayItemValue,
         updateArrayItemName,
         removeArrayItem,
-        removeEnumItem,
     } = useParametersItem(parameterId);
 
     const parameterValue = parameter.value;
     const Icon = getDynamicIcon(parameterType);
 
-    const [isEnumDragOver, setIsEnumDragOver] = useState(false);
     const [isArrayDragOver, setIsArrayDragOver] = useState(false);
 
     const renderBaseParameter = () => (
@@ -101,98 +331,16 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
     const renderEnumParameter = () => {
         if (!isEnumValue(parameterValue)) return null;
-
-        const enumValue = parameterValue;
-
-        const handleAddDefaultOption = () => {
-            const newOption = {
-                id: uuid(),
-                name: 'Текст',
-                value: '',
-            };
-
-            const updatedEnum: Enum = {
-                ...parameterValue,
-                options: [...parameterValue.options, newOption],
-            };
-
-            updateParameter(updatedEnum);
-        };
-
         return (
-            <div draggable={false} className="flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm bg-card rounded-md">
-                <div className="flex items-center gap-1 h-[36px]">
-                    <Icon size={16} className="min-w-4" />
-
-                    <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
-
-                    <button onClick={() => onRemoveParameter(parameter.id)} className="ml-auto text-gray cursor-pointer ">
-                        <X size={16} />
-                    </button>
-                </div>
-
-                <div className="flex flex-col gap-1">
-                    {enumValue.options.map((item, idx) => {
-                        const Icon = getDynamicIcon('string');
-
-                        return (
-                            <div key={item.id} className="flex gap-2 items-center bg-border rounded-md px-3 py-1">
-                                <Icon size={16} className="min-w-4" />
-
-                                <EditableName
-                                    name={item.name}
-                                    onChange={(newName) => updateEnumOptionName(idx, newName)}
-                                    className="w-full"
-                                />
-
-                                <Input
-                                    value={item.value}
-                                    onChange={(val) => updateEnumOption(item.id, val)}
-                                    className="bg-ui border border-ui-hover"
-                                    max={16}
-                                    placeholder="Введите значение..."
-                                />
-
-                                <button onClick={() => removeEnumItem(item.id)} className="text-gray cursor-pointer">
-                                    <X size={16} />
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                <div
-                    className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-border-light hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
-                        isEnumDragOver && 'bg-bg-accent/10 border-text-accent'
-                    } ${enumValue.options.length > 0 && 'mt-2'}`}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDragEnter={() => setIsEnumDragOver(true)}
-                    onDragLeave={() => setIsEnumDragOver(false)}
-                    onDrop={(e) => {
-                        setIsEnumDragOver(false);
-
-                        const droppedId = e.dataTransfer.getData('application/parameter-id');
-                        const droppedType = e.dataTransfer.getData('application/parameter-type');
-
-                        if (droppedType === 'string') handleDropToEnum(droppedId);
-                    }}
-                    onClick={handleAddDefaultOption}
-                >
-                    <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center pointer-events-none">
-                        <span>Кликните чтобы добавить параметр</span>
-
-                        <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
-                            {(() => {
-                                const Icon = getDynamicIcon('string');
-                                return <Icon size={16} />;
-                            })()}
-                            Текст
-                        </div>
-
-                        <span className="text-xs text-gray">или перетащите сюда готовый текстовый параметр</span>
-                    </div>
-                </div>
-            </div>
+            <EnumContent
+                enumValue={parameterValue}
+                name={parameter.name}
+                parameterId={parameter.id}
+                onUpdateName={updateParameterName}
+                onUpdateEnum={updateParameter}
+                onRemove={() => onRemoveParameter(parameter.id)}
+                onDropToEnum={handleDropToEnum}
+            />
         );
     };
 
@@ -202,7 +350,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         const arrayValue = parameterValue;
 
         return (
-            <div draggable={false} className="flex flex-col gap-1 px-3 py-2 min-h-[44px] bg-card text-sm rounded-md">
+            <div className="flex flex-col gap-1 px-3 py-2 min-h-[44px] bg-card text-sm rounded-md">
                 <div className="flex items-center gap-1 h-[36px]">
                     <Icon size={16} className="min-w-4" />
 
@@ -214,58 +362,16 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    {arrayValue.map((item) => {
-                        const Icon = getDynamicIcon(typeof item.value as 'number' | 'string' | 'boolean');
-
-                        return (
-                            <div key={item.id} className="flex gap-2 items-center bg-border rounded-md px-3 py-1">
-                                <Icon size={16} className="min-w-4" />
-
-                                <EditableName
-                                    name={item.name}
-                                    onChange={(newName) => updateArrayItemName(item.id, newName)}
-                                    className="w-full"
-                                />
-
-                                {typeof item.value === 'number' && (
-                                    <Input
-                                        value={item.value.toString()}
-                                        onChange={(val) => {
-                                            const num = parseFloat(val);
-                                            if (!isNaN(num)) updateArrayItemValue(item.id, num);
-                                        }}
-                                        className="bg-ui border border-ui-hover"
-                                        type="text"
-                                        inputMode="decimal"
-                                        placeholder="0"
-                                    />
-                                )}
-
-                                {typeof item.value === 'string' && (
-                                    <Input
-                                        value={item.value}
-                                        onChange={(val) => updateArrayItemValue(item.id, val)}
-                                        className="bg-ui border border-ui-hover h-8"
-                                        placeholder="Введите текст..."
-                                    />
-                                )}
-
-                                {typeof item.value === 'boolean' && (
-                                    <div className="flex items-center w-full h-9">
-                                        <Checkbox
-                                            checked={item.value}
-                                            onChange={(checked) => updateArrayItemValue(item.id, checked)}
-                                            className="bg-ui border border-ui-hover"
-                                        />
-                                    </div>
-                                )}
-
-                                <button onClick={() => removeArrayItem(item.id)} className="text-gray cursor-pointer">
-                                    <X size={16} />
-                                </button>
-                            </div>
-                        );
-                    })}
+                    {arrayValue.map((item) => (
+                        <ArrayItemContent
+                            key={item.id}
+                            item={item}
+                            onUpdateName={(newName) => updateArrayItemName(item.id, newName)}
+                            onUpdateValue={(newValue) => updateArrayItemValue(item.id, newValue)}
+                            onRemove={() => removeArrayItem(item.id)}
+                            onDropToEnum={handleDropToArrayEnum}
+                        />
+                    ))}
                 </div>
 
                 <div
@@ -281,7 +387,9 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                         const droppedId = e.dataTransfer.getData('application/parameter-id');
                         const droppedType = e.dataTransfer.getData('application/parameter-type');
 
-                        if (['string', 'number', 'boolean'].includes(droppedType)) handleDropToArray(droppedId);
+                        if (['string', 'number', 'boolean', 'enum'].includes(droppedType)) {
+                            handleDropToArray(droppedId);
+                        }
                     }}
                 >
                     <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
@@ -293,6 +401,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                                 if (type === 'number') return 'Число';
                                 if (type === 'string') return 'Текст';
                                 if (type === 'boolean') return 'Флаг';
+                                if (type === 'enum') return 'Список';
 
                                 return '';
                             })();
