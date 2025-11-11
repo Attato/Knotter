@@ -37,14 +37,14 @@ export const SavePopup = memo(function SavePopup({ onSave, onDiscard, onCancel }
 
                         <button
                             onClick={onDiscard}
-                            className="px-3 py-2 bg-card hover:bg-ui rounded-md cursor-pointer w-full"
+                            className="px-3 py-2 bg-card hover:bg-border rounded-md cursor-pointer w-full"
                         >
                             Не сохранять
                         </button>
 
                         <button
                             onClick={onCancel}
-                            className="px-3 py-2 bg-card hover:bg-ui rounded-md cursor-pointer w-full"
+                            className="px-3 py-2 bg-card hover:bg-border rounded-md cursor-pointer w-full"
                         >
                             Отмена
                         </button>

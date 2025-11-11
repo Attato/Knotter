@@ -17,7 +17,7 @@ const HomeLink = memo(function HomeLink() {
     return (
         <Link
             href="/"
-            className="flex items-center justify-between gap-2 bg-card hover:bg-ui px-3 py-2 rounded-md text-axis-y"
+            className="flex items-center justify-between gap-2 bg-card hover:bg-border px-3 py-2 rounded-md text-axis-y"
         >
             На главную
             <Home size={16} />
@@ -34,7 +34,7 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
             <div className="flex flex-col gap-1 m-1">
                 <button
                     onClick={onOpenProject}
-                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
+                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-border rounded-md cursor-pointer"
                 >
                     Открыть
                     <FolderOpen size={16} />
@@ -42,7 +42,7 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
 
                 <button
                     onClick={onSaveAs}
-                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
+                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-border rounded-md cursor-pointer"
                 >
                     Сохранить как
                     <Download size={16} />
@@ -50,7 +50,7 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
 
                 <button
                     onClick={() => setInvertY(!invertY)}
-                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-ui rounded-md cursor-pointer"
+                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-border rounded-md cursor-pointer"
                 >
                     Инвертировать Y
                     <FlipVertical2 size={16} className={`${invertY ? 'text-foreground' : 'text-gray'}`} />

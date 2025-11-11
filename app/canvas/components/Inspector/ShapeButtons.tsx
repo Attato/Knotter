@@ -24,10 +24,10 @@ export const ShapeButtons = memo(function ShapeButtons({ shapeType, onTypeChange
                     <button
                         key={type}
                         onClick={() => onTypeChange(type)}
-                        className={`flex flex-col items-center gap-1 px-2 py-1 rounded-md cursor-pointer max-w-[100px] w-full focus-visible:outline-0 transition-colors ${
+                        className={`flex flex-col items-center gap-1 px-2 py-1 rounded-md cursor-pointer max-w-[100px] w-full focus-visible:outline-0 ${
                             isActive
                                 ? 'text-text-accent bg-bg-accent/10 hover:bg-bg-accent/10 focus-visible:bg-bg-accent/15'
-                                : 'hover:bg-ui focus-visible:bg-ui'
+                                : 'hover:bg-border focus-visible:bg-border'
                         }`}
                     >
                         <Icon size={24} />

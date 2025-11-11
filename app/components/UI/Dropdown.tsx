@@ -29,8 +29,8 @@ export const Dropdown = memo(function Dropdown({
             <button
                 onClick={toggle}
                 disabled={disabled}
-                className={`flex justify-start gap-2 items-center px-3 py-2 w-full text-sm transition-colors  ${
-                    disabled ? 'cursor-not-allowed text-gray' : 'cursor-pointer hover:bg-ui'
+                className={`flex justify-start gap-2 items-center px-3 py-2 w-full text-sm ${
+                    disabled ? 'cursor-not-allowed text-gray' : 'cursor-pointer hover:bg-border'
                 } ${isOpen ? 'rounded-t-md' : 'rounded-md'}`}
             >
                 <ChevronDown className={`transition-transform ${isOpen && !disabled ? 'rotate-180' : ''}`} size={16} />

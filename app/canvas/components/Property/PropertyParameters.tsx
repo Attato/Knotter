@@ -29,7 +29,7 @@ export const PropertyParameters = memo(function PropertyParameters() {
         <div className="flex flex-col gap-1">
             {handleAddParameter && (
                 <div className="flex gap-1">
-                    <DropdownAbsolute title={dropdownTitle} icon={selectedTypeIcon} light>
+                    <DropdownAbsolute title={dropdownTitle} icon={selectedTypeIcon}>
                         <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
                             {filteredParameters.map((param) => {
                                 const Icon = getDynamicIcon(param.type);
@@ -58,7 +58,7 @@ export const PropertyParameters = memo(function PropertyParameters() {
                     <button
                         onClick={handleAddParameter}
                         disabled={!selectedParamId}
-                        className={`${!selectedParamId ? 'bg-ui/50 text-foreground/50' : 'bg-ui '}  flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
+                        className={`${!selectedParamId ? 'bg-border/50 text-foreground/50' : 'bg-border '}  flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
                         title="Добавить выбранный параметр"
                     >
                         <Plus size={16} />

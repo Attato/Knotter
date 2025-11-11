@@ -33,7 +33,7 @@ export const ContextMenuItem = memo(function ContextMenuItem({
     return (
         <div className="relative group">
             <button
-                className={`flex justify-between items-center px-3 py-1 bg-card hover:bg-ui w-full text-left cursor-pointer ${
+                className={`flex justify-between items-center px-3 py-1 bg-card hover:bg-border w-full text-left cursor-pointer ${
                     disabled ? 'opacity-40 cursor-not-allowed' : ''
                 }`}
                 onClick={handleClick}
