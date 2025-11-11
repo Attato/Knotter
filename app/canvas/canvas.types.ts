@@ -55,7 +55,8 @@ export type Enum = {
 export type ArrayItem =
     | { id: string; name: string; type: 'number'; value: number }
     | { id: string; name: string; type: 'string'; value: string }
-    | { id: string; name: string; type: 'boolean'; value: boolean };
+    | { id: string; name: string; type: 'boolean'; value: boolean }
+    | { id: string; name: string; type: 'enum'; value: Enum };
 
 export type ParameterValue = number | string | boolean | Enum | ArrayItem[];
 
