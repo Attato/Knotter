@@ -53,9 +53,9 @@
     --color-background-alt: var(--background-alt);
     --color-card: var(--card-bg);
     --color-border: var(--border);
-    --color-border-light: var(--border-light);
     --color-ui: var(--ui);
     --color-ui-hover: var(--ui-hover);
+    --color-border-light: var(--border-light);
 
     --color-selected: var(--selected);
     --color-axis-x: var(--axis-x);
