@@ -27,7 +27,13 @@ export const Inspector = memo(function Inspector() {
     return (
         <div className="flex flex-col h-[calc(100vh-46px)] overflow-y-auto">
             <div className="flex flex-col gap-1 m-1">
-                <Input value={selectedItem.name} onChange={handleChangeName} placeholder="Название" icon={Icon} />
+                <Input
+                    value={selectedItem.name}
+                    onChange={handleChangeName}
+                    placeholder="Название"
+                    icon={Icon}
+                    className="h-[36px]"
+                />
                 <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
             </div>
 
