@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/UI/Checkbox';
 import { Select } from '@/components/UI/Select';
 import { X } from 'lucide-react';
 import { usePropertyParameterItem } from '@/canvas/hooks/Property/usePropertyParameterItem';
+import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
 interface PropertyParameterItemProps {
     parameter: Parameter;
@@ -31,6 +32,8 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
         value,
         name,
     } = usePropertyParameterItem({ parameter, handleUpdateParameter });
+
+    const Icon = getDynamicIcon(parameter.type);
 
     const renderParameterInput = () => {
         if (parameterType.isNumber) {
@@ -82,45 +85,51 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
 
             return (
                 <div className="flex flex-col gap-2 w-full">
-                    {arrayData.length === 0 && (
-                        <p className="text-xs text-muted-foreground italic text-center py-1">Массив пуст</p>
-                    )}
+                    {arrayData.length === 0 && <p className="p-2 text-gray text-sm">Массив пуст</p>}
 
-                    {arrayData.map((item, index) => (
-                        <div key={item.id || index} className="flex items-center gap-2 bg-border rounded-md px-2 py-1">
-                            <p className="text-xs font-medium text-foreground truncate w-1/4">{item.name}</p>
+                    {arrayData.map((item, index) => {
+                        const Icon = getDynamicIcon(item.type);
 
-                            {item.type === 'number' && (
-                                <Input
-                                    value={String(item.value ?? 0)}
-                                    onChange={(val) => {
-                                        const num = parseFloat(val);
-                                        handleArrayItem(item.id, isNaN(num) ? 0 : num, 'number');
-                                    }}
-                                    className="w-full bg-ui border border-ui-hover"
-                                    inputMode="decimal"
-                                />
-                            )}
-
-                            {item.type === 'string' && (
-                                <Input
-                                    value={String(item.value ?? '')}
-                                    onChange={(val) => handleArrayItem(item.id, val, 'string')}
-                                    className="w-full bg-ui border border-ui-hover"
-                                    placeholder="Введите текст..."
-                                />
-                            )}
-
-                            {item.type === 'boolean' && (
-                                <div className="flex items-center justify-center w-full h-[36px]">
-                                    <Checkbox
-                                        checked={Boolean(item.value)}
-                                        onChange={(checked) => handleArrayItem(item.id, checked, 'boolean')}
-                                    />
+                        return (
+                            <div key={item.id || index} className="flex items-center gap-2 bg-border rounded-md px-2 py-1">
+                                <div className="flex items-center gap-2 w-full">
+                                    <Icon size={16} />
+                                    <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
                                 </div>
-                            )}
-                        </div>
-                    ))}
+
+                                {item.type === 'number' && (
+                                    <Input
+                                        value={String(item.value ?? 0)}
+                                        onChange={(val) => {
+                                            const num = parseFloat(val);
+                                            handleArrayItem(item.id, isNaN(num) ? 0 : num, 'number');
+                                        }}
+                                        className="w-full bg-ui border border-ui-hover"
+                                        inputMode="decimal"
+                                    />
+                                )}
+
+                                {item.type === 'string' && (
+                                    <Input
+                                        value={String(item.value ?? '')}
+                                        onChange={(val) => handleArrayItem(item.id, val, 'string')}
+                                        className="w-full bg-ui border border-ui-hover"
+                                        placeholder="Введите текст..."
+                                    />
+                                )}
+
+                                {item.type === 'boolean' && (
+                                    <div className="flex items-center w-full h-[36px]">
+                                        <Checkbox
+                                            checked={Boolean(item.value)}
+                                            onChange={(checked) => handleArrayItem(item.id, checked, 'boolean')}
+                                            className="bg-ui border border-ui-hover"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             );
         }
@@ -129,9 +138,13 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
     };
 
     return (
-        <div className="flex flex-col gap-2 bg-card rounded-md p-2">
+        <div className="flex flex-col gap-2 bg-card rounded-md py-2 px-3">
             <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-foreground truncate">{name}</p>
+                <div className="flex items-center gap-2">
+                    <Icon size={16} />
+                    <p className="text-sm font-medium text-foreground truncate">{name}</p>
+                </div>
+
                 <button
                     onClick={handleRemoveParameter}
                     className="text-gray cursor-pointer w-[36px] h-[36px] flex items-center justify-center"
