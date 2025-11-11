@@ -42,13 +42,7 @@ export const Property = memo(function Property() {
             <hr className="border-b-0 border-border" />
 
             <div className="mx-1 flex flex-col gap-1">
-                <Dropdown
-                    title="Пользовательские свойства"
-                    isOpen={isDropdownOpen(staticDropdowns.length + 1)}
-                    onToggle={() => toggleDropdown(staticDropdowns.length + 1)}
-                >
-                    <PropertyParameters />
-                </Dropdown>
+                <PropertyParameters />
             </div>
         </div>
     );
