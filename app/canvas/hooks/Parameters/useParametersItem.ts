@@ -141,18 +141,76 @@ export const useParametersItem = (parameterId: string) => {
 
         if (!isArrayValue(parameter.value)) return;
 
-        if (droppedParam.type !== 'number' && droppedParam.type !== 'string' && droppedParam.type !== 'boolean') {
-            return;
+        if (!['number', 'string', 'boolean', 'enum'].includes(droppedParam.type)) return;
+
+        let newItem: ArrayItem;
+
+        switch (droppedParam.type) {
+            case 'number':
+                newItem = {
+                    id: uuid(),
+                    name: droppedParam.name,
+                    type: 'number',
+                    value: droppedParam.value as number,
+                };
+                break;
+            case 'string':
+                newItem = {
+                    id: uuid(),
+                    name: droppedParam.name,
+                    type: 'string',
+                    value: droppedParam.value as string,
+                };
+                break;
+            case 'boolean':
+                newItem = {
+                    id: uuid(),
+                    name: droppedParam.name,
+                    type: 'boolean',
+                    value: droppedParam.value as boolean,
+                };
+                break;
+            case 'enum':
+                newItem = {
+                    id: uuid(),
+                    name: droppedParam.name,
+                    type: 'enum',
+                    value: droppedParam.value as Enum,
+                };
+                break;
+            default:
+                return;
         }
 
-        const newItem: ArrayItem = {
-            id: uuid(),
-            name: droppedParam.name,
-            type: droppedParam.type,
-            value: droppedParam.value as number | string | boolean,
-        } as ArrayItem;
-
         const updatedArray = [...parameter.value, newItem];
+        const filtered = parameters.filter((p) => p.id !== droppedId);
+        setParameters(filtered.map((p) => (p.id === parameter.id ? { ...parameter, value: updatedArray } : p)));
+    };
+
+    const handleDropToArrayEnum = (arrayItemId: string, droppedId: string) => {
+        const droppedParam = parameters.find((p) => p.id === droppedId);
+
+        if (!droppedParam || typeof droppedParam.value !== 'string') return;
+
+        if (!Array.isArray(parameter.value)) return;
+
+        const updatedArray = parameter.value.map((item) => {
+            if (item.id !== arrayItemId || item.type !== 'enum') return item;
+
+            const newOption = {
+                id: uuid(),
+                name: droppedParam.name,
+                value: droppedParam.value as string,
+            };
+
+            const updatedEnum: Enum = {
+                ...item.value,
+                options: [...item.value.options, newOption],
+            };
+
+            return { ...item, value: updatedEnum };
+        });
+
         const filtered = parameters.filter((p) => p.id !== droppedId);
 
         setParameters(filtered.map((p) => (p.id === parameter.id ? { ...parameter, value: updatedArray } : p)));
@@ -178,30 +236,38 @@ export const useParametersItem = (parameterId: string) => {
         return String(value);
     };
 
-    const convertArrayItemValue = (item: ArrayItem, newValue: string | number | boolean): ArrayItem => {
+    const convertArrayItemValue = (item: ArrayItem, newValue: string | number | boolean | Enum): ArrayItem => {
         switch (item.type) {
             case 'number':
                 return {
                     ...item,
-                    value: convertToNumber(newValue),
+                    value: convertToNumber(newValue as string | number | boolean),
                 };
 
             case 'boolean':
                 return {
                     ...item,
-                    value: convertToBoolean(newValue),
+                    value: convertToBoolean(newValue as string | number | boolean),
                 };
 
             case 'string':
-            default:
                 return {
                     ...item,
-                    value: convertToString(newValue),
+                    value: convertToString(newValue as string | number | boolean),
                 };
+
+            case 'enum':
+                return {
+                    ...item,
+                    value: newValue as Enum,
+                };
+
+            default:
+                return item;
         }
     };
 
-    const updateArrayItemValue = (itemId: string, newValue: string | number | boolean) => {
+    const updateArrayItemValue = (itemId: string, newValue: string | number | boolean | Enum) => {
         if (!isArrayValue(parameter.value)) return;
 
         const updated = parameter.value.map((item) => {
@@ -227,6 +293,56 @@ export const useParametersItem = (parameterId: string) => {
         updateParameter(updated);
     };
 
+    const getArrayItemDisplayValue = (item: ArrayItem): string => {
+        switch (item.type) {
+            case 'number':
+            case 'string':
+            case 'boolean':
+                return String(item.value);
+            case 'enum':
+                const selectedOption = item.value.options.find((opt) => opt.id === item.value.selectedId);
+                return selectedOption?.name || selectedOption?.value || 'Не выбрано';
+        }
+    };
+
+    const updateArrayEnumOption = (arrayItemId: string, optionId: string, newValue: string) => {
+        if (!isArrayValue(parameter.value)) return;
+
+        const updated = parameter.value.map((item) => {
+            if (item.id !== arrayItemId || item.type !== 'enum') return item;
+
+            const updatedEnum: Enum = {
+                ...item.value,
+                options: item.value.options.map((opt) => (opt.id === optionId ? { ...opt, value: newValue } : opt)),
+            };
+
+            return { ...item, value: updatedEnum };
+        });
+
+        updateParameter(updated);
+    };
+
+    const removeArrayEnumItem = (arrayItemId: string, optionId: string) => {
+        if (!isArrayValue(parameter.value)) return;
+
+        const updated = parameter.value.map((item) => {
+            if (item.id !== arrayItemId || item.type !== 'enum') return item;
+
+            const updatedEnum: Enum = {
+                ...item.value,
+                options: item.value.options.filter((opt) => opt.id !== optionId),
+            };
+
+            if (item.value.selectedId === optionId) {
+                updatedEnum.selectedId = updatedEnum.options[0]?.id || null;
+            }
+
+            return { ...item, value: updatedEnum };
+        });
+
+        updateParameter(updated);
+    };
+
     return {
         parameter,
         parameterType,
@@ -239,9 +355,13 @@ export const useParametersItem = (parameterId: string) => {
         getDisplayValue,
         handleDropToEnum,
         handleDropToArray,
+        handleDropToArrayEnum,
         updateArrayItemValue,
         updateArrayItemName,
         removeArrayItem,
         removeEnumItem,
+        getArrayItemDisplayValue,
+        updateArrayEnumOption,
+        removeArrayEnumItem,
     };
 };
