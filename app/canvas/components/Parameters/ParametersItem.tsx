@@ -394,8 +394,8 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 >
                     <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
                         Перетащите сюда
-                        {['number', 'string', 'boolean'].map((type, idx, arr) => {
-                            const Icon = getDynamicIcon(type as 'number' | 'string' | 'boolean');
+                        {['number', 'string', 'boolean', 'enum'].map((type, idx, arr) => {
+                            const Icon = getDynamicIcon(type as 'number' | 'string' | 'boolean' | 'enum');
 
                             const label = (() => {
                                 if (type === 'number') return 'Число';
