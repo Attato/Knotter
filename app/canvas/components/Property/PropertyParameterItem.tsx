@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { PropertyType, Parameter, ArrayItem, Enum } from '@/canvas/canvas.types';
+import { PropertyType, Parameter, Enum } from '@/canvas/canvas.types';
 import { Input } from '@/components/UI/Input';
 import { Checkbox } from '@/components/UI/Checkbox';
 import { Select } from '@/components/UI/Select';
@@ -14,45 +14,6 @@ interface PropertyParameterItemProps {
     handleRemoveParameter: () => void;
     handleUpdateParameter: (updates: Partial<PropertyType>) => void;
 }
-
-interface ArrayEnumItemProps {
-    item: ArrayItem;
-    onUpdate: (itemId: string, newValue: Enum, itemType: 'enum') => void;
-}
-
-const ArrayEnumItem = memo(function ArrayEnumItem({ item, onUpdate }: ArrayEnumItemProps) {
-    if (item.type !== 'enum' || !item.value || typeof item.value !== 'object') return null;
-
-    const enumValue = item.value as Enum;
-    if (!enumValue.options) return null;
-
-    const selectedOption = enumValue.options.find((opt) => opt.id === enumValue.selectedId);
-
-    const currentValue = selectedOption?.value || selectedOption?.name || 'Не выбрано';
-
-    const options = enumValue.options.map((opt) => opt.value || opt.name || 'Без названия');
-
-    const handleEnumChange = (selectedValue: string) => {
-        const selectedOption = enumValue.options.find((opt) => (opt.value || opt.name || 'Без названия') === selectedValue);
-
-        if (selectedOption) {
-            const updatedEnum: Enum = {
-                ...enumValue,
-                selectedId: selectedOption.id,
-            };
-            onUpdate(item.id, updatedEnum, 'enum');
-        }
-    };
-
-    return (
-        <Select
-            value={currentValue}
-            onChange={handleEnumChange}
-            options={options}
-            className="bg-ui border border-ui-hover"
-        />
-    );
-});
 
 export const PropertyParameterItem = memo(function PropertyParameterItem({
     parameter,
@@ -129,6 +90,45 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                     {arrayData.map((item) => {
                         const Icon = getDynamicIcon(item.type);
 
+                        if (item.type === 'enum' && item.value && typeof item.value === 'object') {
+                            const enumValue = item.value as Enum;
+                            if (!enumValue.options) return null;
+
+                            const selectedOption = enumValue.options.find((opt) => opt.id === enumValue.selectedId);
+                            const currentValue = selectedOption?.value || selectedOption?.name || 'Не выбрано';
+                            const options = enumValue.options.map((opt) => opt.value || opt.name || 'Без названия');
+
+                            const handleEnumChange = (selectedValue: string) => {
+                                const selectedOption = enumValue.options.find(
+                                    (opt) => (opt.value || opt.name || 'Без названия') === selectedValue,
+                                );
+
+                                if (selectedOption) {
+                                    const updatedEnum: Enum = {
+                                        ...enumValue,
+                                        selectedId: selectedOption.id,
+                                    };
+                                    handleArrayItem(item.id, updatedEnum, 'enum');
+                                }
+                            };
+
+                            return (
+                                <div key={item.id} className="flex items-center gap-2 bg-border rounded-md px-3 py-1">
+                                    <div className="flex items-center gap-2 w-full">
+                                        <Icon size={16} />
+                                        <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
+                                    </div>
+
+                                    <Select
+                                        value={currentValue}
+                                        onChange={handleEnumChange}
+                                        options={options}
+                                        className="bg-ui border border-ui-hover"
+                                    />
+                                </div>
+                            );
+                        }
+
                         return (
                             <div key={item.id} className="flex items-center gap-2 bg-border rounded-md px-3 py-1">
                                 <div className="flex items-center gap-2 w-full">
@@ -166,8 +166,6 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                                         />
                                     </div>
                                 )}
-
-                                {item.type === 'enum' && <ArrayEnumItem item={item} onUpdate={handleArrayItem} />}
                             </div>
                         );
                     })}
