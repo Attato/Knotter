@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
-import { useParametersStore } from '@/canvas/store/parametersStore';
 
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
@@ -13,7 +12,7 @@ export const usePropertyParameters = () => {
     const items = useCanvasStore((state) => state.items);
     const setItems = useCanvasStore((state) => state.setItems);
     const selectedItem = useCanvasStore((state) => state.selectedItem);
-    const parameters = useParametersStore((state) => state.parameters);
+    const parameters = useCanvasStore((state) => state.parameters);
 
     const [selectedParamId, setSelectedParamId] = useState<string>('');
 

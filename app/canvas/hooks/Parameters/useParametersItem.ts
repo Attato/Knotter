@@ -1,5 +1,7 @@
-import { useParametersStore } from '@/canvas/store/parametersStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
+
 import { ParameterValue, Enum, ArrayItem, ParameterType } from '@/canvas/canvas.types';
+
 import { v4 as uuid } from 'uuid';
 
 const NUMBER_LIMITS = {
@@ -18,8 +20,8 @@ export const isEnumValue = (value: ParameterValue): value is Enum => isValidEnum
 export const isArrayValue = (value: ParameterValue): value is ArrayItem[] => Array.isArray(value);
 
 export const useParametersItem = (parameterId: string) => {
-    const parameters = useParametersStore((state) => state.parameters);
-    const setParameters = useParametersStore((state) => state.setParameters);
+    const parameters = useCanvasStore((state) => state.parameters);
+    const setParameters = useCanvasStore((state) => state.setParameters);
 
     const parameter = parameters.find((parameter) => parameter.id === parameterId);
 
