@@ -1,31 +1,55 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CanvasItem, Position, TooltipMode } from '@/canvas/canvas.types';
+import { CanvasItem, Position, TooltipMode, Parameter } from '@/canvas/canvas.types';
 import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/constants';
 
 interface CanvasState {
+    offset: Position;
+    setOffset: (offset: Position) => void;
+
+    zoomLevel: number;
+    setZoomLevel: (zoom: number) => void;
+
+    mousePosition: Position;
+    setMousePosition: (pos: Position) => void;
+
+    nodeMoveStep: number;
+    setNodeMoveStep: (step: number) => void;
+
+    invertY: boolean;
+    setInvertY: (value: boolean) => void;
+
+    // ---
+
+    hoveredNodeId: string | null;
+    setHoveredNodeId: (id: string | null) => void;
+
+    tempEdge: { from: string; toPos: Position } | null;
+    setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
+
+    // ---
+
     items: CanvasItem[];
     setItems: (items: CanvasItem[]) => void;
 
     savedItems: CanvasItem[];
     setSavedItems: (items: CanvasItem[]) => void;
 
+    parameters: Parameter[];
+    setParameters: (parameters: Parameter[]) => void;
+
     selectedItemIds: string[];
     setSelectedItemIds: (ids: string[]) => void;
 
     selectedItem: CanvasItem | null;
 
-    tempEdge: { from: string; toPos: Position } | null;
-    setTempEdge: (edge: { from: string; toPos: Position } | null) => void;
+    // ---
 
-    nodeMoveStep: number;
-    setNodeMoveStep: (step: number) => void;
+    tooltipMode: TooltipMode;
+    setTooltipMode: (mode: TooltipMode) => void;
 
-    offset: Position;
-    setOffset: (offset: Position) => void;
-
-    zoomLevel: number;
-    setZoomLevel: (zoom: number) => void;
+    isFullScreen: boolean;
+    toggleFullScreen: () => void;
 
     isMagnet: boolean;
     setIsMagnet: (value: boolean) => void;
@@ -36,20 +60,7 @@ interface CanvasState {
     showAxes: boolean;
     toggleShowAxes: () => void;
 
-    isFullScreen: boolean;
-    toggleFullScreen: () => void;
-
-    tooltipMode: TooltipMode;
-    setTooltipMode: (mode: TooltipMode) => void;
-
-    invertY: boolean;
-    setInvertY: (value: boolean) => void;
-
-    mousePosition: Position;
-    setMousePosition: (pos: Position) => void;
-
-    hoveredNodeId: string | null;
-    setHoveredNodeId: (id: string | null) => void;
+    // ---
 
     activeTab: string;
     setActiveTab: (tabId: string) => void;
@@ -61,6 +72,31 @@ interface CanvasState {
 export const useCanvasStore = create<CanvasState>()(
     persist(
         (set, get) => ({
+            offset: { x: 0, y: 0 },
+            setOffset: (offset) => set({ offset }),
+
+            zoomLevel: INITIAL_ZOOM,
+            setZoomLevel: (zoom) => set({ zoomLevel: zoom }),
+
+            mousePosition: { x: 0, y: 0 },
+            setMousePosition: (mousePosition) => set({ mousePosition }),
+
+            nodeMoveStep: NODE_MOVE_MIN_STEP,
+            setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
+
+            invertY: true,
+            setInvertY: (value) => set({ invertY: value }),
+
+            // ---
+
+            hoveredNodeId: null,
+            setHoveredNodeId: (hoveredNodeId) => set({ hoveredNodeId }),
+
+            tempEdge: null,
+            setTempEdge: (tempEdge) => set({ tempEdge }),
+
+            // ---
+
             items: [],
             setItems: (items) =>
                 set({
@@ -74,6 +110,9 @@ export const useCanvasStore = create<CanvasState>()(
             savedItems: [],
             setSavedItems: (items) => set({ savedItems: items }),
 
+            parameters: [],
+            setParameters: (parameters) => set({ parameters }),
+
             selectedItemIds: [],
             setSelectedItemIds: (ids) =>
                 set({
@@ -83,17 +122,13 @@ export const useCanvasStore = create<CanvasState>()(
 
             selectedItem: null,
 
-            tempEdge: null,
-            setTempEdge: (tempEdge) => set({ tempEdge }),
+            // ---
 
-            nodeMoveStep: NODE_MOVE_MIN_STEP,
-            setNodeMoveStep: (step) => set({ nodeMoveStep: step }),
+            tooltipMode: 'always',
+            setTooltipMode: (tooltipMode) => set({ tooltipMode }),
 
-            offset: { x: 0, y: 0 },
-            setOffset: (offset) => set({ offset }),
-
-            zoomLevel: INITIAL_ZOOM,
-            setZoomLevel: (zoom) => set({ zoomLevel: zoom }),
+            isFullScreen: false,
+            toggleFullScreen: () => set((s) => ({ isFullScreen: !s.isFullScreen })),
 
             isMagnet: false,
             setIsMagnet: (value) => set({ isMagnet: value }),
@@ -104,20 +139,7 @@ export const useCanvasStore = create<CanvasState>()(
             showAxes: false,
             toggleShowAxes: () => set((s) => ({ showAxes: !s.showAxes })),
 
-            isFullScreen: false,
-            toggleFullScreen: () => set((s) => ({ isFullScreen: !s.isFullScreen })),
-
-            tooltipMode: 'always',
-            setTooltipMode: (tooltipMode) => set({ tooltipMode }),
-
-            invertY: true,
-            setInvertY: (value) => set({ invertY: value }),
-
-            mousePosition: { x: 0, y: 0 },
-            setMousePosition: (mousePosition) => set({ mousePosition }),
-
-            hoveredNodeId: null,
-            setHoveredNodeId: (hoveredNodeId) => set({ hoveredNodeId }),
+            //  ---
 
             activeTab: '',
             setActiveTab: (activeTab) => set({ activeTab }),
@@ -128,19 +150,29 @@ export const useCanvasStore = create<CanvasState>()(
         {
             name: 'canvas-storage',
             partialize: (state) => ({
-                items: state.items,
-                savedItems: state.savedItems,
-                selectedItemIds: state.selectedItemIds,
-                selectedItem: state.selectedItem,
-                nodeMoveStep: state.nodeMoveStep,
                 offset: state.offset,
                 zoomLevel: state.zoomLevel,
+                nodeMoveStep: state.nodeMoveStep,
+                invertY: state.invertY,
+
+                // ---
+
+                items: state.items,
+                savedItems: state.savedItems,
+                parameters: state.parameters,
+                selectedItemIds: state.selectedItemIds,
+                selectedItem: state.selectedItem,
+
+                // ---
+
+                tooltipMode: state.tooltipMode,
+                isFullScreen: state.isFullScreen,
                 isMagnet: state.isMagnet,
                 showGrid: state.showGrid,
                 showAxes: state.showAxes,
-                isFullScreen: state.isFullScreen,
-                tooltipMode: state.tooltipMode,
-                invertY: state.invertY,
+
+                //---
+
                 activeTab: state.activeTab,
                 sidebarWidth: state.sidebarWidth,
             }),
