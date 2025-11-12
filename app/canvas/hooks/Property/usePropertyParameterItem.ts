@@ -13,6 +13,10 @@ import {
 } from '@/canvas/hooks/Parameters/useParametersItem';
 
 const getDisplayText = (option: { id: string; name?: string; value?: string }) => {
+    return option.name || option.value || option.id;
+};
+
+const getOptionValue = (option: { id: string; name?: string; value?: string }) => {
     return option.value || option.name || option.id;
 };
 
@@ -23,29 +27,33 @@ const useEnumData = (parameterValue: ParameterValue) => {
         const enumData = parameterValue as Enum;
         const options = Array.isArray(enumData.options) ? enumData.options : [];
 
-        const notSelectedOption = { display: 'Не выбрано', id: null };
+        const notSelectedOption = { display: 'Не выбрано', value: '' };
 
         const displayOptions = [
             notSelectedOption,
             ...options.map((option) => ({
                 display: getDisplayText(option),
-                id: option.id,
+                value: getOptionValue(option),
             })),
         ];
 
         let selectedDisplay = notSelectedOption.display;
+        let selectedValue = notSelectedOption.value;
 
         if (enumData.selectedId !== null) {
             const selectedOption = options.find((option) => option.id === enumData.selectedId);
 
             if (selectedOption) {
                 selectedDisplay = getDisplayText(selectedOption);
+                selectedValue = getOptionValue(selectedOption);
             }
         }
 
         return {
             selectedDisplay,
+            selectedValue,
             options: displayOptions.map((opt) => opt.display),
+            optionValues: displayOptions.map((opt) => opt.value),
             rawOptions: options,
         };
     }, [parameterValue]);
@@ -97,28 +105,34 @@ export const usePropertyParameterItem = ({ parameter, handleUpdateParameter }: u
     const arrayData = useArrayData(parameter.value);
 
     const handleEnum = useCallback(
-        (selectedText: string) => {
+        (selectedDisplay: string) => {
             if (!isEnumValue(parameter.value) || !enumData) return;
 
             const enumValue = parameter.value as Enum;
             const notSelectedText = 'Не выбрано';
 
-            if (selectedText === notSelectedText) {
+            if (selectedDisplay === notSelectedText) {
                 updateValue({ ...enumValue, selectedId: null });
             } else {
-                const selectedOption = enumData.rawOptions.find((option) => getDisplayText(option) === selectedText);
+                const selectedOptionIndex = enumData.options.findIndex((option) => option === selectedDisplay);
 
-                updateValue({
-                    ...enumValue,
-                    selectedId: selectedOption?.id ?? null,
-                });
+                if (selectedOptionIndex !== -1) {
+                    const selectedOption = enumData.rawOptions[selectedOptionIndex];
+
+                    if (selectedOption) {
+                        updateValue({
+                            ...enumValue,
+                            selectedId: selectedOption.id,
+                        });
+                    }
+                }
             }
         },
         [parameter.value, updateValue, enumData],
     );
 
     const handleArrayItem = useCallback(
-        (itemId: string, newValue: boolean | string | number, itemType: 'boolean' | 'string' | 'number') => {
+        (itemId: string, newValue: boolean | string | number | Enum, itemType: 'boolean' | 'string' | 'number' | 'enum') => {
             if (!isArrayValue(parameter.value)) return;
 
             const currentArray = Array.isArray(parameter.value) ? parameter.value : [];
