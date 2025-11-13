@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { useToast } from '@/components/UI/Toast';
-import type { CanvasItem } from '@/canvas/canvas.types';
+import type { CanvasState } from '@/canvas/store/canvasStore';
 
 const FILE_TYPES: FilePickerAcceptType[] = [
     {
@@ -11,7 +11,18 @@ const FILE_TYPES: FilePickerAcceptType[] = [
 ];
 
 export function useCanvasFileActions() {
-    const { setItems, setSavedItems } = useCanvasStore();
+    const setItems = useCanvasStore((state) => state.setItems);
+    const setOffset = useCanvasStore((state) => state.setOffset);
+    const setZoomLevel = useCanvasStore((state) => state.setZoomLevel);
+    const setNodeMoveStep = useCanvasStore((state) => state.setNodeMoveStep);
+    const setInvertY = useCanvasStore((state) => state.setInvertY);
+    const setParameters = useCanvasStore((state) => state.setParameters);
+    const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
+    const setTooltipMode = useCanvasStore((state) => state.setTooltipMode);
+    const setIsMagnet = useCanvasStore((state) => state.setIsMagnet);
+    const setActiveTab = useCanvasStore((state) => state.setActiveTab);
+    const setSidebarWidth = useCanvasStore((state) => state.setSidebarWidth);
+
     const { addToast } = useToast();
 
     const isFileSystemAccessSupported = useCallback(
@@ -56,46 +67,76 @@ export function useCanvasFileActions() {
                 return;
             }
 
-            const parsed = JSON.parse(await file.text()) as { state?: { items?: CanvasItem[] } };
-            const items = Array.isArray(parsed.state?.items) ? parsed.state.items : [];
+            const fileContent = await file.text();
+            const parsed = JSON.parse(fileContent) as Partial<CanvasState>;
 
-            if (!items.length) {
-                addToast('Файл пуст или неверный формат', 'error');
-                return;
+            if (parsed.offset) setOffset(parsed.offset);
+            if (parsed.zoomLevel !== undefined) setZoomLevel(parsed.zoomLevel);
+            if (parsed.nodeMoveStep !== undefined) setNodeMoveStep(parsed.nodeMoveStep);
+            if (parsed.invertY !== undefined) setInvertY(parsed.invertY);
+
+            if (Array.isArray(parsed.items)) {
+                setItems(parsed.items);
             }
 
-            localStorage.setItem('canvas-storage', JSON.stringify({ state: { items } }));
+            if (Array.isArray(parsed.parameters)) setParameters(parsed.parameters);
+            if (Array.isArray(parsed.selectedItemIds)) setSelectedItemIds(parsed.selectedItemIds);
 
-            setItems(items);
-            setSavedItems(items);
+            if (parsed.tooltipMode) setTooltipMode(parsed.tooltipMode);
+            if (parsed.isMagnet !== undefined) setIsMagnet(parsed.isMagnet);
+            if (parsed.activeTab !== undefined) setActiveTab(parsed.activeTab);
+            if (parsed.sidebarWidth !== undefined) setSidebarWidth(parsed.sidebarWidth);
+
+            localStorage.setItem('canvas-storage', JSON.stringify(parsed));
+
             addToast('Файл успешно загружен', 'success');
         } catch (err) {
             if (err instanceof DOMException && err.name === 'AbortError') {
                 addToast('Открытие файла отменено пользователем', 'info');
             } else {
                 addToast('Ошибка при открытии файла', 'error');
+                console.error('File open error:', err);
             }
         }
-    }, [addToast, setItems, setSavedItems, isFileSystemAccessSupported]);
+    }, [
+        addToast,
+        setItems,
+        setOffset,
+        setZoomLevel,
+        setNodeMoveStep,
+        setInvertY,
+        setParameters,
+        setSelectedItemIds,
+        setTooltipMode,
+        setIsMagnet,
+        setActiveTab,
+        setSidebarWidth,
+        isFileSystemAccessSupported,
+    ]);
 
     const handleSaveAs = useCallback(async () => {
         try {
-            const rawData = localStorage.getItem('canvas-storage');
+            const currentState = useCanvasStore.getState();
 
-            if (!rawData) {
-                addToast('Нет данных для сохранения', 'error');
-                return;
-            }
+            const stateToSave: Partial<CanvasState> = {
+                offset: currentState.offset,
+                zoomLevel: currentState.zoomLevel,
+                nodeMoveStep: currentState.nodeMoveStep,
+                invertY: currentState.invertY,
+                items: currentState.items,
+                parameters: currentState.parameters,
+                selectedItemIds: currentState.selectedItemIds,
+                selectedItem: currentState.selectedItem,
+                tooltipMode: currentState.tooltipMode,
+                isFullScreen: currentState.isFullScreen,
+                isMagnet: currentState.isMagnet,
+                showGrid: currentState.showGrid,
+                showAxes: currentState.showAxes,
+                activeTab: currentState.activeTab,
+                sidebarWidth: currentState.sidebarWidth,
+            };
 
-            const parsed = JSON.parse(rawData) as { state?: { items?: CanvasItem[] } };
-            const items = Array.isArray(parsed.state?.items) ? parsed.state.items : [];
-
-            if (items.length === 0) {
-                addToast('Нет элементов для сохранения', 'error');
-                return;
-            }
-
-            const blob = new Blob([JSON.stringify({ state: { items } }, null, 2)], {
+            const blob = new Blob([JSON.stringify(stateToSave, null, 2)], {
                 type: 'application/json',
             });
 
@@ -119,16 +160,16 @@ export function useCanvasFileActions() {
                 URL.revokeObjectURL(url);
             }
 
-            setSavedItems(items);
             addToast('Файл успешно сохранен', 'success');
         } catch (err) {
             if (err instanceof DOMException && err.name === 'AbortError') {
                 addToast('Сохранение отменено пользователем', 'info');
             } else {
                 addToast('Ошибка сохранения файла', 'error');
+                console.error('File save error:', err);
             }
         }
-    }, [addToast, setSavedItems, isFileSystemAccessSupported]);
+    }, [addToast, isFileSystemAccessSupported]);
 
     return { handleOpen, handleSaveAs };
 }
