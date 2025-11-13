@@ -18,7 +18,7 @@ export const Checkbox = memo(function Checkbox({ checked, onChange, className = 
     );
 
     return (
-        <label className="relative flex w-fit cursor-pointer">
+        <label className="relative flex items-center w-fit cursor-pointer h-8">
             <input type="checkbox" checked={checked} onChange={handleChange} className="sr-only peer" {...props} />
 
             <div
