@@ -98,6 +98,7 @@ const EnumContent = memo(function EnumContent({
 
     const handleDrop = (e: React.DragEvent) => {
         setIsDragOver(false);
+
         const droppedId = e.dataTransfer.getData('application/parameter-id');
         const droppedType = e.dataTransfer.getData('application/parameter-type');
 
@@ -108,9 +109,7 @@ const EnumContent = memo(function EnumContent({
 
     return (
         <div
-            className={`flex flex-col gap-1 px-3 py-2 min-h-[44px] text-sm rounded-md ${
-                isInsideArray ? 'border border-border bg-border' : 'bg-card'
-            }`}
+            className={`flex flex-col gap-1  text-sm rounded-md ${isInsideArray ? 'pl-6' : 'bg-card px-3 py-2'}`}
             draggable={!isInsideArray}
             onDragStart={(e) => {
                 if (!isInsideArray && parameterId) {
@@ -119,9 +118,11 @@ const EnumContent = memo(function EnumContent({
                 }
             }}
         >
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex items-center gap-1 h-8">
                 <Icon size={16} className="min-w-4" />
+
                 <EditableName name={name} onChange={onUpdateName} className="w-full" />
+
                 {onRemove && (
                     <button onClick={onRemove} className="ml-auto text-gray cursor-pointer">
                         <X size={16} />
@@ -131,25 +132,26 @@ const EnumContent = memo(function EnumContent({
 
             <div className="flex flex-col gap-1">
                 {enumValue.options.map((item, idx) => {
-                    const OptionIcon = getDynamicIcon('string');
+                    const Icon = getDynamicIcon('string');
+
                     return (
-                        <div
-                            key={item.id}
-                            className={`flex gap-2 items-center  rounded-md px-3 py-1 ${isInsideArray ? 'bg-ui' : 'bg-border'}`}
-                        >
-                            <OptionIcon size={16} className="min-w-4" />
+                        <div key={item.id} className={`flex gap-2 items-center rounded-md pl-6`}>
+                            <Icon size={16} className="min-w-4" />
+
                             <EditableName
                                 name={item.name}
                                 onChange={(newName) => updateEnumOptionName(idx, newName)}
                                 className="w-full"
                             />
+
                             <Input
                                 value={item.value}
                                 onChange={(val) => updateEnumOption(item.id, val)}
-                                className={`border  ${isInsideArray ? 'bg-ui-hover border-border-light' : 'bg-ui border-ui-hover'}`}
+                                className="border bg-border border-ui"
                                 max={16}
                                 placeholder="Введите значение..."
                             />
+
                             <button onClick={() => removeEnumItem(item.id)} className="text-gray cursor-pointer">
                                 <X size={16} />
                             </button>
@@ -216,7 +218,7 @@ const ArrayItemContent = memo(function ArrayItemContent({
     }
 
     return (
-        <div className="flex gap-2 items-center bg-border rounded-md px-3 py-1">
+        <div className="flex gap-2 items-center pl-6">
             <Icon size={16} className="min-w-4" />
             <EditableName name={item.name} onChange={onUpdateName} className="w-full" />
 
@@ -227,7 +229,7 @@ const ArrayItemContent = memo(function ArrayItemContent({
                         const num = parseFloat(val);
                         if (!isNaN(num)) onUpdateValue(num);
                     }}
-                    className="bg-ui border border-ui-hover"
+                    className="bg-border border border-ui"
                     type="text"
                     inputMode="decimal"
                     placeholder="0"
@@ -238,7 +240,7 @@ const ArrayItemContent = memo(function ArrayItemContent({
                 <Input
                     value={item.value as string}
                     onChange={(val) => onUpdateValue(val)}
-                    className="bg-ui border border-ui-hover h-8"
+                    className="bg-border border border-ui"
                     placeholder="Введите текст..."
                 />
             )}
@@ -248,7 +250,7 @@ const ArrayItemContent = memo(function ArrayItemContent({
                     <Checkbox
                         checked={item.value as boolean}
                         onChange={(checked) => onUpdateValue(checked)}
-                        className="bg-ui border border-ui-hover"
+                        className="bg-border border border-ui"
                     />
                 </div>
             )}
@@ -283,14 +285,14 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
     const renderBaseParameter = () => (
         <div
-            className="flex flex-col justify-center gap-2 px-3 py-1 min-h-[44px] text-sm bg-card rounded-md"
+            className="flex flex-col justify-center gap-2 px-3 py-1 text-sm bg-card rounded-md"
             draggable
             onDragStart={(e) => {
                 e.dataTransfer.setData('application/parameter-id', parameter.id);
                 e.dataTransfer.setData('application/parameter-type', parameterType);
             }}
         >
-            <div className="flex items-center gap-1 h-[32px]">
+            <div className="flex items-center gap-1">
                 <Icon size={16} className="min-w-4" />
 
                 <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
@@ -299,7 +301,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                     <Input
                         value={getDisplayValue()}
                         onChange={handleNumberInput}
-                        className="bg-ui"
+                        className="bg-border border border-ui"
                         max={16}
                         type="text"
                         inputMode="decimal"
@@ -310,7 +312,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                     <Input
                         value={parameterValue}
                         onChange={(val) => updateParameter(val)}
-                        className="bg-ui"
+                        className="bg-border border border-ui"
                         max={16}
                         placeholder="Введите текст..."
                     />
@@ -318,7 +320,11 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
 
                 {isBooleanValue(parameterValue) && (
                     <div className="w-full">
-                        <Checkbox checked={parameterValue} onChange={(checked) => updateParameter(checked)} />
+                        <Checkbox
+                            checked={parameterValue}
+                            onChange={(checked) => updateParameter(checked)}
+                            className="bg-border border border-ui"
+                        />
                     </div>
                 )}
 
@@ -350,8 +356,8 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         const arrayValue = parameterValue;
 
         return (
-            <div className="flex flex-col gap-1 px-3 py-2 min-h-[44px] bg-card text-sm rounded-md">
-                <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex flex-col gap-1 px-3 py-2 bg-card text-sm rounded-md">
+                <div className="flex items-center gap-1 h-8">
                     <Icon size={16} className="min-w-4" />
 
                     <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
