@@ -36,7 +36,7 @@ export const Select = memo(function Select({ value, onChange, options, className
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex items-center justify-between px-3 py-2 h-[36px] bg-border hover:bg-ui border border-border rounded-md text-sm focus:outline-none cursor-pointer ${className}`}
+                className={`w-full flex items-center justify-between px-3 py-2 h-8 bg-border hover:bg-ui border border-border rounded-md text-sm focus:outline-none cursor-pointer ${className}`}
             >
                 <span>{value}</span>
                 <ChevronDown size={16} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
