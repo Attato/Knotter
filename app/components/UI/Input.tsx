@@ -10,7 +10,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChan
     icon?: LucideIcon;
 }
 
-export const Input = memo(function Input({ value, onChange, icon: Icon, className = '', ...props }: InputProps) {
+export const Input = memo(function Input({ value, onChange, icon: Icon, className = 'bg-card', ...props }: InputProps) {
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             let newValue = e.target.value;
@@ -32,7 +32,7 @@ export const Input = memo(function Input({ value, onChange, icon: Icon, classNam
                 type="text"
                 value={value}
                 onChange={handleChange}
-                className={`w-full bg-card text-foreground placeholder-gray px-3 py-1 text-sm rounded-md focus:outline-none ${
+                className={`w-full text-foreground placeholder-gray px-3 py-1 text-sm rounded-md focus:outline-none h-8 ${
                     hasIcon ? 'pr-9' : ''
                 } ${className}`}
                 {...props}
