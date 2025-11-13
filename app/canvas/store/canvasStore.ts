@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { CanvasItem, Position, TooltipMode, Parameter } from '@/canvas/canvas.types';
 import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/constants';
 
-interface CanvasState {
+export interface CanvasState {
     offset: Position;
     setOffset: (offset: Position) => void;
 
@@ -31,9 +31,6 @@ interface CanvasState {
 
     items: CanvasItem[];
     setItems: (items: CanvasItem[]) => void;
-
-    savedItems: CanvasItem[];
-    setSavedItems: (items: CanvasItem[]) => void;
 
     parameters: Parameter[];
     setParameters: (parameters: Parameter[]) => void;
@@ -107,9 +104,6 @@ export const useCanvasStore = create<CanvasState>()(
                             : null,
                 }),
 
-            savedItems: [],
-            setSavedItems: (items) => set({ savedItems: items }),
-
             parameters: [],
             setParameters: (parameters) => set({ parameters }),
 
@@ -158,7 +152,6 @@ export const useCanvasStore = create<CanvasState>()(
                 // ---
 
                 items: state.items,
-                savedItems: state.savedItems,
                 parameters: state.parameters,
                 selectedItemIds: state.selectedItemIds,
                 selectedItem: state.selectedItem,
