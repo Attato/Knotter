@@ -33,14 +33,15 @@ export const PropertyParameters = memo(function PropertyParameters() {
                         <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
                             {filteredParameters.map((param) => {
                                 const Icon = getDynamicIcon(param.type);
+
                                 return (
                                     <div
                                         key={param.id}
                                         onClick={() => setSelectedParamId(param.id)}
                                         className={`px-3 py-2 w-full flex items-center gap-2 rounded-md cursor-pointer  ${
                                             selectedParamId === param.id
-                                                ? 'bg-bg-accent text-white'
-                                                : 'bg-ui hover:bg-ui-hover'
+                                                ? 'bg-bg-accent/10 text-text-accent'
+                                                : 'bg-border hover:bg-ui'
                                         }`}
                                     >
                                         <Icon size={16} />
@@ -58,7 +59,7 @@ export const PropertyParameters = memo(function PropertyParameters() {
                     <button
                         onClick={handleAddParameter}
                         disabled={!selectedParamId}
-                        className={`${!selectedParamId ? 'bg-border/50 text-foreground/50' : 'bg-border '}  flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
+                        className={`${!selectedParamId ? 'bg-card/50 text-gray' : 'bg-card'}  flex items-center justify-center w-8 h-8 rounded-md cursor-pointer`}
                         title="Добавить выбранный параметр"
                     >
                         <Plus size={16} />
