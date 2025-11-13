@@ -32,7 +32,7 @@ export const Inspector = memo(function Inspector() {
                     onChange={handleChangeName}
                     placeholder="Название"
                     icon={Icon}
-                    className="h-[36px]"
+                    className="bg-card"
                 />
                 <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
             </div>
