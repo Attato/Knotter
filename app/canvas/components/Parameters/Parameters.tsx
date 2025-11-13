@@ -32,7 +32,7 @@ export const Parameters = memo(function Parameters() {
     return (
         <div className="flex flex-col h-full">
             <div className="flex gap-1 items-center m-1">
-                <Input value={name} onChange={setName} placeholder="Имя переменной" className="h-9" max={16} />
+                <Input value={name} onChange={setName} placeholder="Имя переменной" className="bg-card" max={16} />
 
                 <DropdownAbsolute
                     title={PARAMETER_TYPES.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
@@ -57,7 +57,7 @@ export const Parameters = memo(function Parameters() {
 
                 <button
                     onClick={addParameter}
-                    className={`${name.length === 0 ? 'bg-card/50 text-foreground/50' : 'bg-card text-foreground'} flex items-center justify-center max-w-[36px] w-full h-[36px] rounded-md cursor-pointer`}
+                    className={`${name.length === 0 ? 'bg-card/50 text-foreground/50' : 'bg-card text-foreground'} flex items-center justify-center max-w-8 w-full h-8 rounded-md cursor-pointer`}
                     disabled={name.length === 0}
                 >
                     <Plus size={16} />
