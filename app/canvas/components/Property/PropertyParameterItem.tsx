@@ -48,13 +48,13 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
 
                     <button
                         onClick={handleRemoveParameter}
-                        className="text-gray cursor-pointer w-8 h-8 flex items-center justify-center"
+                        className="text-gray cursor-pointer flex items-center justify-center"
                     >
                         <X size={16} />
                     </button>
                 </div>
 
-                <div className="flex flex-col gap-1 w-full pl-6">
+                <div className="flex flex-col gap-1 w-full pr-6">
                     {arrayData.length === 0 && <p className="p-2 text-gray text-sm">Массив пуст</p>}
 
                     {arrayData.map((item) => {
@@ -144,7 +144,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <Input
                     value={String(value ?? 0)}
                     onChange={handleNumber}
-                    className="w-full bg-border"
+                    className="w-full bg-border border border-ui"
                     type="text"
                     inputMode="decimal"
                 />
@@ -156,7 +156,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <Input
                     value={String(value ?? '')}
                     onChange={handleString}
-                    className="w-full bg-border"
+                    className="w-full bg-border border border-ui"
                     placeholder="Введите текст..."
                 />
             );
@@ -165,7 +165,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
         if (parameterType.isBoolean) {
             return (
                 <div className="flex items-center">
-                    <Checkbox checked={Boolean(value)} onChange={handleBoolean} />
+                    <Checkbox checked={Boolean(value)} onChange={handleBoolean} className="bg-border border border-ui" />
                 </div>
             );
         }
@@ -178,7 +178,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                     value={enumData.selectedDisplay}
                     onChange={handleEnum}
                     options={enumData.options}
-                    className="w-full border"
+                    className="w-full border border-ui"
                 />
             );
         }
