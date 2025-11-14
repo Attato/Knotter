@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Link from 'next/link';
 
 import Header from '@/components/Header';
@@ -8,6 +9,15 @@ import { GitCommitHorizontal } from 'lucide-react';
 export default function Home() {
     return (
         <>
+            <Head>
+                <title>Knotter</title>
+
+                <meta
+                    name="description"
+                    content="Knotter — это публичный нодовый редактор с открытым исходным кодом, защищенный лицензией GNU GPL"
+                />
+            </Head>
+
             <Header />
 
             <div className="flex flex-col items-center justify-center gap-6 h-[calc(100vh-64px-56px-1px)] px-4">
@@ -18,7 +28,7 @@ export default function Home() {
                 </div>
 
                 <div className="max-w-2xl text-center text-lg">
-                    Open-source визуальный редактор для проектирования сложных систем в наглядном виде. Построен на{' '}
+                    Open-source нодовый редактор для проектирования сложных систем в наглядном виде. Построен на{' '}
                     <strong>React</strong>, <strong>TypeScript</strong> и <strong>Tailwind CSS</strong>.
                 </div>
 
