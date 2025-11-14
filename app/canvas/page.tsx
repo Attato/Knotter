@@ -19,7 +19,7 @@ export default function CanvasPage() {
 
     if (isMobile === null) {
         return (
-            <div className="flex h-screen items-center justify-center bg-background">
+            <div className="flex h-screen items-center justify-center bg-background w-full">
                 <div className="flex flex-col items-center gap-2">
                     <LoaderCircle size={24} className="animate-spin" />
                     <p className="text-text-muted">Проверяем размеры экрана...</p>
@@ -30,7 +30,7 @@ export default function CanvasPage() {
 
     if (isMobile) {
         return (
-            <div className="flex flex-col gap-6 h-screen items-center justify-center" translate="no">
+            <div className="flex flex-col gap-6 h-screen items-center justify-center w-full">
                 <div className="flex justify-center items-center flex-col gap-6 max-w-2xl px-4 text-lg text-center">
                     <Frown size={48} className="text-text-accent" />
 
@@ -57,8 +57,8 @@ export default function CanvasPage() {
     }
     return (
         <ToastProvider>
-            <div className="flex overflow-hidden" translate="no">
-                <main className="h-screen w-screen relative">
+            <div className="flex overflow-hidden w-full">
+                <main className="w-full relative">
                     <Canvas />
                 </main>
 
