@@ -1,55 +1,69 @@
 'use client';
 
-import { useRef } from 'react';
+import Link from 'next/link';
 
-import Head from 'next/head';
+import { ToastProvider } from '@/components/UI/Toast';
 
-import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu/CanvasContextMenu';
-import { CanvasControls } from '@/canvas/components/CanvasControls/CanvasControls';
-import { CanvasStatusBar } from '@/canvas/components/CanvasStatusBar/CanvasStatusBar';
+import Canvas from '@/canvas/components/Canvas/Canvas';
+import { CanvasSidebar } from '@/canvas/components/CanvasSidebar/CanvasSidebar';
 
-import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
-import { useCanvasInteraction } from '@/canvas/hooks/useCanvasInteraction';
-import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
-import { useContextMenu } from '@/hooks/useContextMenu';
-import { useCanvasStore } from './store/canvasStore';
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-export default function Canvas() {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+import { useMobileDetection } from '@/canvas/hooks/useMobileDetection';
 
+import { LoaderCircle, Frown, X } from 'lucide-react';
+
+export default function CanvasPage() {
+    const isMobile = useMobileDetection();
     const isFullScreen = useCanvasStore((state) => state.isFullScreen);
 
-    const { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, selectItemsInArea } = useCanvasSelection();
+    if (isMobile === null) {
+        return (
+            <div className="flex h-screen items-center justify-center bg-background">
+                <div className="flex flex-col items-center gap-2">
+                    <LoaderCircle size={24} className="animate-spin" />
+                    <p className="text-text-muted">Проверяем размеры экрана...</p>
+                </div>
+            </div>
+        );
+    }
 
-    useCanvasInteraction({
-        canvasRef,
-        selectionStart,
-        setSelectionStart,
-        setSelectionEnd,
-        selectItemsInArea,
-    });
+    if (isMobile) {
+        return (
+            <div className="flex flex-col gap-6 h-screen items-center justify-center" translate="no">
+                <div className="flex justify-center items-center flex-col gap-6 max-w-2xl px-4 text-lg text-center">
+                    <Frown size={48} className="text-text-accent" />
 
-    useCanvasRenderer({ canvasRef, selectionStart, selectionEnd });
+                    <h1 className="text-6xl font-extrabold uppercase">Упс!</h1>
 
-    const { isOpen, position, handleContextMenu, closeMenu } = useContextMenu();
+                    <p className="max-w-2xl text-center text-lg mt-1">
+                        Knotter разработан исключительно для ПК. Перейдите на устройство с большим экраном.
+                    </p>
 
+                    <Link
+                        href="/"
+                        className="flex items-center gap-1 px-3 py-1 bg-card hover:bg-border border border-border text-foreground text-base w-fit rounded-md select-none"
+                    >
+                        Вернуться на главную
+                    </Link>
+                </div>
+
+                <div className="fixed flex items-center bottom-4 text-xs text-gray text-center">
+                    Размер экрана: {window.innerWidth} <X size={12} className="flex items-center justify-center" />
+                    {window.innerHeight}px
+                </div>
+            </div>
+        );
+    }
     return (
-        <div className="flex h-screen relative" onClick={closeMenu}>
-            <Head>
-                <title>Knotter Canvas</title>
+        <ToastProvider>
+            <div className="flex overflow-hidden" translate="no">
+                <main className="h-screen w-screen relative">
+                    <Canvas />
+                </main>
 
-                <meta
-                    name="description"
-                    content="Knotter — это публичный нодовый редактор с открытым исходным кодом, защищенный лицензией GNU GPL"
-                />
-            </Head>
-
-            {!isFullScreen && <CanvasStatusBar canvasRef={canvasRef} />}
-            <CanvasControls />
-
-            <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
-
-            <canvas ref={canvasRef} className="absolute w-full h-full" onContextMenu={handleContextMenu} />
-        </div>
+                {!isFullScreen && <CanvasSidebar />}
+            </div>
+        </ToastProvider>
     );
 }
