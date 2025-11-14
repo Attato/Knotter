@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import Header from '@/components/Header';
@@ -6,18 +6,14 @@ import Footer from '@/components/Footer';
 
 import { GitCommitHorizontal } from 'lucide-react';
 
+export const metadata: Metadata = {
+    title: 'Knotter',
+    description: 'Knotter — это публичный нодовый редактор с открытым исходным кодом, защищенный лицензией GNU GPL',
+};
+
 export default function Home() {
     return (
         <>
-            <Head>
-                <title>Knotter</title>
-
-                <meta
-                    name="description"
-                    content="Knotter — это публичный нодовый редактор с открытым исходным кодом, защищенный лицензией GNU GPL"
-                />
-            </Head>
-
             <Header />
 
             <div className="flex flex-col items-center justify-center gap-6 h-[calc(100vh-64px-56px-1px)] px-4">
