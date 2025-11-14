@@ -2,6 +2,8 @@
 
 import { useRef } from 'react';
 
+import Head from 'next/head';
+
 import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu/CanvasContextMenu';
 import { CanvasControls } from '@/canvas/components/CanvasControls/CanvasControls';
 import { CanvasStatusBar } from '@/canvas/components/CanvasStatusBar/CanvasStatusBar';
@@ -33,6 +35,15 @@ export default function Canvas() {
 
     return (
         <div className="flex h-screen relative" onClick={closeMenu}>
+            <Head>
+                <title>Knotter Canvas</title>
+
+                <meta
+                    name="description"
+                    content="Knotter — это публичный нодовый редактор с открытым исходным кодом, защищенный лицензией GNU GPL"
+                />
+            </Head>
+
             {!isFullScreen && <CanvasStatusBar canvasRef={canvasRef} />}
             <CanvasControls />
 
