@@ -109,7 +109,7 @@ const EnumContent = memo(function EnumContent({
 
     return (
         <div
-            className={`flex flex-col gap-1  text-sm rounded-md ${isInsideArray ? 'pl-6' : 'bg-card px-3 py-2'}`}
+            className={`flex flex-col gap-1 text-sm rounded-md ${!isInsideArray && 'bg-card px-3 py-2'}`}
             draggable={!isInsideArray}
             onDragStart={(e) => {
                 if (!isInsideArray && parameterId) {
@@ -130,12 +130,12 @@ const EnumContent = memo(function EnumContent({
                 )}
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 border-l border-border-light pl-6">
                 {enumValue.options.map((item, idx) => {
                     const Icon = getDynamicIcon('string');
 
                     return (
-                        <div key={item.id} className={`flex gap-2 items-center rounded-md pl-6`}>
+                        <div key={item.id} className={`flex gap-2 items-center rounded-md`}>
                             <Icon size={16} className="min-w-4" />
 
                             <EditableName
@@ -158,28 +158,28 @@ const EnumContent = memo(function EnumContent({
                         </div>
                     );
                 })}
-            </div>
 
-            <div
-                className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-border-light hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
-                    isDragOver && 'bg-bg-accent/10 border-text-accent'
-                } ${enumValue.options.length > 0 && 'mt-2'}`}
-                onDragOver={(e) => e.preventDefault()}
-                onDragEnter={() => setIsDragOver(true)}
-                onDragLeave={() => setIsDragOver(false)}
-                onDrop={handleDrop}
-                onClick={handleAddDefaultOption}
-            >
-                <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center pointer-events-none">
-                    <span>Кликните чтобы добавить параметр</span>
-                    <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
-                        {(() => {
-                            const StringIcon = getDynamicIcon('string');
-                            return <StringIcon size={16} />;
-                        })()}
-                        Текст
+                <div
+                    className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-border-light hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
+                        isDragOver && 'bg-bg-accent/10 border-text-accent'
+                    } ${enumValue.options.length > 0 && 'mt-2'}`}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDragEnter={() => setIsDragOver(true)}
+                    onDragLeave={() => setIsDragOver(false)}
+                    onDrop={handleDrop}
+                    onClick={handleAddDefaultOption}
+                >
+                    <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center pointer-events-none">
+                        <span>Кликните чтобы добавить параметр</span>
+                        <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
+                            {(() => {
+                                const StringIcon = getDynamicIcon('string');
+                                return <StringIcon size={16} />;
+                            })()}
+                            Текст
+                        </div>
+                        <span className="text-xs text-gray">или перетащите сюда готовый текстовый параметр</span>
                     </div>
-                    <span className="text-xs text-gray">или перетащите сюда готовый текстовый параметр</span>
                 </div>
             </div>
         </div>
@@ -218,7 +218,7 @@ const ArrayItemContent = memo(function ArrayItemContent({
     }
 
     return (
-        <div className="flex gap-2 items-center pl-6">
+        <div className="flex gap-2 items-center">
             <Icon size={16} className="min-w-4" />
             <EditableName name={item.name} onChange={onUpdateName} className="w-full" />
 
@@ -367,7 +367,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                     </button>
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 border-l pl-6 border-border-light">
                     {arrayValue.map((item) => (
                         <ArrayItemContent
                             key={item.id}
