@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 
 import { EmptyState } from '@/components/UI/EmptyState';
 import { HierarchyItem } from '@/canvas/components/Hierarchy/HierarchyItem';
+import { Input } from '@/components/UI/Input'; // <-- импорт кастомного Input
 
 import { useHierarchy } from '@/canvas/hooks/Hierarchy/useHierarchy';
 
@@ -33,22 +34,19 @@ export const Hierarchy = memo(function Hierarchy() {
     return (
         <div className="flex flex-col flex-1 h-full">
             <div className="flex items-center gap-2 m-1">
-                <div className="relative flex-1">
-                    <input
-                        type="text"
-                        placeholder="Поиск..."
-                        value={filterText}
-                        onChange={(e) => setFilterText(e.target.value)}
-                        className="w-full h-8 bg-card text-foreground placeholder-gray pl-3 pr-9 text-sm rounded-md focus:outline-none"
-                    />
-
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray" size={14} />
-                </div>
+                <Input
+                    value={filterText}
+                    onChange={setFilterText}
+                    placeholder="Поиск..."
+                    icon={Search}
+                    iconSize={14}
+                    className="h-8 text-sm bg-card"
+                />
             </div>
 
             <hr className="border-b-0 border-border" />
 
-            <div className="flex flex-col flex-1 overflow-y-auto  gap-2" onClick={handleDeselectOnEmptyClick}>
+            <div className="flex flex-col flex-1 overflow-y-auto gap-2" onClick={handleDeselectOnEmptyClick}>
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
