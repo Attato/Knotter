@@ -2,8 +2,6 @@ import { useState, useCallback } from 'react';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
-
 import { PropertyType } from '@/canvas/canvas.types';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -21,10 +19,6 @@ export const usePropertyParameters = () => {
     const filteredParameters = parameters.filter(
         (parameter) => !addedProperties.some((property) => property.parentId === parameter.id),
     );
-
-    const selectedParameter = filteredParameters.find((param) => param.id === selectedParamId);
-    const selectedTypeIcon = selectedParameter ? getDynamicIcon(selectedParameter.type) : undefined;
-    const dropdownTitle = selectedParameter ? selectedParameter.name : 'Выбрать параметр';
 
     const addParameterById = useCallback(
         (parameterId: string) => {
@@ -71,11 +65,9 @@ export const usePropertyParameters = () => {
         [selectedItem, items, setItems],
     );
 
-    const handleAddParameter = () => {
-        if (selectedParamId) {
-            addParameterById(selectedParamId);
-            setSelectedParamId('');
-        }
+    const handleAddParameter = (id: string) => {
+        addParameterById(id);
+        setSelectedParamId('');
     };
 
     const handleRemoveParameter = (propertyId: string) => {
@@ -104,8 +96,6 @@ export const usePropertyParameters = () => {
         selectedParamId,
         setSelectedParamId,
         filteredParameters,
-        selectedTypeIcon,
-        dropdownTitle,
         handleAddParameter,
         handleRemoveParameter,
         handleUpdateParameter,
