@@ -12,14 +12,6 @@ import {
     isArrayValue,
 } from '@/canvas/hooks/Parameters/useParametersItem';
 
-const getDisplayText = (option: { id: string; name?: string; value?: string }) => {
-    return option.name || option.value || option.id;
-};
-
-const getOptionValue = (option: { id: string; name?: string; value?: string }) => {
-    return option.value || option.name || option.id;
-};
-
 const useEnumData = (parameterValue: ParameterValue) => {
     return useMemo(() => {
         if (!isEnumValue(parameterValue)) return null;
@@ -32,8 +24,8 @@ const useEnumData = (parameterValue: ParameterValue) => {
         const displayOptions = [
             notSelectedOption,
             ...options.map((option) => ({
-                display: getDisplayText(option),
-                value: getOptionValue(option),
+                display: option.value,
+                value: option.value,
             })),
         ];
 
@@ -44,8 +36,8 @@ const useEnumData = (parameterValue: ParameterValue) => {
             const selectedOption = options.find((option) => option.id === enumData.selectedId);
 
             if (selectedOption) {
-                selectedDisplay = getDisplayText(selectedOption);
-                selectedValue = getOptionValue(selectedOption);
+                selectedDisplay = selectedOption.value;
+                selectedValue = selectedOption.value;
             }
         }
 
@@ -109,22 +101,17 @@ export const usePropertyParameterItem = ({ parameter, handleUpdateParameter }: u
             if (!isEnumValue(parameter.value) || !enumData) return;
 
             const enumValue = parameter.value as Enum;
-            const notSelectedText = 'Не выбрано';
 
-            if (selectedDisplay === notSelectedText) {
+            if (selectedDisplay === 'Не выбрано') {
                 updateValue({ ...enumValue, selectedId: null });
             } else {
-                const selectedOptionIndex = enumData.options.findIndex((option) => option === selectedDisplay);
+                const selectedOption = enumData.rawOptions.find((option) => option.value === selectedDisplay);
 
-                if (selectedOptionIndex !== -1) {
-                    const selectedOption = enumData.rawOptions[selectedOptionIndex];
-
-                    if (selectedOption) {
-                        updateValue({
-                            ...enumValue,
-                            selectedId: selectedOption.id,
-                        });
-                    }
+                if (selectedOption) {
+                    updateValue({
+                        ...enumValue,
+                        selectedId: selectedOption.id,
+                    });
                 }
             }
         },
