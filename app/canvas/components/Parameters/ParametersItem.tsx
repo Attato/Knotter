@@ -53,9 +53,11 @@ const EnumContent = memo(function EnumContent({
     const [isDragOver, setIsDragOver] = useState(false);
 
     const handleAddDefaultOption = () => {
+        const ordinalNumber = enumValue.options.length + 1;
+
         const newOption = {
             id: uuid(),
-            name: 'Текст',
+            name: `${ordinalNumber}.`,
             value: '',
         };
 
