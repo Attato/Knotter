@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo } from 'react';
 
 import { Input } from '@/components/UI/Input';
 import { EditableName } from '@/components/UI/EditableName';
@@ -19,7 +19,6 @@ import {
 } from '@/canvas/hooks/Parameters/useParametersItem';
 
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
-
 import { X } from 'lucide-react';
 
 interface ParametersItemProps {
@@ -44,9 +43,8 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
     } = useParametersItem(parameterId);
 
     const parameterValue = parameter.value;
-    const Icon = getDynamicIcon(parameterType);
 
-    const [isArrayDragOver, setIsArrayDragOver] = useState(false);
+    const Icon = getDynamicIcon(parameterType);
 
     const renderBaseParameter = () => (
         <div
@@ -100,8 +98,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         </div>
     );
 
-    const renderEnumParameter = () => {
-        if (!isEnumValue(parameterValue)) return null;
+    if (isEnumValue(parameterValue)) {
         return (
             <EnumContent
                 enumValue={parameterValue}
@@ -113,89 +110,24 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
                 onDropToEnum={handleDropToEnum}
             />
         );
-    };
+    }
 
-    const renderArrayParameter = () => {
-        if (!isArrayValue(parameterValue)) return null;
-
-        const arrayValue = parameterValue;
-
+    if (isArrayValue(parameterValue)) {
         return (
-            <div className="flex flex-col gap-1 px-3 py-2 bg-card text-sm rounded-md">
-                <div className="flex items-center gap-1 h-8">
-                    <Icon size={16} className="min-w-4" />
-
-                    <EditableName name={parameter.name} onChange={updateParameterName} className="w-full" />
-
-                    <button onClick={() => onRemoveParameter(parameter.id)} className="ml-auto text-gray cursor-pointer">
-                        <X size={16} />
-                    </button>
-                </div>
-
-                <div className="flex flex-col gap-1 border-l pl-6 border-border-light">
-                    {arrayValue.map((item) => (
-                        <ArrayContent
-                            key={item.id}
-                            item={item}
-                            onUpdateName={(newName) => updateArrayItemName(item.id, newName)}
-                            onUpdateValue={(newValue) => updateArrayItemValue(item.id, newValue)}
-                            onRemove={() => removeArrayItem(item.id)}
-                            onDropToEnum={handleDropToArrayEnum}
-                        />
-                    ))}
-                </div>
-
-                <div
-                    className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-border-light ${
-                        isArrayDragOver && 'bg-bg-accent/10 border-text-accent'
-                    } ${arrayValue.length > 0 && 'mt-2'}`}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDragEnter={() => setIsArrayDragOver(true)}
-                    onDragLeave={() => setIsArrayDragOver(false)}
-                    onDrop={(e) => {
-                        setIsArrayDragOver(false);
-
-                        const droppedId = e.dataTransfer.getData('application/parameter-id');
-                        const droppedType = e.dataTransfer.getData('application/parameter-type');
-
-                        if (['string', 'number', 'boolean', 'enum'].includes(droppedType)) {
-                            handleDropToArray(droppedId);
-                        }
-                    }}
-                >
-                    <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
-                        Перетащите сюда
-                        {['number', 'string', 'boolean', 'enum'].map((type, idx, arr) => {
-                            const Icon = getDynamicIcon(type as 'number' | 'string' | 'boolean' | 'enum');
-
-                            const label = (() => {
-                                if (type === 'number') return 'Число';
-                                if (type === 'string') return 'Текст';
-                                if (type === 'boolean') return 'Флаг';
-                                if (type === 'enum') return 'Список';
-
-                                return '';
-                            })();
-
-                            return (
-                                <div key={type} className="flex items-center gap-2">
-                                    <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
-                                        <Icon size={16} />
-                                        {label}
-                                    </div>
-
-                                    {idx < arr.length - 1 && <span> или</span>}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
+            <ArrayContent
+                arrayValue={parameterValue}
+                name={parameter.name}
+                iconType={parameterType}
+                onUpdateName={updateParameterName}
+                onUpdateItemName={updateArrayItemName}
+                onUpdateItemValue={updateArrayItemValue}
+                onRemoveItem={removeArrayItem}
+                onDropToArray={handleDropToArray}
+                onDropToArrayEnum={handleDropToArrayEnum}
+                onRemoveArray={() => onRemoveParameter(parameter.id)}
+            />
         );
-    };
-
-    if (isEnumValue(parameterValue)) return renderEnumParameter();
-    if (isArrayValue(parameterValue)) return renderArrayParameter();
+    }
 
     return renderBaseParameter();
 });
