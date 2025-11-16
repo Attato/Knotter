@@ -9,15 +9,13 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
 import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode';
-import { Magnet, Grid2x2, Move3d, Eye, EyeOff, EyeClosed, Maximize2, Minimize2 } from 'lucide-react';
+import { Magnet, Grid2x2, Move3d, Eye, EyeOff, EyeClosed } from 'lucide-react';
 
 export const CanvasControls = memo(function CanvasControls() {
     const isMagnet = useCanvasStore((s) => s.isMagnet);
     const showGrid = useCanvasStore((s) => s.showGrid);
     const showAxes = useCanvasStore((s) => s.showAxes);
     const tooltipMode = useCanvasStore((s) => s.tooltipMode);
-    const isFullScreen = useCanvasStore((s) => s.isFullScreen);
-    const toggleFullScreen = useCanvasStore((s) => s.toggleFullScreen);
     const toggleShowGrid = useCanvasStore((s) => s.toggleShowGrid);
     const toggleShowAxes = useCanvasStore((s) => s.toggleShowAxes);
 
@@ -61,28 +59,11 @@ export const CanvasControls = memo(function CanvasControls() {
                 Icon: getTooltipIcon(),
                 label: getTooltipLabel(),
             },
-            {
-                active: isFullScreen,
-                onClick: toggleFullScreen,
-                Icon: isFullScreen ? Minimize2 : Maximize2,
-                label: isFullScreen ? 'Выйти из полноэкранного режима (F)' : 'Во весь экран (F)',
-            },
             { active: isMagnet, onClick: toggleMagnetMode, Icon: Magnet, label: 'Магнит (M)' },
             { active: showGrid, onClick: toggleShowGrid, Icon: Grid2x2, label: 'Сетка (G)' },
             { active: showAxes, onClick: toggleShowAxes, Icon: Move3d, label: 'Оси (A)' },
         ],
-        [
-            isMagnet,
-            showGrid,
-            showAxes,
-            isFullScreen,
-            tooltipMode,
-            getTooltipIcon,
-            getTooltipLabel,
-            toggleShowGrid,
-            toggleShowAxes,
-            toggleFullScreen,
-        ],
+        [isMagnet, showGrid, showAxes, tooltipMode, getTooltipIcon, getTooltipLabel, toggleShowGrid, toggleShowAxes],
     );
 
     if (!mounted) return null;

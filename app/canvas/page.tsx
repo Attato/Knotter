@@ -7,15 +7,12 @@ import { ToastProvider } from '@/components/UI/Toast';
 import Canvas from '@/canvas/components/Canvas/Canvas';
 import { CanvasSidebar } from '@/canvas/components/CanvasSidebar/CanvasSidebar';
 
-import { useCanvasStore } from '@/canvas/store/canvasStore';
-
 import { useMobileDetection } from '@/canvas/hooks/useMobileDetection';
 
 import { LoaderCircle, Frown, X } from 'lucide-react';
 
 export default function CanvasPage() {
     const isMobile = useMobileDetection();
-    const isFullScreen = useCanvasStore((state) => state.isFullScreen);
 
     if (isMobile === null) {
         return (
@@ -62,7 +59,7 @@ export default function CanvasPage() {
                     <Canvas />
                 </main>
 
-                {!isFullScreen && <CanvasSidebar />}
+                <CanvasSidebar />
             </div>
         </ToastProvider>
     );

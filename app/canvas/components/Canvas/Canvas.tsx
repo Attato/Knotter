@@ -10,12 +10,9 @@ import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
 import { useCanvasInteraction } from '@/canvas/hooks/useCanvasInteraction';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
 import { useContextMenu } from '@/hooks/useContextMenu';
-import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    const isFullScreen = useCanvasStore((state) => state.isFullScreen);
 
     const { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, selectItemsInArea } = useCanvasSelection();
 
@@ -33,7 +30,7 @@ export default function Canvas() {
 
     return (
         <div className="flex h-screen relative" onClick={closeMenu}>
-            {!isFullScreen && <CanvasStatusBar canvasRef={canvasRef} />}
+            <CanvasStatusBar canvasRef={canvasRef} />
 
             <CanvasControls />
 

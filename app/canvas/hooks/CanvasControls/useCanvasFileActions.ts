@@ -128,7 +128,6 @@ export function useCanvasFileActions() {
                 selectedItemIds: currentState.selectedItemIds,
                 selectedItem: currentState.selectedItem,
                 tooltipMode: currentState.tooltipMode,
-                isFullScreen: currentState.isFullScreen,
                 isMagnet: currentState.isMagnet,
                 showGrid: currentState.showGrid,
                 showAxes: currentState.showAxes,
