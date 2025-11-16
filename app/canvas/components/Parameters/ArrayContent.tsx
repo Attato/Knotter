@@ -1,91 +1,175 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 
 import { Input } from '@/components/UI/Input';
 import { EditableName } from '@/components/UI/EditableName';
 import { Checkbox } from '@/components/UI/Checkbox';
 
 import { Enum, ArrayItem } from '@/canvas/canvas.types';
-
 import { X } from 'lucide-react';
 
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
-
 import { EnumContent } from './EnumContent';
 
 interface ArrayContentProps {
-    item: ArrayItem;
+    arrayValue: ArrayItem[];
+    name: string;
+    iconType: string;
+
     onUpdateName: (name: string) => void;
-    onUpdateValue: (value: number | string | boolean | Enum) => void;
-    onRemove: () => void;
-    onDropToEnum?: (arrayItemId: string, droppedId: string) => void;
+    onUpdateItemName: (id: string, name: string) => void;
+    onUpdateItemValue: (id: string, value: number | string | boolean | Enum) => void;
+    onRemoveItem: (id: string) => void;
+
+    onDropToArray: (droppedId: string) => void;
+    onDropToArrayEnum: (arrayItemId: string, droppedId: string) => void;
+    onRemoveArray: () => void;
 }
 
-export const ArrayContent = memo(function ArrayItemContent({
-    item,
-    onUpdateName,
-    onUpdateValue,
-    onRemove,
-    onDropToEnum,
-}: ArrayContentProps) {
-    const Icon = getDynamicIcon(item.type);
+export const ArrayContent = memo(function ArrayContent({
+    arrayValue,
+    name,
+    iconType,
 
-    if (item.type === 'enum') {
-        return (
-            <EnumContent
-                enumValue={item.value as Enum}
-                name={item.name}
-                onUpdateName={onUpdateName}
-                onUpdateEnum={onUpdateValue}
-                onRemove={onRemove}
-                isInsideArray={true}
-                onDropToEnum={(droppedId) => onDropToEnum?.(item.id, droppedId)}
-            />
-        );
-    }
+    onUpdateName,
+    onUpdateItemName,
+    onUpdateItemValue,
+    onRemoveItem,
+    onDropToArray,
+    onDropToArrayEnum,
+    onRemoveArray,
+}: ArrayContentProps) {
+    const Icon = getDynamicIcon(iconType);
+    const [isArrayDragOver, setIsArrayDragOver] = useState(false);
 
     return (
-        <div className="flex gap-2 items-center">
-            <Icon size={16} className="min-w-4" />
-            <EditableName name={item.name} onChange={onUpdateName} className="w-full" />
+        <div className="flex flex-col gap-1 px-3 py-2 bg-card text-sm rounded-md">
+            <div className="flex items-center gap-1 h-8">
+                <Icon size={16} className="min-w-4" />
 
-            {item.type === 'number' && (
-                <Input
-                    value={item.value.toString()}
-                    onChange={(val) => {
-                        const num = parseFloat(val);
-                        if (!isNaN(num)) onUpdateValue(num);
-                    }}
-                    className="bg-border border border-ui"
-                    type="text"
-                    inputMode="decimal"
-                    placeholder="0"
-                />
-            )}
+                <EditableName name={name} onChange={onUpdateName} className="w-full" />
 
-            {item.type === 'string' && (
-                <Input
-                    value={item.value as string}
-                    onChange={(val) => onUpdateValue(val)}
-                    className="bg-border border border-ui"
-                    placeholder="Введите текст..."
-                />
-            )}
+                <button onClick={onRemoveArray} className="ml-auto text-gray cursor-pointer">
+                    <X size={16} />
+                </button>
+            </div>
 
-            {item.type === 'boolean' && (
-                <div className="flex items-center w-full h-9">
-                    <Checkbox
-                        checked={item.value as boolean}
-                        onChange={(checked) => onUpdateValue(checked)}
-                        className="bg-border border border-ui"
-                    />
+            <div className="flex flex-col gap-1 border-l pl-6 border-border-light">
+                {arrayValue.map((item) => {
+                    const ItemIcon = getDynamicIcon(item.type);
+
+                    if (item.type === 'enum') {
+                        return (
+                            <EnumContent
+                                key={item.id}
+                                enumValue={item.value as Enum}
+                                name={item.name}
+                                onUpdateName={(newName) => onUpdateItemName(item.id, newName)}
+                                onUpdateEnum={(val) => onUpdateItemValue(item.id, val)}
+                                onRemove={() => onRemoveItem(item.id)}
+                                isInsideArray={true}
+                                onDropToEnum={(dropped) => onDropToArrayEnum(item.id, dropped)}
+                            />
+                        );
+                    }
+
+                    return (
+                        <div key={item.id} className="flex gap-2 items-center">
+                            <ItemIcon size={16} className="min-w-4" />
+
+                            <EditableName
+                                name={item.name}
+                                onChange={(newName) => onUpdateItemName(item.id, newName)}
+                                className="w-full"
+                            />
+
+                            {item.type === 'number' && (
+                                <Input
+                                    value={item.value.toString()}
+                                    onChange={(val) => {
+                                        const num = parseFloat(val);
+                                        if (!isNaN(num)) onUpdateItemValue(item.id, num);
+                                    }}
+                                    className="bg-border border border-ui"
+                                    type="text"
+                                    inputMode="decimal"
+                                    placeholder="0"
+                                />
+                            )}
+
+                            {item.type === 'string' && (
+                                <Input
+                                    value={item.value as string}
+                                    onChange={(val) => onUpdateItemValue(item.id, val)}
+                                    className="bg-border border border-ui"
+                                    placeholder="Введите текст..."
+                                />
+                            )}
+
+                            {item.type === 'boolean' && (
+                                <div className="flex items-center w-full h-9">
+                                    <Checkbox
+                                        checked={item.value as boolean}
+                                        onChange={(checked) => onUpdateItemValue(item.id, checked)}
+                                        className="bg-border border border-ui"
+                                    />
+                                </div>
+                            )}
+
+                            <button onClick={() => onRemoveItem(item.id)} className="text-gray cursor-pointer">
+                                <X size={16} />
+                            </button>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <div
+                className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-border-light ${
+                    isArrayDragOver && 'bg-bg-accent/10 border-text-accent'
+                } ${arrayValue.length > 0 && 'mt-2'}`}
+                onDragOver={(e) => e.preventDefault()}
+                onDragEnter={() => setIsArrayDragOver(true)}
+                onDragLeave={() => setIsArrayDragOver(false)}
+                onDrop={(e) => {
+                    setIsArrayDragOver(false);
+
+                    const droppedId = e.dataTransfer.getData('application/parameter-id');
+                    const droppedType = e.dataTransfer.getData('application/parameter-type');
+
+                    if (['string', 'number', 'boolean', 'enum'].includes(droppedType)) {
+                        onDropToArray(droppedId);
+                    }
+                }}
+            >
+                <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
+                    Перетащите сюда
+                    {['number', 'string', 'boolean', 'enum'].map((type, idx, arr) => {
+                        const IconType = getDynamicIcon(type);
+
+                        const label =
+                            type === 'number'
+                                ? 'Число'
+                                : type === 'string'
+                                  ? 'Текст'
+                                  : type === 'boolean'
+                                    ? 'Флаг'
+                                    : 'Список';
+
+                        return (
+                            <div key={type} className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
+                                    <IconType size={16} />
+                                    {label}
+                                </div>
+
+                                {idx < arr.length - 1 && <span> или</span>}
+                            </div>
+                        );
+                    })}
                 </div>
-            )}
-
-            <button onClick={onRemove} className="text-gray cursor-pointer">
-                <X size={16} />
-            </button>
+            </div>
         </div>
     );
 });
