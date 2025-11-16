@@ -59,8 +59,8 @@ export interface CanvasState {
 
     // ---
 
-    activeTab: string;
-    setActiveTab: (tabId: string) => void;
+    activeTab: string | null;
+    setActiveTab: (tabId: string | null) => void;
 
     sidebarWidth: number;
     setSidebarWidth: (width: number) => void;
@@ -135,7 +135,7 @@ export const useCanvasStore = create<CanvasState>()(
 
             //  ---
 
-            activeTab: '',
+            activeTab: null,
             setActiveTab: (activeTab) => set({ activeTab }),
 
             sidebarWidth: 380,
