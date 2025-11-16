@@ -1,7 +1,7 @@
 import { ReactNode, memo, useEffect } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import useSidebarResize from '@/hooks/useSidebarResize';
-import { Tab } from '@/canvas/components/CanvasSidebar/CanvasSidebar';
+import { type Tab } from '@/canvas/components/CanvasSidebar/CanvasSidebar';
 
 type SidebarProps = {
     minWidth?: number;
