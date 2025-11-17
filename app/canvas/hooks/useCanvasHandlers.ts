@@ -28,7 +28,6 @@ export function useCanvasHandlers() {
     const setItems = useCanvasStore((state) => state.setItems);
     const setSelectedItemIds = useCanvasStore((state) => state.setSelectedItemIds);
     const setTempEdge = useCanvasStore((state) => state.setTempEdge);
-    const toggleFullScreen = useCanvasStore((state) => state.toggleFullScreen);
     const toggleGrid = useCanvasStore((state) => state.toggleShowGrid);
     const toggleAxes = useCanvasStore((state) => state.toggleShowAxes);
 
@@ -38,7 +37,6 @@ export function useCanvasHandlers() {
 
     return {
         toggleTooltipMode,
-        toggleFullScreen,
         toggleMagnetMode,
         toggleGrid,
         toggleAxes,
