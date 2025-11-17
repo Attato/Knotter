@@ -1,42 +1,74 @@
 import { useState, useRef, useCallback } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-export default function useSidebarResize(minWidth: number, baseWidth: number, maxWidth: number, tabs: string[]) {
+interface UseSidebarResizeProps {
+    minWidth: number;
+    baseWidth: number;
+    maxWidth: number;
+    tabs: string[];
+}
+
+interface UseSidebarResizeReturn {
+    width: number;
+    isResizing: boolean;
+    startResize: (e: React.MouseEvent) => void;
+    open: boolean;
+    openSidebar: (fromDrag?: boolean) => void;
+    closeSidebar: () => void;
+}
+
+export default function useSidebarResize({
+    minWidth,
+    baseWidth,
+    maxWidth,
+    tabs,
+}: UseSidebarResizeProps): UseSidebarResizeReturn {
     const sidebarWidth = useCanvasStore((state) => state.sidebarWidth);
     const setSidebarWidth = useCanvasStore((state) => state.setSidebarWidth);
     const activeTab = useCanvasStore((state) => state.activeTab);
     const setActiveTab = useCanvasStore((state) => state.setActiveTab);
 
     const [isResizing, setIsResizing] = useState(false);
-    const [open, setOpen] = useState(sidebarWidth > 0);
+    const [isOpen, setIsOpen] = useState(sidebarWidth > 0);
 
     const resizeRef = useRef(false);
     const currentWidthRef = useRef(sidebarWidth);
-
     const lastWidthRef = useRef(sidebarWidth > 0 ? sidebarWidth : baseWidth);
     const lastActiveTabRef = useRef(activeTab);
 
+    const hasValidTab = useCallback(() => {
+        return activeTab || lastActiveTabRef.current || tabs.length > 0;
+    }, [activeTab, tabs.length]);
+
+    const getRestoreWidth = useCallback(() => {
+        return lastWidthRef.current > 0 ? lastWidthRef.current : baseWidth;
+    }, [baseWidth]);
+
+    const getDefaultTab = useCallback(() => {
+        return lastActiveTabRef.current || tabs[0] || null;
+    }, [tabs]);
+
     const openSidebar = useCallback(
         (fromDrag = false) => {
-            if (!activeTab && !lastActiveTabRef.current && tabs.length === 0) return;
+            if (!hasValidTab()) return;
 
-            setOpen(true);
+            setIsOpen(true);
 
             if (!fromDrag && sidebarWidth === 0) {
-                const restoreWidth = lastWidthRef.current > 0 ? lastWidthRef.current : baseWidth;
+                const restoreWidth = getRestoreWidth();
                 setSidebarWidth(restoreWidth);
                 currentWidthRef.current = restoreWidth;
             }
 
             if (!activeTab) {
-                if (lastActiveTabRef.current) {
-                    setActiveTab(lastActiveTabRef.current);
-                } else if (tabs.length > 0) {
-                    setActiveTab(tabs[0]);
+                const defaultTab = getDefaultTab();
+
+                if (defaultTab) {
+                    setActiveTab(defaultTab);
                 }
             }
         },
-        [activeTab, baseWidth, setActiveTab, setSidebarWidth, sidebarWidth, tabs],
+        [activeTab, getDefaultTab, getRestoreWidth, hasValidTab, setActiveTab, setSidebarWidth, sidebarWidth],
     );
 
     const closeSidebar = useCallback(() => {
@@ -44,72 +76,83 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
             lastWidthRef.current = sidebarWidth;
         }
 
-        setOpen(false);
+        if (activeTab) {
+            lastActiveTabRef.current = activeTab;
+        }
 
-        if (activeTab) lastActiveTabRef.current = activeTab;
-
+        setIsOpen(false);
         setSidebarWidth(0);
         setActiveTab(null);
     }, [activeTab, setActiveTab, setSidebarWidth, sidebarWidth]);
 
-    const startResize = (e: React.MouseEvent) => {
-        e.preventDefault();
-
-        if (!open && !activeTab && !lastActiveTabRef.current && tabs.length === 0) return;
-
-        if (!open) openSidebar(true);
-
-        const startX = e.clientX;
-        const startWidth = sidebarWidth;
-
-        resizeRef.current = true;
-        setIsResizing(true);
-        document.documentElement.classList.add('resizing');
-
+    const createResizeHandlers = (startX: number, startWidth: number) => {
         const handleMouseMove = (e: MouseEvent) => {
             if (!resizeRef.current) return;
 
             const delta = startX - e.clientX;
-            let newWidth = startWidth + delta;
-
-            if (newWidth > maxWidth) newWidth = maxWidth;
-            if (newWidth < 0) newWidth = 0;
+            const newWidth = Math.min(Math.max(startWidth + delta, 0), maxWidth);
 
             currentWidthRef.current = newWidth;
             setSidebarWidth(newWidth);
 
-            if (newWidth <= minWidth && open) {
+            if (newWidth <= minWidth && isOpen) {
                 closeSidebar();
                 resizeRef.current = false;
             }
         };
 
         const handleMouseUp = () => {
-            resizeRef.current = false;
-            setIsResizing(false);
-            document.documentElement.classList.remove('resizing');
+            cleanupResize();
 
-            if (currentWidthRef.current <= minWidth) {
+            const shouldCloseSidebar = currentWidthRef.current <= minWidth;
+            const shouldSaveWidth = currentWidthRef.current > minWidth;
+
+            if (shouldCloseSidebar) {
                 closeSidebar();
             }
 
-            if (currentWidthRef.current > minWidth) {
+            if (shouldSaveWidth) {
                 lastWidthRef.current = currentWidthRef.current;
             }
-
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
         };
 
+        return { handleMouseMove, handleMouseUp };
+    };
+
+    const cleanupResize = () => {
+        resizeRef.current = false;
+        setIsResizing(false);
+        document.documentElement.classList.remove('resizing');
+    };
+
+    const startResize = (e: React.MouseEvent) => {
+        e.preventDefault();
+
+        if (!isOpen && !hasValidTab()) return;
+
+        if (!isOpen) {
+            openSidebar(true);
+        }
+
+        const startX = e.clientX;
+        const startWidth = sidebarWidth;
+
+        resizeRef.current = true;
+        setIsResizing(true);
+
+        document.documentElement.classList.add('resizing');
+
+        const { handleMouseMove, handleMouseUp } = createResizeHandlers(startX, startWidth);
+
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('mouseup', handleMouseUp, { once: true });
     };
 
     return {
         width: Math.max(sidebarWidth, 1),
         isResizing,
         startResize,
-        open,
+        open: isOpen,
         openSidebar,
         closeSidebar,
     };
