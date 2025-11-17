@@ -24,12 +24,12 @@ export const Sidebar = memo(function Sidebar({
 }: SidebarProps) {
     const activeTab = useCanvasStore((state) => state.activeTab);
 
-    const { width, isResizing, startResize, open, openSidebar, closeSidebar } = useSidebarResize(
+    const { width, isResizing, startResize, open, openSidebar, closeSidebar } = useSidebarResize({
         minWidth,
         baseWidth,
         maxWidth,
-        tabs.map((t) => t.id),
-    );
+        tabs: tabs.map((t) => t.id),
+    });
 
     useEffect(() => {
         if (activeTab !== null && !open) {
