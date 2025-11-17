@@ -13,6 +13,7 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
     const resizeRef = useRef(false);
     const currentWidthRef = useRef(sidebarWidth);
 
+    const lastWidthRef = useRef(sidebarWidth > 0 ? sidebarWidth : baseWidth);
     const lastActiveTabRef = useRef(activeTab);
 
     const openSidebar = useCallback(
@@ -22,8 +23,9 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
             setOpen(true);
 
             if (!fromDrag && sidebarWidth === 0) {
-                setSidebarWidth(baseWidth);
-                currentWidthRef.current = baseWidth;
+                const restoreWidth = lastWidthRef.current > 0 ? lastWidthRef.current : baseWidth;
+                setSidebarWidth(restoreWidth);
+                currentWidthRef.current = restoreWidth;
             }
 
             if (!activeTab) {
@@ -38,13 +40,17 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
     );
 
     const closeSidebar = useCallback(() => {
+        if (sidebarWidth > 0) {
+            lastWidthRef.current = sidebarWidth;
+        }
+
         setOpen(false);
 
         if (activeTab) lastActiveTabRef.current = activeTab;
 
         setSidebarWidth(0);
         setActiveTab(null);
-    }, [activeTab, setActiveTab, setSidebarWidth]);
+    }, [activeTab, setActiveTab, setSidebarWidth, sidebarWidth]);
 
     const startResize = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -83,7 +89,13 @@ export default function useSidebarResize(minWidth: number, baseWidth: number, ma
             setIsResizing(false);
             document.documentElement.classList.remove('resizing');
 
-            if (currentWidthRef.current <= minWidth) closeSidebar();
+            if (currentWidthRef.current <= minWidth) {
+                closeSidebar();
+            }
+
+            if (currentWidthRef.current > minWidth) {
+                lastWidthRef.current = currentWidthRef.current;
+            }
 
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
