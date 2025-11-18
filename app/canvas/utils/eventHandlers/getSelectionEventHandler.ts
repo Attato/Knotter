@@ -3,7 +3,9 @@ import { Position } from '@/canvas/canvas.types';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { findNodeUnderCursor } from '@/canvas/utils/nodes/findNodeUnderCursor';
+import { findEdgeUnderCursor } from '@/canvas/utils/edges/findEdgeUnderCursor';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
+import { getEdges } from '@/canvas/utils/edges/getEdges';
 
 export function getSelectionEventHandler(
     selectionStart: Position | null,
@@ -17,10 +19,14 @@ export function getSelectionEventHandler(
         const mousePos = useCanvasStore.getState().mousePosition;
 
         const { items } = useCanvasStore.getState();
-        const nodes = getNodes(items);
-        const clickedNode = findNodeUnderCursor(nodes, mousePos);
 
-        if (!clickedNode) {
+        const nodes = getNodes(items);
+        const edges = getEdges(items);
+
+        const clickedNode = findNodeUnderCursor(nodes, mousePos);
+        const clickedEdge = !clickedNode ? findEdgeUnderCursor(edges, nodes, mousePos) : null;
+
+        if (!clickedNode && !clickedEdge) {
             setSelectionStart(mousePos);
             setSelectionEnd(mousePos);
         }
