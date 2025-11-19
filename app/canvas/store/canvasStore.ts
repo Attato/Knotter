@@ -45,9 +45,6 @@ export interface CanvasState {
     tooltipMode: TooltipMode;
     setTooltipMode: (mode: TooltipMode) => void;
 
-    isFullScreen: boolean;
-    toggleFullScreen: () => void;
-
     isMagnet: boolean;
     setIsMagnet: (value: boolean) => void;
 
@@ -121,9 +118,6 @@ export const useCanvasStore = create<CanvasState>()(
             tooltipMode: 'always',
             setTooltipMode: (tooltipMode) => set({ tooltipMode }),
 
-            isFullScreen: false,
-            toggleFullScreen: () => set((s) => ({ isFullScreen: !s.isFullScreen })),
-
             isMagnet: false,
             setIsMagnet: (value) => set({ isMagnet: value }),
 
@@ -159,7 +153,6 @@ export const useCanvasStore = create<CanvasState>()(
                 // ---
 
                 tooltipMode: state.tooltipMode,
-                isFullScreen: state.isFullScreen,
                 isMagnet: state.isMagnet,
                 showGrid: state.showGrid,
                 showAxes: state.showAxes,
