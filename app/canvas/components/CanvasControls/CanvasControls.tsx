@@ -9,13 +9,16 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
 import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode';
-import { Magnet, Grid2x2, Move3d, Eye, EyeOff, EyeClosed } from 'lucide-react';
+
+import { Magnet, Grid2x2, Move3d, Eye, EyeOff, EyeClosed, UserRound, Network } from 'lucide-react';
+import { toggleEditorMode } from '@/canvas/utils/canvas/toggleEditorMode';
 
 export const CanvasControls = memo(function CanvasControls() {
     const isMagnet = useCanvasStore((s) => s.isMagnet);
     const showGrid = useCanvasStore((s) => s.showGrid);
     const showAxes = useCanvasStore((s) => s.showAxes);
     const tooltipMode = useCanvasStore((s) => s.tooltipMode);
+    const editorMode = useCanvasStore((s) => s.editorMode);
     const toggleShowGrid = useCanvasStore((s) => s.toggleShowGrid);
     const toggleShowAxes = useCanvasStore((s) => s.toggleShowAxes);
 
@@ -33,10 +36,17 @@ export const CanvasControls = memo(function CanvasControls() {
                 return EyeClosed;
             case 'never':
                 return EyeOff;
-            default:
-                return Eye;
         }
     }, [tooltipMode]);
+
+    const getEditorIcon = useCallback(() => {
+        switch (editorMode) {
+            case 'edit':
+                return Network;
+            case 'view':
+                return UserRound;
+        }
+    }, [editorMode]);
 
     const getTooltipLabel = useCallback(() => {
         switch (tooltipMode) {
@@ -46,10 +56,17 @@ export const CanvasControls = memo(function CanvasControls() {
                 return 'Тултипы: При наведении (T)';
             case 'never':
                 return 'Тултипы: Никогда (T)';
-            default:
-                return 'Тултипы (T)';
         }
     }, [tooltipMode]);
+
+    const getEditorLabel = useCallback(() => {
+        switch (editorMode) {
+            case 'edit':
+                return 'Режим редактирования';
+            case 'view':
+                return 'Пользовательский режим';
+        }
+    }, [editorMode]);
 
     const controls = useMemo(
         () => [
@@ -59,11 +76,23 @@ export const CanvasControls = memo(function CanvasControls() {
                 Icon: getTooltipIcon(),
                 label: getTooltipLabel(),
             },
+            { active: true, onClick: toggleEditorMode, Icon: getEditorIcon(), label: getEditorLabel() },
             { active: isMagnet, onClick: toggleMagnetMode, Icon: Magnet, label: 'Магнит (M)' },
             { active: showGrid, onClick: toggleShowGrid, Icon: Grid2x2, label: 'Сетка (G)' },
             { active: showAxes, onClick: toggleShowAxes, Icon: Move3d, label: 'Оси (A)' },
         ],
-        [isMagnet, showGrid, showAxes, tooltipMode, getTooltipIcon, getTooltipLabel, toggleShowGrid, toggleShowAxes],
+        [
+            isMagnet,
+            showGrid,
+            showAxes,
+            tooltipMode,
+            getTooltipIcon,
+            getTooltipLabel,
+            getEditorIcon,
+            getEditorLabel,
+            toggleShowGrid,
+            toggleShowAxes,
+        ],
     );
 
     if (!mounted) return null;
