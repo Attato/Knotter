@@ -7,6 +7,8 @@ export interface CanvasState {
     edges: Edge[];
 }
 
+export type EditorMode = 'edit' | 'view';
+
 export type CanvasItem = Node | Edge;
 
 export type NodeShapeType = 'octagon' | 'circle' | 'diamond' | 'triangle' | 'hexagon' | 'squircle' | 'point';
