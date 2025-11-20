@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CanvasItem, Position, TooltipMode, Parameter } from '@/canvas/canvas.types';
+import { CanvasItem, Position, TooltipMode, Parameter, EditorMode } from '@/canvas/canvas.types';
 import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/constants';
 
 export interface CanvasState {
@@ -43,7 +43,10 @@ export interface CanvasState {
     // ---
 
     tooltipMode: TooltipMode;
-    setTooltipMode: (mode: TooltipMode) => void;
+    setTooltipMode: (tooltipMode: TooltipMode) => void;
+
+    editorMode: EditorMode;
+    setEditorMode: (editorMode: EditorMode) => void;
 
     isMagnet: boolean;
     setIsMagnet: (value: boolean) => void;
@@ -118,6 +121,9 @@ export const useCanvasStore = create<CanvasState>()(
             tooltipMode: 'always',
             setTooltipMode: (tooltipMode) => set({ tooltipMode }),
 
+            editorMode: 'edit',
+            setEditorMode: (editorMode) => set({ editorMode }),
+
             isMagnet: false,
             setIsMagnet: (value) => set({ isMagnet: value }),
 
@@ -152,6 +158,7 @@ export const useCanvasStore = create<CanvasState>()(
 
                 // ---
 
+                editorMode: state.editorMode,
                 tooltipMode: state.tooltipMode,
                 isMagnet: state.isMagnet,
                 showGrid: state.showGrid,
