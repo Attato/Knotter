@@ -32,6 +32,68 @@ interface DrawTooltipProps {
     invertY: boolean;
 }
 
+function getNodeColor(nodeId: string): string {
+    let hash = 0;
+
+    for (let i = 0; i < nodeId.length; i++) {
+        hash = nodeId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const r = ((hash & 0xff) % 100) + 50; // 50-150
+    const g = (((hash >> 8) & 0xff) % 100) + 50; // 50-150
+    const b = (((hash >> 16) & 0xff) % 100) + 50; // 50-150
+
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+function drawEditModeNode(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, node: Node) {
+    const lineWidth = 1;
+    const headerHeight = 32;
+    const padding = 12;
+    const borderRadius = 4;
+    const minWidth = size * 5;
+    const headerPaddingX = 0.5;
+    const headerPaddingY = 0.5;
+    const rootStyles = getComputedStyle(document.documentElement);
+
+    ctx.save();
+
+    ctx.font = '14px Inter, system-ui, sans-serif';
+    const textWidth = ctx.measureText(node.name).width;
+    const nodeWidth = Math.max(minWidth, textWidth + padding * 2);
+    const nodeHeight = size * 3;
+
+    ctx.translate(x - nodeWidth / 2, y - nodeHeight / 2);
+
+    ctx.beginPath();
+    ctx.roundRect(0, 0, nodeWidth, nodeHeight, borderRadius);
+    ctx.fillStyle = rootStyles.getPropertyValue('--card-bg');
+    ctx.fill();
+    ctx.strokeStyle = rootStyles.getPropertyValue('--border-light').trim();
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.roundRect(headerPaddingX, headerPaddingY, nodeWidth - headerPaddingX * 2, headerHeight - headerPaddingY, [
+        borderRadius - 0.5,
+        borderRadius - 0.5,
+        0,
+        0,
+    ]);
+
+    const headerColor = getNodeColor(node.id);
+    ctx.fillStyle = headerColor;
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(node.name, headerPaddingX + 8, headerHeight / 2);
+
+    ctx.restore();
+}
+
 export function drawNodes({
     ctx,
     nodes,
@@ -50,6 +112,9 @@ export function drawNodes({
     const textColor = rootStyles.getPropertyValue('--foreground').trim();
 
     const tooltipMode = useCanvasStore.getState().tooltipMode;
+    const editorMode = useCanvasStore.getState().editorMode;
+
+    const isEditMode = editorMode === 'edit';
 
     for (const node of nodes) {
         const isSelected = selectedNodeIds.includes(node.id);
@@ -58,34 +123,52 @@ export function drawNodes({
 
         const options = { fillStyle: fillColor, strokeStyle: strokeColor, lineWidth: 2 };
 
-        switch (node.shapeType) {
-            case 'octagon':
-                drawOctagon(ctx, x, y, nodeSize, options);
-                break;
-            case 'circle':
-                drawCircle(ctx, x, y, nodeSize / 2, options);
-                break;
-            case 'diamond':
-                drawDiamond(ctx, x, y, nodeSize, options);
-                break;
-            case 'triangle':
-                drawTriangle(ctx, x, y, nodeSize, options);
-                break;
-            case 'hexagon':
-                drawHexagon(ctx, x, y, nodeSize, options);
-                break;
-            case 'squircle':
-                drawSquircle(ctx, x, y, nodeSize, options);
-                break;
-            case 'point':
-                drawPoint(ctx, x, y, 1, options);
-                break;
+        if (isEditMode) {
+            drawEditModeNode(ctx, x, y, nodeSize, node);
+        } else {
+            switch (node.shapeType) {
+                case 'octagon':
+                    drawOctagon(ctx, x, y, nodeSize, options);
+                    break;
+                case 'circle':
+                    drawCircle(ctx, x, y, nodeSize / 2, options);
+                    break;
+                case 'diamond':
+                    drawDiamond(ctx, x, y, nodeSize, options);
+                    break;
+                case 'triangle':
+                    drawTriangle(ctx, x, y, nodeSize, options);
+                    break;
+                case 'hexagon':
+                    drawHexagon(ctx, x, y, nodeSize, options);
+                    break;
+                case 'squircle':
+                    drawSquircle(ctx, x, y, nodeSize, options);
+                    break;
+                case 'point':
+                    drawPoint(ctx, x, y, 1, options);
+                    break;
+            }
         }
 
         if (isSelected) {
             ctx.save();
-            ctx.beginPath();
-            ctx.rect(x - nodeSize / 2 - padding, y - nodeSize / 2 - padding, nodeSize + 2 * padding, nodeSize + 2 * padding);
+
+            if (isEditMode) {
+                const width = nodeSize * 2.5;
+                const height = nodeSize * 3;
+                ctx.beginPath();
+                ctx.rect(x - width / 2 - padding, y - height / 2 - padding, width + 2 * padding, height + 2 * padding);
+            } else {
+                ctx.beginPath();
+                ctx.rect(
+                    x - nodeSize / 2 - padding,
+                    y - nodeSize / 2 - padding,
+                    nodeSize + 2 * padding,
+                    nodeSize + 2 * padding,
+                );
+            }
+
             ctx.lineWidth = 2;
             ctx.strokeStyle = selectedStrokeColor;
             ctx.stroke();
@@ -93,7 +176,10 @@ export function drawNodes({
         }
 
         const shouldShowTooltip =
-            node.name && zoomLevel > 0.3 && (tooltipMode === 'always' || (tooltipMode === 'hover' && isHovered));
+            node.name &&
+            zoomLevel > 0.3 &&
+            (tooltipMode === 'always' || (tooltipMode === 'hover' && isHovered)) &&
+            !isEditMode;
 
         if (shouldShowTooltip) {
             drawTooltip({
