@@ -4,7 +4,6 @@ import { useRef } from 'react';
 
 import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu/CanvasContextMenu';
 import { CanvasControls } from '@/canvas/components/CanvasControls/CanvasControls';
-import { CanvasStatusBar } from '@/canvas/components/CanvasStatusBar/CanvasStatusBar';
 
 import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
 import { useCanvasInteraction } from '@/canvas/hooks/useCanvasInteraction';
@@ -30,8 +29,6 @@ export default function Canvas() {
 
     return (
         <div className="flex h-screen relative" onClick={closeMenu}>
-            <CanvasStatusBar canvasRef={canvasRef} />
-
             <CanvasControls />
 
             <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
