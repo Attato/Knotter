@@ -6,7 +6,7 @@ import { ThemeProvider } from 'next-themes';
 
 import '@/globals.css';
 
-const inter = Inter({ subsets: ['latin'], weight: ['100', '400', '700'] });
+const inter = Inter({ subsets: ['latin'], weight: ['100', '200', '300', '400', '700'] });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
