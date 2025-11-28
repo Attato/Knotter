@@ -6,14 +6,15 @@
 
     --background-alt: #e4e4e2;
     --card-bg: #dededc;
-    --background-accent: #1f6feb;
-    --text-accent: #4493f8;
     --border: #d8d8d6;
     --ui: #d2d2d0;
     --ui-hover: #ccccca;
     --border-light: #c6c6c4;
 
+    --background-accent: #1f6feb;
+    --text-accent: #4493f8;
     --selected: #ffc107;
+
     --axis-x: #4cd27a;
     --axis-y: #ff4c4c;
 
