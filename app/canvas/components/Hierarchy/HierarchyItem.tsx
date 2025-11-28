@@ -38,7 +38,7 @@ export const HierarchyItem = memo(function HierarchyItem({
     return (
         <li ref={setNodeRef} style={style}>
             <button
-                className={`w-full h-10 px-4 py-1 rounded-md outline-none tabular-nums cursor-pointer ${
+                className={`w-full px-3 h-9 rounded-md outline-none tabular-nums cursor-pointer ${
                     isSelected
                         ? 'bg-bg-accent/10 focus-visible:bg-bg-accent/15'
                         : 'bg-card hover:bg-border focus-visible:bg-border'
@@ -49,8 +49,8 @@ export const HierarchyItem = memo(function HierarchyItem({
                 }}
                 onKeyDown={onKeyDown}
             >
-                <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-1">
+                    <div className="flex items-center gap-1 w-full">
                         <Icon size={16} className={`${isSelected ? 'text-text-accent' : 'text-foreground'} min-w-4`} />
 
                         <EditableName
