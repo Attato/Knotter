@@ -16,10 +16,7 @@ export const SavePopup = memo(function SavePopup({ onSave, onDiscard, onCancel }
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div
-                ref={popupRef}
-                className="flex items-start gap-4 bg-background-alt p-4 rounded-md shadow-md max-w-md w-full"
-            >
+            <div ref={popupRef} className="flex items-start gap-4 bg-depth-1 p-4 rounded-md shadow-md max-w-md w-full">
                 <CircleHelp size={32} className="text-text-accent" />
 
                 <div className="flex flex-col gap-1 w-full">
@@ -37,14 +34,14 @@ export const SavePopup = memo(function SavePopup({ onSave, onDiscard, onCancel }
 
                         <button
                             onClick={onDiscard}
-                            className="px-3 py-2 bg-card hover:bg-border rounded-md cursor-pointer w-full"
+                            className="px-3 py-2 bg-depth-2 hover:bg-depth-3 rounded-md cursor-pointer w-full"
                         >
                             Не сохранять
                         </button>
 
                         <button
                             onClick={onCancel}
-                            className="px-3 py-2 bg-card hover:bg-border rounded-md cursor-pointer w-full"
+                            className="px-3 py-2 bg-depth-2 hover:bg-depth-3 rounded-md cursor-pointer w-full"
                         >
                             Отмена
                         </button>

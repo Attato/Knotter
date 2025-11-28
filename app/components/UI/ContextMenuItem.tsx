@@ -33,7 +33,7 @@ export const ContextMenuItem = memo(function ContextMenuItem({
     return (
         <div className="relative group">
             <button
-                className={`flex justify-between items-center px-3 py-1 bg-card hover:bg-border w-full text-left cursor-pointer ${
+                className={`flex justify-between items-center px-3 py-1 bg-depth-2 hover:bg-depth-3 w-full text-left cursor-pointer ${
                     disabled ? 'opacity-40 cursor-not-allowed' : ''
                 }`}
                 onClick={handleClick}
@@ -59,7 +59,7 @@ export const ContextMenuItem = memo(function ContextMenuItem({
             </button>
 
             {submenu && !disabled && (
-                <div className="absolute top-0 left-full min-w-40 w-full bg-card border border-border-light rounded shadow-md py-1 text-sm z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-0 left-full min-w-40 w-full bg-depth-2 border border-depth-6 rounded shadow-md py-1 text-sm z-50 opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-opacity">
                     {submenu}
                 </div>
             )}

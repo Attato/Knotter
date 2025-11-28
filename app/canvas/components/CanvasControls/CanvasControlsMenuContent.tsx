@@ -17,7 +17,7 @@ const HomeLink = memo(function HomeLink() {
     return (
         <Link
             href="/"
-            className="flex items-center justify-between gap-2 bg-card hover:bg-border px-3 py-2 rounded-md text-axis-y"
+            className="flex items-center justify-between gap-2 bg-depth-2 hover:bg-depth-3 px-3 py-2 rounded-md text-axis-y"
         >
             На главную
             <Home size={16} />
@@ -30,11 +30,11 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
     const setInvertY = useCanvasStore((state) => state.setInvertY);
 
     return (
-        <div className="flex flex-col bg-background-alt rounded-md shadow w-full text-nowrap">
+        <div className="flex flex-col bg-depth-1 rounded-md shadow w-full text-nowrap">
             <div className="flex flex-col gap-1 m-1">
                 <button
                     onClick={onOpenProject}
-                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-border rounded-md cursor-pointer"
+                    className="px-3 py-2 w-full flex justify-between bg-depth-2 hover:bg-depth-3 rounded-md cursor-pointer"
                 >
                     Открыть
                     <FolderOpen size={16} />
@@ -42,7 +42,7 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
 
                 <button
                     onClick={onSaveAs}
-                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-border rounded-md cursor-pointer"
+                    className="px-3 py-2 w-full flex justify-between bg-depth-2 hover:bg-depth-3 rounded-md cursor-pointer"
                 >
                     Сохранить как
                     <Download size={16} />
@@ -50,7 +50,7 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
 
                 <button
                     onClick={() => setInvertY(!invertY)}
-                    className="px-3 py-2 w-full flex justify-between bg-card hover:bg-border rounded-md cursor-pointer"
+                    className="px-3 py-2 w-full flex justify-between bg-depth-2 hover:bg-depth-3 rounded-md cursor-pointer"
                 >
                     Инвертировать Y
                     <FlipVertical2 size={16} className={`${invertY ? 'text-foreground' : 'text-gray'}`} />
@@ -59,7 +59,7 @@ export const MenuContent = memo(function MenuContent({ onOpenProject, onSaveAs }
                 <ThemeToggle label="Ночной режим" className="px-3 py-2 w-full flex justify-between" />
             </div>
 
-            <hr className="border-b-0 border-border" />
+            <hr className="border-b-0 border-depth-3" />
 
             <div className="m-1">
                 <HomeLink />

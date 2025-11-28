@@ -39,7 +39,7 @@ export const Property = memo(function Property() {
                 ))}
             </div>
 
-            <hr className="border-b-0 border-border" />
+            <hr className="border-b-0 border-depth-3" />
 
             <div className="mx-1 flex flex-col gap-1">
                 <PropertyParameters />

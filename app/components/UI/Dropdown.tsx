@@ -25,7 +25,9 @@ export const Dropdown = memo(function Dropdown({
     };
 
     return (
-        <div className={`flex flex-col gap-1 rounded-md bg-card w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+        <div
+            className={`flex flex-col gap-1 rounded-md bg-depth-2 w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
             <button
                 onClick={toggle}
                 disabled={disabled}

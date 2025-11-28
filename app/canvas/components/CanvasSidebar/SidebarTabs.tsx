@@ -16,7 +16,7 @@ export function SidebarTabs({ tabs }: SidebarTabsProps) {
     const setActiveTab = useCanvasStore((s) => s.setActiveTab);
 
     return (
-        <div className="flex flex-col w-12 border-border bg-background-alt">
+        <div className="flex flex-col w-12 border-depth-3 bg-depth-1">
             {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;

@@ -52,7 +52,7 @@ export const OptionPicker = memo(function OptionPicker({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 h-8 bg-card hover:bg-border border border-border rounded-md text-sm"
+                className="w-full flex items-center justify-between px-3 py-2 h-8 bg-depth-2 hover:bg-depth-3 border border-depth-3 rounded-md text-sm"
             >
                 <span>{placeholder}</span>
 
@@ -60,17 +60,17 @@ export const OptionPicker = memo(function OptionPicker({
             </button>
 
             {isOpen && (
-                <div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-md shadow-lg max-h-64 overflow-auto flex flex-col">
+                <div className="absolute z-10 w-full mt-1 bg-depth-2 border border-depth-3 rounded-md shadow-lg max-h-64 overflow-auto flex flex-col">
                     <Input
                         value={query}
                         onChange={(value) => setQuery(value)}
                         icon={Search}
                         iconSize={14}
                         placeholder="Поиск..."
-                        className="bg-border m-1"
+                        className="bg-depth-3 m-1"
                     />
 
-                    <hr className="border-b-0 border-border" />
+                    <hr className="border-b-0 border-depth-3" />
 
                     <div className="flex flex-col gap-1 m-1">
                         {filtered.map((opt) => {
@@ -80,7 +80,7 @@ export const OptionPicker = memo(function OptionPicker({
                                 <button
                                     key={opt.value}
                                     onClick={() => handleSelect(opt.value)}
-                                    className="flex items-center gap-2 px-3 py-2 bg-border hover:bg-ui text-left text-sm rounded-md"
+                                    className="flex items-center gap-2 px-3 py-2 bg-depth-3 hover:bg-depth-4 text-left text-sm rounded-md"
                                 >
                                     {Icon && <Icon size={16} />}
                                     {opt.label}

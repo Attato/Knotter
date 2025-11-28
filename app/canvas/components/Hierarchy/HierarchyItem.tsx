@@ -41,7 +41,7 @@ export const HierarchyItem = memo(function HierarchyItem({
                 className={`w-full px-3 h-9 rounded-md outline-none tabular-nums cursor-pointer ${
                     isSelected
                         ? 'bg-bg-accent/10 focus-visible:bg-bg-accent/15'
-                        : 'bg-card hover:bg-border focus-visible:bg-border'
+                        : 'bg-depth-2 hover:bg-depth-3 focus-visible:bg-border'
                 }`}
                 onClick={(e) => {
                     e.stopPropagation();

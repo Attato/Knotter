@@ -39,7 +39,7 @@ export default function CanvasPage() {
 
                     <Link
                         href="/"
-                        className="flex items-center gap-1 px-3 py-1 bg-card hover:bg-border border border-border text-foreground text-base w-fit rounded-md select-none"
+                        className="flex items-center gap-1 px-3 py-1 bg-depth-2 hover:bg-depth-3 border border-depth-3 text-foreground text-base w-fit rounded-md select-none"
                     >
                         Вернуться на главную
                     </Link>

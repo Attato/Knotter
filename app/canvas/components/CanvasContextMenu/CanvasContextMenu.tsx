@@ -28,7 +28,7 @@ export const CanvasContextMenu = memo(function CanvasContextMenu({ isOpen, posit
 
     const renderMenuItem = (item: MenuItem, close: () => void, key: number) => {
         if (item.type === 'divider') {
-            return <hr key={key} className="border-b-0 border-border-light my-1" />;
+            return <hr key={key} className="border-b-0 border-depth-6 my-1" />;
         }
 
         return (

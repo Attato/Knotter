@@ -25,8 +25,8 @@ export function drawGrid(
     const gridColor1 = styles.getPropertyValue('--grid-color-1').trim();
     const gridColor2 = styles.getPropertyValue('--grid-color-2').trim();
     const gridColor3 = styles.getPropertyValue('--grid-color-3').trim();
-    const axisXColor = styles.getPropertyValue('--axis-x').trim();
-    const axisYColor = styles.getPropertyValue('--axis-y').trim();
+    const axisXColor = styles.getPropertyValue('--red').trim();
+    const axisYColor = styles.getPropertyValue('--green').trim();
 
     if (showGrid) {
         const levels = [

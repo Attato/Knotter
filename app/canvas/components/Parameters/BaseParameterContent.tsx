@@ -45,7 +45,7 @@ export const BaseParameterContent = memo(function BaseParameterContent({
 
     return (
         <div
-            className="flex flex-col justify-center gap-2 px-3 py-1 text-sm bg-card rounded-md"
+            className="flex flex-col justify-center gap-2 px-3 py-1 text-sm bg-depth-2 rounded-md"
             draggable
             onDragStart={(e) => {
                 e.dataTransfer.setData('application/parameter-id', parameterId);
@@ -61,7 +61,7 @@ export const BaseParameterContent = memo(function BaseParameterContent({
                     <Input
                         value={getDisplayValue()}
                         onChange={handleNumberInput}
-                        className="bg-border border border-ui"
+                        className="bg-depth-3 border border-depth-4"
                         max={16}
                         type="text"
                         inputMode="decimal"
@@ -72,7 +72,7 @@ export const BaseParameterContent = memo(function BaseParameterContent({
                     <Input
                         value={parameterValue}
                         onChange={(val) => updateParameter(val)}
-                        className="bg-border border border-ui"
+                        className="bg-depth-3 border border-depth-4"
                         max={16}
                         placeholder="Введите текст..."
                     />
@@ -83,7 +83,7 @@ export const BaseParameterContent = memo(function BaseParameterContent({
                         <Checkbox
                             checked={parameterValue}
                             onChange={(checked) => updateParameter(checked)}
-                            className="bg-border border border-ui"
+                            className="bg-depth-3 border border-depth-4"
                         />
                     </div>
                 )}

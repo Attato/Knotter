@@ -44,7 +44,7 @@ export const ArrayContent = memo(function ArrayContent({
     const [isArrayDragOver, setIsArrayDragOver] = useState(false);
 
     return (
-        <div className="flex flex-col gap-1 px-3 py-2 bg-card text-sm rounded-md">
+        <div className="flex flex-col gap-1 px-3 py-2 bg-depth-2 text-sm rounded-md">
             <div className="flex items-center gap-1 h-8">
                 <Icon size={16} className="min-w-4" />
 
@@ -55,7 +55,7 @@ export const ArrayContent = memo(function ArrayContent({
                 </button>
             </div>
 
-            <div className="flex flex-col gap-1 border-l pl-6 border-border-light">
+            <div className="flex flex-col gap-1 border-l pl-6 border-depth-6">
                 {arrayValue.map((item) => {
                     const ItemIcon = getDynamicIcon(item.type);
 
@@ -91,7 +91,7 @@ export const ArrayContent = memo(function ArrayContent({
                                         const num = parseFloat(val);
                                         if (!isNaN(num)) onUpdateItemValue(item.id, num);
                                     }}
-                                    className="bg-border border border-ui"
+                                    className="bg-depth-3 border border-depth-4"
                                     type="text"
                                     inputMode="decimal"
                                     placeholder="0"
@@ -102,7 +102,7 @@ export const ArrayContent = memo(function ArrayContent({
                                 <Input
                                     value={item.value as string}
                                     onChange={(val) => onUpdateItemValue(item.id, val)}
-                                    className="bg-border border border-ui"
+                                    className="bg-depth-3 border border-depth-4"
                                     placeholder="Введите текст..."
                                 />
                             )}
@@ -112,7 +112,7 @@ export const ArrayContent = memo(function ArrayContent({
                                     <Checkbox
                                         checked={item.value as boolean}
                                         onChange={(checked) => onUpdateItemValue(item.id, checked)}
-                                        className="bg-border border border-ui"
+                                        className="bg-depth-3 border border-depth-4"
                                     />
                                 </div>
                             )}
@@ -126,7 +126,7 @@ export const ArrayContent = memo(function ArrayContent({
             </div>
 
             <div
-                className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-border-light ${
+                className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-depth-6 ${
                     isArrayDragOver && 'bg-bg-accent/10 border-text-accent'
                 } ${arrayValue.length > 0 && 'mt-2'}`}
                 onDragOver={(e) => e.preventDefault()}

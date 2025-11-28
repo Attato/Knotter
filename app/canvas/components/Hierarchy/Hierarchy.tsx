@@ -40,11 +40,11 @@ export const Hierarchy = memo(function Hierarchy() {
                     placeholder="Поиск..."
                     icon={Search}
                     iconSize={14}
-                    className="h-8 text-sm bg-card"
+                    className="h-8 text-sm bg-depth-2"
                 />
             </div>
 
-            <hr className="border-b-0 border-border" />
+            <hr className="border-b-0 border-depth-3" />
 
             <div className="flex flex-col flex-1 overflow-y-auto gap-2" onClick={handleDeselectOnEmptyClick}>
                 <DndContext

@@ -42,7 +42,7 @@ export const Sidebar = memo(function Sidebar({
     return (
         <aside
             style={{ width: `${width}px` }}
-            className={`h-screen border-l border-border bg-background-alt select-none flex-shrink-0 z-50 relative ${
+            className={`h-screen border-l border-depth-3 bg-depth-1 select-none flex-shrink-0 z-50 relative ${
                 !isResizing ? 'transition-width duration-200 ease-in-out' : ''
             }`}
         >
@@ -51,7 +51,7 @@ export const Sidebar = memo(function Sidebar({
             <div
                 onMouseDown={startResize}
                 className={`absolute top-0 left-0 h-full w-1 hover:cursor-ew-resize z-50 ${
-                    isResizing ? 'bg-border-light' : 'hover:bg-border-light'
+                    isResizing ? 'bg-depth-6' : 'hover:bg-depth-6'
                 }`}
             />
         </aside>

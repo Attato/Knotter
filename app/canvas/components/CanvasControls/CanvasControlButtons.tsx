@@ -25,7 +25,7 @@ export const CanvasControlButtons = memo(function CanvasControlButtons({ control
                             onClick();
                         }}
                         className={`p-2 rounded-md w-fit cursor-pointer ${
-                            active ? 'bg-bg-accent text-white' : 'bg-card hover:bg-border'
+                            active ? 'bg-bg-accent text-white' : 'bg-depth-2 hover:bg-border'
                         }`}
                     >
                         <Icon size={16} />

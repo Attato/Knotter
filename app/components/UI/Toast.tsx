@@ -27,7 +27,7 @@ const TOAST_STYLES = {
     visible: 'opacity-100 translate-y-0',
 
     container:
-        'relative flex items-center gap-3 px-4 py-3 bg-card rounded-md shadow-lg backdrop-blur-sm min-w-xs max-w-sm transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer',
+        'relative flex items-center gap-3 px-4 py-3 bg-depth-2 rounded-md shadow-lg backdrop-blur-sm min-w-xs max-w-sm transform transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer',
 
     icon: {
         base: 'flex-shrink-0',

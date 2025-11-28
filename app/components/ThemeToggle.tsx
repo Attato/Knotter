@@ -20,7 +20,7 @@ export const ThemeToggle = memo(function ThemeToggle({ label, className }: Theme
     return (
         <button
             onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-            className={`p-2 rounded-md bg-card hover:bg-border cursor-pointer flex items-center ${className || ''}`}
+            className={`p-2 rounded-md bg-depth-2 hover:bg-depth-3 cursor-pointer flex items-center ${className || ''}`}
             aria-label="Toggle theme"
         >
             {label && <span className="mr-2">{label}</span>}

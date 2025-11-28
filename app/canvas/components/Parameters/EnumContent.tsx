@@ -96,7 +96,7 @@ export const EnumContent = memo(function EnumContent({
 
     return (
         <div
-            className={`flex flex-col gap-1 text-sm rounded-md ${!isInsideArray && 'bg-card px-3 py-2'}`}
+            className={`flex flex-col gap-1 text-sm rounded-md ${!isInsideArray && 'bg-depth-2 px-3 py-2'}`}
             draggable={!isInsideArray}
             onDragStart={(e) => {
                 if (!isInsideArray && parameterId) {
@@ -117,7 +117,7 @@ export const EnumContent = memo(function EnumContent({
                 )}
             </div>
 
-            <div className="flex flex-col gap-1 border-l border-border-light pl-6">
+            <div className="flex flex-col gap-1 border-l border-depth-6 pl-6">
                 {enumValue.options.map((item, idx) => {
                     const Icon = getDynamicIcon('string');
 
@@ -134,7 +134,7 @@ export const EnumContent = memo(function EnumContent({
                             <Input
                                 value={item.value}
                                 onChange={(val) => updateEnumOption(item.id, val)}
-                                className="border bg-border border-ui"
+                                className="border bg-depth-3 border-depth-4"
                                 max={16}
                                 placeholder="Введите значение..."
                             />
@@ -147,7 +147,7 @@ export const EnumContent = memo(function EnumContent({
                 })}
 
                 <div
-                    className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-border-light hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
+                    className={`flex flex-col gap-1 rounded-md p-2 border border-dashed border-depth-6 hover:bg-bg-accent/10 hover:border-text-accent cursor-pointer ${
                         isDragOver && 'bg-bg-accent/10 border-text-accent'
                     } ${enumValue.options.length > 0 && 'mt-2'}`}
                     onDragOver={(e) => e.preventDefault()}

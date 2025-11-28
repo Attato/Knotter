@@ -12,5 +12,5 @@ export function SidebarPanels({ tabs }: SidebarPanelsProps) {
 
     const panel = tabs.find((t) => t.id === activeTab)?.content;
 
-    return <div className="flex-1 overflow-auto bg-background-alt border-r border-border">{panel}</div>;
+    return <div className="flex-1 overflow-auto bg-depth-1 border-r border-depth-3">{panel}</div>;
 }

@@ -16,7 +16,7 @@ export const ContextMenu = memo(
         return (
             <div
                 ref={ref}
-                className="min-w-56 absolute bg-card border border-border-light text-foreground rounded shadow-md py-1 text-sm z-50"
+                className="min-w-56 absolute bg-depth-2 border border-depth-6 text-foreground rounded shadow-md py-1 text-sm z-50"
                 style={{ top: position.y, left: position.x }}
             >
                 {children}

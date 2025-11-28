@@ -57,7 +57,7 @@ export const EditableName = memo(function EditableName({
             onChange={(e) => setValue(e.target.value)}
             onBlur={finishEditing}
             onKeyDown={handleInputKeyDown}
-            className="bg-card border border-bg-accent rounded px-1 text-foreground text-sm outline-none w-full tabular-nums"
+            className="bg-depth-2 border border-bg-accent rounded px-1 text-foreground text-sm outline-none w-full tabular-nums"
             onDoubleClick={(e) => e.stopPropagation()}
             maxLength={maxLength}
         />

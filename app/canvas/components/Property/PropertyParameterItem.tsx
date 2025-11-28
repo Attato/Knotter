@@ -39,7 +39,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
         if (!arrayData) return null;
 
         return (
-            <div className="flex flex-col gap-2 bg-card rounded-md py-2 px-3">
+            <div className="flex flex-col gap-2 bg-depth-2 rounded-md py-2 px-3">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Icon size={16} />
@@ -90,7 +90,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                                         value={currentValue}
                                         onChange={handleEnumChange}
                                         options={options}
-                                        className="bg-border border border-ui"
+                                        className="bg-depth-3 border border-depth-4"
                                     />
                                 </div>
                             );
@@ -107,7 +107,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                                             const num = parseFloat(val);
                                             handleArrayItem(item.id, isNaN(num) ? 0 : num, 'number');
                                         }}
-                                        className="w-full bg-border border border-ui"
+                                        className="w-full bg-depth-3 border border-depth-4"
                                         inputMode="decimal"
                                     />
                                 )}
@@ -116,7 +116,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                                     <Input
                                         value={String(item.value ?? '')}
                                         onChange={(val) => handleArrayItem(item.id, val, 'string')}
-                                        className="w-full bg-border border border-ui"
+                                        className="w-full bg-depth-3 border border-depth-4"
                                         placeholder="Введите текст..."
                                     />
                                 )}
@@ -126,7 +126,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                                         <Checkbox
                                             checked={Boolean(item.value)}
                                             onChange={(checked) => handleArrayItem(item.id, checked, 'boolean')}
-                                            className="bg-border border border-ui"
+                                            className="bg-depth-3 border border-depth-4"
                                         />
                                     </div>
                                 )}
@@ -144,7 +144,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <Input
                     value={String(value ?? 0)}
                     onChange={handleNumber}
-                    className="w-full bg-border border border-ui"
+                    className="w-full bg-depth-3 border border-depth-4"
                     type="text"
                     inputMode="decimal"
                 />
@@ -156,7 +156,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <Input
                     value={String(value ?? '')}
                     onChange={handleString}
-                    className="w-full bg-border border border-ui"
+                    className="w-full bg-depth-3 border border-depth-4"
                     placeholder="Введите текст..."
                 />
             );
@@ -165,7 +165,11 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
         if (parameterType.isBoolean) {
             return (
                 <div className="flex items-center">
-                    <Checkbox checked={Boolean(value)} onChange={handleBoolean} className="bg-border border border-ui" />
+                    <Checkbox
+                        checked={Boolean(value)}
+                        onChange={handleBoolean}
+                        className="bg-depth-3 border border-depth-4"
+                    />
                 </div>
             );
         }
@@ -178,14 +182,14 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                     value={enumData.selectedDisplay}
                     onChange={handleEnum}
                     options={enumData.options}
-                    className="w-full border border-ui"
+                    className="w-full border border-depth-4"
                 />
             );
         }
     };
 
     return (
-        <div className="bg-card px-3 py-1 rounded-md">
+        <div className="bg-depth-2 px-3 py-1 rounded-md">
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 w-full">
                     <Icon size={16} />
@@ -197,7 +201,6 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <button
                     onClick={handleRemoveParameter}
                     className="text-gray cursor-pointer w-8 h-8 flex items-center justify-center"
-                    title="Удалить параметр"
                 >
                     <X size={16} />
                 </button>

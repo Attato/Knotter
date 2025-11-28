@@ -32,7 +32,7 @@ export const Parameters = memo(function Parameters() {
     return (
         <div className="flex flex-col h-full">
             <div className="flex gap-1 items-center m-1">
-                <Input value={name} onChange={setName} placeholder="Имя переменной" className="bg-card" max={16} />
+                <Input value={name} onChange={setName} placeholder="Имя переменной" className="bg-depth-2" max={16} />
 
                 <DropdownAbsolute
                     title={PARAMETER_TYPES.find((parameterType) => parameterType.value === type)?.label || 'Тип'}
@@ -45,7 +45,7 @@ export const Parameters = memo(function Parameters() {
                             <button
                                 key={parameterType.value}
                                 onClick={() => setType(parameterType.value)}
-                                className="px-3 py-2 w-full flex items-center gap-2 text-left bg-border hover:bg-ui rounded-md cursor-pointer"
+                                className="px-3 py-2 w-full flex items-center gap-2 text-left bg-depth-3 hover:bg-depth-4 rounded-md cursor-pointer"
                             >
                                 <Icon size={16} className="min-w-4" />
 
@@ -57,14 +57,14 @@ export const Parameters = memo(function Parameters() {
 
                 <button
                     onClick={addParameter}
-                    className={`${name.length === 0 ? 'bg-card/50 text-foreground/50' : 'bg-card text-foreground'} flex items-center justify-center max-w-8 w-full h-8 rounded-md cursor-pointer`}
+                    className={`${name.length === 0 ? 'bg-depth-2/50 text-foreground/50' : 'bg-depth-2 text-foreground'} flex items-center justify-center max-w-8 w-full h-8 rounded-md cursor-pointer`}
                     disabled={name.length === 0}
                 >
                     <Plus size={16} />
                 </button>
             </div>
 
-            <hr className="border-b-0 border-border" />
+            <hr className="border-b-0 border-depth-3" />
 
             {parameters.length !== 0 && (
                 <div className="flex flex-col gap-1 m-1">

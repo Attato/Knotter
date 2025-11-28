@@ -17,7 +17,7 @@ export const Input = memo(function Input({
     onChange,
     icon: Icon,
     iconSize = 16,
-    className = 'bg-card',
+    className = 'bg-depth-2',
     ...props
 }: InputProps) {
     const handleChange = useCallback(
