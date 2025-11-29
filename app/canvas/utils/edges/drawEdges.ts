@@ -5,7 +5,7 @@ export function drawEdges(ctx: CanvasRenderingContext2D, nodes: Node[], selected
 
     const styles = getComputedStyle(document.documentElement);
     const edgeColor = styles.getPropertyValue('--contrast').trim();
-    const selectedColor = styles.getPropertyValue('--selected').trim();
+    const selectedColor = styles.getPropertyValue('--background-accent').trim();
 
     for (const edge of edges) {
         const fromNode = nodes.find((n) => n.id === edge.from);

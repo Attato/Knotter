@@ -70,7 +70,7 @@ function drawEditModeNode(
 
     ctx.beginPath();
     ctx.roundRect(0, 0, dimensions.width, dimensions.height, borderRadius);
-    ctx.fillStyle = rootStyles.getPropertyValue('--border');
+    ctx.fillStyle = rootStyles.getPropertyValue('--depth-3');
     ctx.fill();
 
     ctx.strokeStyle = borderColor;
@@ -133,7 +133,7 @@ export function drawNodes({
 
         const borderColor = isSelected
             ? rootStyles.getPropertyValue('--foreground').trim()
-            : rootStyles.getPropertyValue('--level-7').trim();
+            : rootStyles.getPropertyValue('--depth-7').trim();
 
         if (isEditMode) {
             const dimensions = drawEditModeNode(ctx, x, y, nodeSize, node, borderColor);
