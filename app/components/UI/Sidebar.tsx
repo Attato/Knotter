@@ -43,7 +43,7 @@ export const Sidebar = memo(function Sidebar({
         <aside
             style={{ width: `${width}px` }}
             className={`h-screen border-l border-depth-3 bg-depth-1 select-none flex-shrink-0 z-50 relative ${
-                !isResizing ? 'transition-width duration-200 ease-in-out' : ''
+                !isResizing ? 'transition-width ease-in-out' : ''
             }`}
         >
             <div className="flex flex-col h-full overflow-hidden relative">{children}</div>
