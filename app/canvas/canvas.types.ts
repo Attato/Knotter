@@ -1,3 +1,5 @@
+import { NodeShapeType } from '@/canvas/utils/nodes/getShape';
+
 export type MouseHandler = (e: MouseEvent) => void;
 
 export type Position = { x: number; y: number };
@@ -10,8 +12,6 @@ export interface CanvasState {
 export type EditorMode = 'edit' | 'view';
 
 export type CanvasItem = Node | Edge;
-
-export type NodeShapeType = 'octagon' | 'circle' | 'diamond' | 'triangle' | 'hexagon' | 'squircle' | 'point';
 
 export type TooltipMode = 'always' | 'hover' | 'never';
 
@@ -27,6 +27,8 @@ export interface Node {
     name: string;
     description: string;
     shapeType: NodeShapeType;
+    width?: number;
+    height?: number;
     position: Position;
     kind: 'node';
     properties: PropertyType[];
