@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 
 import { EmptyState } from '@/components/UI/EmptyState';
 import { HierarchyItem } from '@/canvas/components/Hierarchy/HierarchyItem';
-import { Input } from '@/components/UI/Input'; // <-- импорт кастомного Input
+import { Input } from '@/components/UI/Input';
 
 import { useHierarchy } from '@/canvas/hooks/Hierarchy/useHierarchy';
 
