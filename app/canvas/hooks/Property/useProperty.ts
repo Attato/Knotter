@@ -9,7 +9,9 @@ import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { moveNodes } from '@/canvas/utils/nodes/moveNodes';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
-import { NodeShapeType, Position } from '@/canvas/canvas.types';
+import { NodeShapeType } from '@/canvas/utils/nodes/getShape';
+
+import { Position } from '@/canvas/canvas.types';
 
 export interface IDropdown {
     id: number | string;

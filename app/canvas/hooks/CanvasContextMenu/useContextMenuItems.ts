@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { NodeShapeType } from '@/canvas/canvas.types';
+import { NodeShapeType } from '@/canvas/utils/nodes/getShape';
 
 import { useCanvasHandlers } from '@/canvas/hooks/useCanvasHandlers';
 import { useCanvasStore } from '@/canvas/store/canvasStore';

@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 
-import { CanvasState, Position, NodeShapeType } from '@/canvas/canvas.types';
+import { CanvasState, Position } from '@/canvas/canvas.types';
+
+import { NodeShapeType } from '@/canvas/utils/nodes/getShape';
 
 import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
 
