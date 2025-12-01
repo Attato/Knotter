@@ -4,14 +4,23 @@ import { useRef } from 'react';
 
 import { CanvasContextMenu } from '@/canvas/components/CanvasContextMenu/CanvasContextMenu';
 import { CanvasControls } from '@/canvas/components/CanvasControls/CanvasControls';
+import { CanvasNodes } from '@/canvas/components/CanvasNodes/CanvasNodes';
 
 import { useCanvasSelection } from '@/canvas/hooks/useCanvasSelection';
 import { useCanvasInteraction } from '@/canvas/hooks/useCanvasInteraction';
 import { useCanvasRenderer } from '@/canvas/hooks/useCanvasRenderer';
 import { useContextMenu } from '@/hooks/useContextMenu';
 
+import { useCanvasStore } from '@/canvas/store/canvasStore';
+
+import { getNodes } from '@/canvas/utils/nodes/getNodes';
+
 export default function Canvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+    const items = useCanvasStore((s) => s.items);
+    const selectedItemIds = useCanvasStore((s) => s.selectedItemIds);
+    const hoveredNodeId = useCanvasStore((s) => s.hoveredNodeId);
 
     const { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, selectItemsInArea } = useCanvasSelection();
 
@@ -27,6 +36,8 @@ export default function Canvas() {
 
     const { isOpen, position, handleContextMenu, closeMenu } = useContextMenu();
 
+    const nodes = getNodes(items);
+
     return (
         <div className="flex h-screen relative" onClick={closeMenu}>
             <CanvasControls />
@@ -34,6 +45,8 @@ export default function Canvas() {
             <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
 
             <canvas ref={canvasRef} className="absolute w-full h-full" onContextMenu={handleContextMenu} />
+
+            <CanvasNodes nodes={nodes} selectedNodeIds={selectedItemIds} hoveredNodeId={hoveredNodeId} />
         </div>
     );
 }
