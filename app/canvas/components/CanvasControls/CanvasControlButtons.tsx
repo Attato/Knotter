@@ -8,6 +8,7 @@ interface ControlButton {
     onClick: () => void;
     Icon: React.ComponentType<{ size?: number }>;
     label: string;
+    disabled?: boolean;
 }
 
 interface CanvasControlButtonsProps {
@@ -17,16 +18,18 @@ interface CanvasControlButtonsProps {
 export const CanvasControlButtons = memo(function CanvasControlButtons({ controls }: CanvasControlButtonsProps) {
     return (
         <div className="flex gap-2">
-            {controls.map(({ active, onClick, Icon, label }, index) => (
+            {controls.map(({ active, onClick, Icon, label, disabled }, index) => (
                 <Tooltip key={index} label={label}>
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             onClick();
                         }}
-                        className={`p-2 rounded-md w-fit cursor-pointer ${
-                            active ? 'bg-bg-accent text-white' : 'bg-depth-2 hover:bg-border'
-                        }`}
+                        className={`
+                            p-2 rounded-md w-fit cursor-pointer disabled:bg-depth-2 disabled:text-gray disabled:cursor-not-allowed
+                            ${active ? 'bg-bg-accent text-white' : 'bg-depth-2 hover:bg-border'}
+                        `}
+                        disabled={disabled}
                     >
                         <Icon size={16} />
                     </button>
