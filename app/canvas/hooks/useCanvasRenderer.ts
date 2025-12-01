@@ -5,11 +5,8 @@ import { useTheme } from 'next-themes';
 
 import { Node, Edge, Position } from '@/canvas/canvas.types';
 
-import { NODE_SIZE } from '@/canvas/constants';
-
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { drawNodes } from '@/canvas/utils/nodes/drawNodes';
 import { drawEdges } from '@/canvas/utils/edges/drawEdges';
 import { drawSelectionBox } from '@/canvas/utils/canvas/drawSelectionBox';
 import { drawTempEdge } from '@/canvas/utils/edges/drawTempEdge';
@@ -73,16 +70,6 @@ export function useCanvasRenderer({ canvasRef, selectionStart, selectionEnd }: u
             const edges: Edge[] = getEdges(items);
 
             drawEdges(ctx, nodes, selectedItemIds, edges);
-            drawNodes({
-                ctx,
-                nodes,
-                selectedNodeIds: selectedItemIds,
-                nodeSize: NODE_SIZE,
-                invertY,
-                zoomLevel,
-                offset,
-                hoveredNodeId,
-            });
 
             if (selectionStart && selectionEnd) {
                 drawSelectionBox(ctx, selectionStart, selectionEnd);
