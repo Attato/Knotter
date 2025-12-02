@@ -53,12 +53,10 @@ function EditMode({ node, isSelected }: NodeProps) {
                 ${isSelected ? 'border-bg-accent' : 'border-foreground'} 
             `}
         >
-            <div className="bg-background rounded-t-lg truncate flex items-center">
-                <div className="truncate w-full px-3 py-1 rounded-md bg-depth-1">{node.name}</div>
-            </div>
+            <div className="rounded-t-lg flex items-center truncate w-full px-3 py-1 rounded-md bg-depth-1">{node.name}</div>
 
             {node.description && (
-                <div className="px-3 py-1 rounded-md bg-depth-1 text-foreground overflow-hidden leading-tight break-words">
+                <div className="px-3 py-1 rounded-md bg-depth-1 text-foreground overflow-hidden break-words">
                     {node.description}
                 </div>
             )}
