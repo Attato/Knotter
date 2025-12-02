@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
-import { EditorMode, Node } from '@/canvas/canvas.types';
-import { getShape } from '@/canvas/utils/nodes/getShape';
+
 import { useCanvasStore } from '@/canvas/store/canvasStore';
+
+import { getShape } from '@/canvas/utils/nodes/getShape';
+
+import { NODE_SIZE } from '@/canvas/constants';
+
+import { EditorMode, Node } from '@/canvas/canvas.types';
 
 interface NodeRendererProps {
     node: Node;
@@ -73,6 +78,8 @@ function ViewMode({ node, isSelected }: NodeProps) {
                 className={`w-full h-full ${isPoint ? 'stroke-[3px]' : 'stroke-[1.5px]'} fill-background ${
                     isSelected ? 'text-bg-accent' : 'text-foreground'
                 }`}
+                width={NODE_SIZE}
+                height={NODE_SIZE}
             />
         </div>
     );
