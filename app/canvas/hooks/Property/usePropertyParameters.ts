@@ -1,28 +1,22 @@
-import { useState, useCallback } from 'react';
-
+import { useCallback } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
-
-import { PropertyType } from '@/canvas/canvas.types';
-
+import { PropertyType, Node } from '@/canvas/canvas.types';
 import { v4 as uuidv4 } from 'uuid';
 
-export const usePropertyParameters = () => {
+export const usePropertyParameters = (node: Node | null) => {
     const items = useCanvasStore((state) => state.items);
     const setItems = useCanvasStore((state) => state.setItems);
-    const selectedItem = useCanvasStore((state) => state.selectedItem);
     const parameters = useCanvasStore((state) => state.parameters);
 
-    const [selectedParamId, setSelectedParamId] = useState<string>('');
-
-    const addedProperties = selectedItem?.properties || [];
+    const addedProperties = node?.properties || [];
 
     const filteredParameters = parameters.filter(
         (parameter) => !addedProperties.some((property) => property.parentId === parameter.id),
     );
 
-    const addParameterById = useCallback(
+    const handleAddParameter = useCallback(
         (parameterId: string) => {
-            if (!selectedItem) return;
+            if (!node) return;
 
             const originalParameter = parameters.find((p) => p.id === parameterId);
             if (!originalParameter) return;
@@ -34,7 +28,7 @@ export const usePropertyParameters = () => {
             };
 
             const updatedItems = items.map((item) =>
-                item.id === selectedItem.id
+                item.id === node.id
                     ? {
                           ...item,
                           properties: [...(item.properties || []), property],
@@ -44,15 +38,15 @@ export const usePropertyParameters = () => {
 
             setItems(updatedItems);
         },
-        [selectedItem, items, parameters, setItems],
+        [node, items, parameters, setItems],
     );
 
-    const removeParameter = useCallback(
+    const handleRemoveParameter = useCallback(
         (propertyId: string) => {
-            if (!selectedItem) return;
+            if (!node) return;
 
             const updatedItems = items.map((item) =>
-                item.id === selectedItem.id
+                item.id === node.id
                     ? {
                           ...item,
                           properties: (item.properties || []).filter((p) => p.id !== propertyId),
@@ -62,24 +56,15 @@ export const usePropertyParameters = () => {
 
             setItems(updatedItems);
         },
-        [selectedItem, items, setItems],
+        [node, items, setItems],
     );
-
-    const handleAddParameter = (id: string) => {
-        addParameterById(id);
-        setSelectedParamId('');
-    };
-
-    const handleRemoveParameter = (propertyId: string) => {
-        removeParameter(propertyId);
-    };
 
     const handleUpdateParameter = useCallback(
         (propertyId: string, updates: Partial<PropertyType>) => {
-            if (!selectedItem) return;
+            if (!node) return;
 
             const updatedItems = items.map((item) =>
-                item.id === selectedItem.id
+                item.id === node.id
                     ? {
                           ...item,
                           properties: (item.properties || []).map((p) => (p.id === propertyId ? { ...p, ...updates } : p)),
@@ -89,12 +74,10 @@ export const usePropertyParameters = () => {
 
             setItems(updatedItems);
         },
-        [selectedItem, items, setItems],
+        [node, items, setItems],
     );
 
     return {
-        selectedParamId,
-        setSelectedParamId,
         filteredParameters,
         handleAddParameter,
         handleRemoveParameter,
