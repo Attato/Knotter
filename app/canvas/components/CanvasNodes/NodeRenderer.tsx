@@ -8,6 +8,8 @@ import { NODE_SIZE } from '@/canvas/constants';
 
 import { EditorMode, Node } from '@/canvas/canvas.types';
 
+import { PropertyParameters } from '@/canvas/components/Property/PropertyParameters';
+
 interface NodeRendererProps {
     node: Node;
     isSelected: boolean;
@@ -47,22 +49,21 @@ function EditMode({ node, isSelected }: NodeProps) {
         <div
             ref={nodeRef}
             className={`
-                relative flex max-w-64 min-w-16 w-fit flex-col border-2 rounded-lg bg-background
+                relative flex flex-col gap-1 max-w-64 min-w-16 w-fit border-1 rounded-lg bg-background text-sm p-1
                 ${isSelected ? 'border-bg-accent' : 'border-foreground'} 
             `}
         >
-            <div
-                className={`
-                    bg-background px-2 py-1 rounded-t-lg border-b-2 truncate flex items-center
-                    ${isSelected ? 'border-bg-accent' : 'border-foreground'} 
-                `}
-            >
-                <span className="truncate w-full text-sm">{node.name}</span>
+            <div className="bg-background rounded-t-lg truncate flex items-center">
+                <div className="truncate w-full px-3 py-1 rounded-md bg-depth-1">{node.name}</div>
             </div>
 
-            <div className="px-2 py-1 text-foreground overflow-hidden text-sm leading-tight break-words">
-                {node.description}
-            </div>
+            {node.description && (
+                <div className="px-3 py-1 rounded-md bg-depth-1 text-foreground overflow-hidden leading-tight break-words">
+                    {node.description}
+                </div>
+            )}
+
+            <PropertyParameters node={node} />
         </div>
     );
 }
