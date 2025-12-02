@@ -144,7 +144,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <Input
                     value={String(value ?? 0)}
                     onChange={handleNumber}
-                    className="w-full bg-depth-3 border border-depth-4"
+                    className="w-full bg-depth-3 border border-depth-4 pointer-events-auto"
                     type="text"
                     inputMode="decimal"
                 />
@@ -156,7 +156,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                 <Input
                     value={String(value ?? '')}
                     onChange={handleString}
-                    className="w-full bg-depth-3 border border-depth-4"
+                    className="w-full bg-depth-3 border border-depth-4 pointer-events-auto"
                     placeholder="Введите текст..."
                 />
             );
@@ -168,7 +168,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                     <Checkbox
                         checked={Boolean(value)}
                         onChange={handleBoolean}
-                        className="bg-depth-3 border border-depth-4"
+                        className="bg-depth-3 border border-depth-4 pointer-events-auto"
                     />
                 </div>
             );
@@ -182,7 +182,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
                     value={enumData.selectedDisplay}
                     onChange={handleEnum}
                     options={enumData.options}
-                    className="w-full border border-depth-4"
+                    className="w-full border border-depth-4 pointer-events-auto"
                 />
             );
         }
@@ -200,7 +200,7 @@ export const PropertyParameterItem = memo(function PropertyParameterItem({
 
                 <button
                     onClick={handleRemoveParameter}
-                    className="text-gray cursor-pointer w-8 h-8 flex items-center justify-center"
+                    className="text-gray cursor-pointer w-8 h-8 flex items-center justify-center pointer-events-auto"
                 >
                     <X size={16} />
                 </button>
