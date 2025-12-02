@@ -16,6 +16,7 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
 export default function Canvas() {
+    const containerRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     const items = useCanvasStore((s) => s.items);
@@ -25,6 +26,7 @@ export default function Canvas() {
     const { selectionStart, selectionEnd, setSelectionStart, setSelectionEnd, selectItemsInArea } = useCanvasSelection();
 
     useCanvasInteraction({
+        containerRef,
         canvasRef,
         selectionStart,
         setSelectionStart,
@@ -39,7 +41,7 @@ export default function Canvas() {
     const nodes = getNodes(items);
 
     return (
-        <div className="flex h-screen relative" onClick={closeMenu}>
+        <div ref={containerRef} className="flex h-screen relative" onClick={closeMenu}>
             <CanvasControls />
 
             <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
