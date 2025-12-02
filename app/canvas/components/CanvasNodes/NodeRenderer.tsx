@@ -75,7 +75,7 @@ function ViewMode({ node, isSelected }: NodeProps) {
     return (
         <div className="relative w-full h-full flex items-center justify-center">
             <Icon
-                className={`w-full h-full ${isPoint ? 'stroke-[3px]' : 'stroke-[1.5px]'} fill-background ${
+                className={`w-full h-full ${isPoint ? 'stroke-[2px]' : 'stroke-[1.5px]'} fill-background ${
                     isSelected ? 'text-bg-accent' : 'text-foreground'
                 }`}
                 width={NODE_SIZE}
