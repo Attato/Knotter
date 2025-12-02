@@ -5,14 +5,17 @@ import { PropertyParameterItem } from '@/canvas/components/Property/PropertyPara
 import { OptionPicker } from '@/components/UI/OptionPicker';
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 import { usePropertyParameters } from '@/canvas/hooks/Property/usePropertyParameters';
-import { useCanvasStore } from '@/canvas/store/canvasStore';
+import { Node } from '@/canvas/canvas.types';
 
-export const PropertyParameters = memo(function PropertyParameters() {
-    const { filteredParameters, handleAddParameter, handleRemoveParameter, handleUpdateParameter } = usePropertyParameters();
+interface PropertyParametersProps {
+    node: Node;
+}
 
-    const selectedItem = useCanvasStore((state) => state.selectedItem);
+export const PropertyParameters = memo(function PropertyParameters({ node }: PropertyParametersProps) {
+    const { filteredParameters, handleAddParameter, handleRemoveParameter, handleUpdateParameter } =
+        usePropertyParameters(node);
 
-    const properties = selectedItem?.properties || [];
+    const properties = node?.properties || [];
 
     const options = filteredParameters.map((param) => ({
         value: param.id,
@@ -37,7 +40,7 @@ export const PropertyParameters = memo(function PropertyParameters() {
                         options={options}
                         onSelect={(id) => handleAddParameter(id)}
                         placeholder="Выберите параметр"
-                        className="flex-1"
+                        className="flex-1 pointer-events-auto"
                     />
                 </div>
             )}
