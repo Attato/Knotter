@@ -143,7 +143,7 @@ export const ArrayContent = memo(function ArrayContent({
                     }
                 }}
             >
-                <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center pointer-events-none">
+                <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center">
                     Перетащите сюда
                     {['number', 'string', 'boolean', 'enum'].map((type, idx, arr) => {
                         const IconType = getDynamicIcon(type);

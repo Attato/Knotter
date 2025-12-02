@@ -40,7 +40,7 @@ export const PropertyParameters = memo(function PropertyParameters({ node }: Pro
                         options={options}
                         onSelect={(id) => handleAddParameter(id)}
                         placeholder="Выберите параметр"
-                        className="flex-1 pointer-events-auto"
+                        className="flex-1"
                     />
                 </div>
             )}

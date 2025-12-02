@@ -156,7 +156,7 @@ export const EnumContent = memo(function EnumContent({
                     onDrop={handleDrop}
                     onClick={handleAddDefaultOption}
                 >
-                    <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center pointer-events-none">
+                    <div className="flex flex-wrap items-center justify-center py-4 gap-2 text-center">
                         <span>Кликните чтобы добавить параметр</span>
                         <div className="flex items-center gap-2 bg-bg-accent/10 px-2 py-1 rounded-md text-text-accent">
                             {(() => {

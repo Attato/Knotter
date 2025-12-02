@@ -19,7 +19,7 @@ export function CanvasNodes({ nodes, selectedNodeIds, hoveredNodeId }: CanvasNod
     const zoomLevel = useCanvasStore((state) => state.zoomLevel);
 
     return (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
             {nodes.map((node) => {
                 const isSelected = selectedNodeIds.includes(node.id);
 
