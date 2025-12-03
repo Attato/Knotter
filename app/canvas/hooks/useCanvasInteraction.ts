@@ -50,7 +50,7 @@ export function useCanvasInteraction({
 
         if (!container || !canvas) return;
 
-        panHandlers.current = getPanEventHandler(isPanningRef, lastMouseRef, canvasRef);
+        panHandlers.current = getPanEventHandler(isPanningRef, lastMouseRef);
 
         selectHandlers.current = getSelectionEventHandler(
             selectionStart,

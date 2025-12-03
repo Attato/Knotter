@@ -2,19 +2,13 @@ import { RefObject } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position } from '@/canvas/canvas.types';
 
-export function getPanEventHandler(
-    isPanningRef: RefObject<boolean>,
-    lastMouseRef: RefObject<Position | null>,
-    canvasRef?: RefObject<HTMLCanvasElement | null>,
-) {
+export function getPanEventHandler(isPanningRef: RefObject<boolean>, lastMouseRef: RefObject<Position | null>) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
         e.preventDefault();
 
         isPanningRef.current = true;
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
-
-        if (canvasRef?.current) canvasRef.current.style.cursor = 'grabbing';
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -34,15 +28,11 @@ export function getPanEventHandler(
         );
 
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
-
-        if (canvasRef?.current) canvasRef.current.style.cursor = 'grabbing';
     };
 
     const handleMouseUp = () => {
         isPanningRef.current = false;
         lastMouseRef.current = null;
-
-        if (canvasRef?.current) canvasRef.current.style.cursor = 'default';
     };
 
     const handleWheelForTouchpad = (e: WheelEvent) => {
