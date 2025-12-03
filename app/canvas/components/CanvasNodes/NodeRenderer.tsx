@@ -49,11 +49,11 @@ function EditMode({ node, isSelected }: NodeProps) {
         <div
             ref={nodeRef}
             className={`
-                relative flex flex-col gap-1 max-w-64 min-w-16 w-fit border-1 rounded-lg bg-background text-sm p-1
-                ${isSelected ? 'border-bg-accent' : 'border-foreground'} 
+                relative flex flex-col gap-1 max-w-96 min-w-16 w-full border-1 rounded-lg bg-background text-sm p-1
+                ${isSelected ? 'border-bg-accent' : 'border-depth-4'} 
             `}
         >
-            <div className="rounded-t-lg flex items-center truncate w-full px-3 py-1 rounded-md bg-depth-1">{node.name}</div>
+            <div className="rounded-t-md flex items-center truncate w-full px-3 py-1 rounded-md bg-depth-1">{node.name}</div>
 
             {node.description && (
                 <div className="px-3 py-1 rounded-md bg-depth-1 text-foreground overflow-hidden break-words">
