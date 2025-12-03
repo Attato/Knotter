@@ -94,14 +94,6 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             const nodes = getNodes(items);
 
-            if (!isDraggingNodes) {
-                const hoveredNode = findNodeUnderCursor(nodes, mousePos);
-                const edges = getEdges(items);
-                const hoveredEdge = !hoveredNode ? findEdgeUnderCursor(edges, nodes, mousePos) : null;
-
-                canvas.style.cursor = hoveredNode ? 'move' : hoveredEdge ? 'pointer' : 'default';
-            }
-
             if (tempEdge) {
                 setTempEdge({ ...tempEdge, toPos: mousePos });
                 return;
@@ -160,8 +152,6 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             const mousePos = getMousePosition(e, canvas);
             trackMousePosition(mousePos, setMousePosition);
 
-            updateHoveredNodeId(mousePos);
-
             if (!isDraggingNodes && pendingClickItemId) {
                 const newSelectedIds = selectCanvasItem({
                     items,
@@ -204,10 +194,6 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             setDragStartMouse(null);
             setPendingClickItemId(null);
             setInitialNodePositions(new Map());
-
-            const hoveredNode = findNodeUnderCursor(getNodes(items), mousePos);
-            const hoveredEdge = !hoveredNode ? findEdgeUnderCursor(getEdges(items), getNodes(items), mousePos) : null;
-            canvas.style.cursor = hoveredNode ? 'move' : hoveredEdge ? 'pointer' : 'default';
         },
         [
             canvasRef,
@@ -221,7 +207,6 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             setItems,
             trackMousePosition,
             setMousePosition,
-            updateHoveredNodeId,
         ],
     );
 
