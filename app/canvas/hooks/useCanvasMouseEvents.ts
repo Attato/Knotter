@@ -52,6 +52,14 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             if (!canvas || e.button !== 0) return;
 
+            const target = e.target as HTMLElement;
+
+            const isInteractiveElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+            if (isInteractiveElement) {
+                return;
+            }
+
             const mousePos = getMousePosition(e, canvas);
             trackMousePosition(mousePos, setMousePosition);
 
