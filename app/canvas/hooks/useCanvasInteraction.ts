@@ -15,6 +15,7 @@ import { getZoomEventHandler } from '@/canvas/utils/eventHandlers/getZoomEventHa
 import { MouseHandler } from '@/canvas/canvas.types';
 
 interface useCanvasInteractionProps {
+    containerRef: RefObject<HTMLDivElement | null>;
     canvasRef: RefObject<HTMLCanvasElement | null>;
     selectionStart: Position | null;
     setSelectionStart: (value: Position | null) => void;
@@ -23,6 +24,7 @@ interface useCanvasInteractionProps {
 }
 
 export function useCanvasInteraction({
+    containerRef,
     canvasRef,
     selectionStart,
     setSelectionStart,
@@ -43,16 +45,20 @@ export function useCanvasInteraction({
     const handleZoom = useRef<((e: WheelEvent) => void) | null>(null);
 
     useEffect(() => {
+        const container = containerRef.current;
         const canvas = canvasRef.current;
-        if (!canvas) return;
+
+        if (!container || !canvas) return;
 
         panHandlers.current = getPanEventHandler(isPanningRef, lastMouseRef, canvasRef);
+
         selectHandlers.current = getSelectionEventHandler(
             selectionStart,
             setSelectionStart,
             setSelectionEnd,
             selectItemsInArea,
         );
+
         handleZoom.current = getZoomEventHandler(canvas);
 
         const handleMouseDown: MouseHandler = (e) => {
@@ -89,18 +95,21 @@ export function useCanvasInteraction({
             }
         };
 
-        canvas.addEventListener('mousedown', handleMouseDown);
-        canvas.addEventListener('mousemove', handleMouseMove);
+        container.addEventListener('mousedown', handleMouseDown);
+        container.addEventListener('mousemove', handleMouseMove);
+        container.addEventListener('wheel', handleWheel, { passive: false });
+
         window.addEventListener('mouseup', handleMouseUp);
-        canvas.addEventListener('wheel', handleWheel, { passive: false });
 
         return () => {
-            canvas.removeEventListener('mousedown', handleMouseDown);
-            canvas.removeEventListener('mousemove', handleMouseMove);
+            container.removeEventListener('mousedown', handleMouseDown);
+            container.removeEventListener('mousemove', handleMouseMove);
+            container.removeEventListener('wheel', handleWheel);
+
             window.removeEventListener('mouseup', handleMouseUp);
-            canvas.removeEventListener('wheel', handleWheel);
         };
     }, [
+        containerRef,
         canvasRef,
         selectionStart,
         setSelectionStart,
