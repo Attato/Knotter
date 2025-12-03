@@ -15,8 +15,11 @@ interface CanvasNodesProps {
 }
 
 export function CanvasNodes({ nodes, selectedNodeIds, hoveredNodeId }: CanvasNodesProps) {
-    const { offset, tooltipMode, editorMode, invertY } = useCanvasStore();
     const zoomLevel = useCanvasStore((state) => state.zoomLevel);
+    const offset = useCanvasStore((state) => state.offset);
+    const tooltipMode = useCanvasStore((state) => state.tooltipMode);
+    const editorMode = useCanvasStore((state) => state.editorMode);
+    const invertY = useCanvasStore((state) => state.invertY);
 
     return (
         <div className="absolute inset-0 overflow-hidden">
