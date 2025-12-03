@@ -25,7 +25,7 @@ export const Inspector = memo(function Inspector() {
     }
 
     return (
-        <div className="flex flex-col h-[calc(100vh-46px)] overflow-y-auto">
+        <div className="flex flex-col h-screen overflow-y-auto pb-1">
             <div className="flex flex-col gap-1 m-1">
                 <Input
                     value={selectedItem.name}
