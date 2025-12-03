@@ -52,7 +52,7 @@ export const OptionPicker = memo(function OptionPicker({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between px-3 py-2 h-8 bg-depth-2 hover:bg-depth-3 border border-depth-3 rounded-md text-sm"
+                className="w-full flex items-center justify-between px-3 py-2 h-8 bg-depth-2 hover:bg-depth-3 border border-depth-3 rounded-md text-sm cursor-pointer"
             >
                 <span>{placeholder}</span>
 
