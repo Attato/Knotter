@@ -26,6 +26,7 @@ export const OptionPicker = memo(function OptionPicker({
     const [isOpen, setIsOpen] = useState(false);
     const [query, setQuery] = useState('');
     const pickerRef = useRef<HTMLDivElement>(null);
+    const pickerContentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -38,6 +39,22 @@ export const OptionPicker = memo(function OptionPicker({
 
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    useEffect(() => {
+        const dropdown = pickerContentRef.current;
+
+        if (!dropdown) return;
+
+        const handleWheel = (e: WheelEvent) => {
+            e.stopPropagation();
+        };
+
+        dropdown.addEventListener('wheel', handleWheel, { passive: false });
+
+        return () => {
+            dropdown.removeEventListener('wheel', handleWheel);
+        };
+    }, [isOpen]);
 
     const filtered = options.filter((opt) => opt.label.toLowerCase().includes(query.toLowerCase()));
 
@@ -60,7 +77,10 @@ export const OptionPicker = memo(function OptionPicker({
             </button>
 
             {isOpen && (
-                <div className="absolute z-10 w-full mt-1 bg-depth-2 border border-depth-3 rounded-md shadow-lg max-h-64 overflow-auto flex flex-col">
+                <div
+                    ref={pickerContentRef}
+                    className="flex flex-col w-full max-h-64 bg-depth-2 border border-depth-3 rounded-md shadow-lg overflow-auto mt-1"
+                >
                     <Input
                         value={query}
                         onChange={(value) => setQuery(value)}
