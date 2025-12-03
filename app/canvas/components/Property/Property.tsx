@@ -12,7 +12,7 @@ import { useProperty } from '@/canvas/hooks/Property/useProperty';
 import { useDropdownStore } from '@/canvas/store/dropdownStore';
 
 export const Property = memo(function Property() {
-    const { staticDropdowns, isEdge, shapeType, positionX, positionY, handleChangeNodeShapeType, handleMove } =
+    const { staticDropdowns, isEdge, node, shapeType, positionX, positionY, handleChangeNodeShapeType, handleMove } =
         useProperty();
 
     const { toggleDropdown, isDropdownOpen } = useDropdownStore();
@@ -41,9 +41,11 @@ export const Property = memo(function Property() {
 
             <hr className="border-b-0 border-depth-3" />
 
-            <div className="mx-1 flex flex-col gap-1">
-                <PropertyParameters />
-            </div>
+            {node && (
+                <div className="mx-1 flex flex-col gap-1">
+                    <PropertyParameters node={node} />
+                </div>
+            )}
         </div>
     );
 });
