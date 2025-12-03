@@ -41,7 +41,7 @@ export default function Canvas() {
     const nodes = getNodes(items);
 
     return (
-        <div ref={containerRef} className="flex h-screen relative" onClick={closeMenu}>
+        <div ref={containerRef} className="flex h-screen relative select-none" onClick={closeMenu}>
             <CanvasControls />
 
             <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
