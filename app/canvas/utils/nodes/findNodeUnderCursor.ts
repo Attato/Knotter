@@ -24,7 +24,9 @@ export function findNodeUnderCursor(
     zoomLevel = 1,
     offset: Position = { x: 0, y: 0 },
 ): Node | undefined {
-    return nodes.find((node) => {
+    for (let i = nodes.length - 1; i >= 0; i--) {
+        const node = nodes[i];
+
         const { x, y } = node.position;
 
         const { width, height } = getNodeDimensions(node);
@@ -35,11 +37,15 @@ export function findNodeUnderCursor(
         const screenX = x * zoomLevel + offset.x;
         const screenY = y * zoomLevel + offset.y;
 
-        return (
+        if (
             cursor.x >= screenX - halfWidth &&
             cursor.x <= screenX + halfWidth &&
             cursor.y >= screenY - halfHeight &&
             cursor.y <= screenY + halfHeight
-        );
-    });
+        ) {
+            return node;
+        }
+    }
+
+    return undefined;
 }
