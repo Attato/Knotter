@@ -2,7 +2,12 @@ import { RefObject } from 'react';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position } from '@/canvas/canvas.types';
 
-export function getPanEventHandler(isPanningRef: RefObject<boolean>, lastMouseRef: RefObject<Position | null>) {
+interface getPanEventHandlerProps {
+    isPanningRef: RefObject<boolean>;
+    lastMouseRef: RefObject<Position | null>;
+}
+
+export function getPanEventHandler({ isPanningRef, lastMouseRef }: getPanEventHandlerProps) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
         e.preventDefault();
