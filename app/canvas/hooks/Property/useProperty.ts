@@ -11,7 +11,7 @@ import { getNodes } from '@/canvas/utils/nodes/getNodes';
 
 import { NodeShapeType } from '@/canvas/utils/nodes/getShape';
 
-import { Position } from '@/canvas/canvas.types';
+import { Position, Node } from '@/canvas/canvas.types';
 
 export interface IDropdown {
     id: number | string;
@@ -35,9 +35,11 @@ export function useProperty() {
     const staticDropdowns = useMemo(() => DROPDOWNS, []);
 
     const isEdge = selectedItem?.kind === 'edge';
-    const shapeType = selectedItem?.kind === 'node' ? selectedItem.shapeType : null;
-    const positionX = selectedItem?.position.x ?? 0;
-    const positionY = selectedItem?.position.y ?? 0;
+    const node: Node | null = selectedItem?.kind === 'node' ? selectedItem : null;
+
+    const shapeType = node?.shapeType ?? null;
+    const positionX = node?.position.x ?? 0;
+    const positionY = node?.position.y ?? 0;
 
     const handleChangeNodeShapeType = useCallback(
         (type: NodeShapeType) => {
@@ -49,17 +51,17 @@ export function useProperty() {
 
     const handleMove = useCallback(
         (axis: 'x' | 'y', value: number) => {
-            if (!selectedItem || selectedItem.kind !== 'node') return;
+            if (!node) return;
 
             const initialPositions = new Map<string, Position>();
             selectedItemIds.forEach((id) => {
-                const node = items.find((n) => n.id === id && n.kind === 'node');
-                if (node) initialPositions.set(id, node.position);
+                const n = items.find((item) => item.id === id && item.kind === 'node');
+                if (n) initialPositions.set(id, n.position);
             });
 
             const delta: Position = {
-                x: axis === 'x' ? value - selectedItem.position.x : 0,
-                y: axis === 'y' ? value - selectedItem.position.y : 0,
+                x: axis === 'x' ? value - node.position.x : 0,
+                y: axis === 'y' ? value - node.position.y : 0,
             };
 
             const updatedNodes = moveNodes(getNodes(items), selectedItemIds, initialPositions, delta, nodeMoveStep);
@@ -67,13 +69,14 @@ export function useProperty() {
 
             setItems(updatedItems);
         },
-        [selectedItem, selectedItemIds, nodeMoveStep, items, setItems],
+        [node, selectedItemIds, nodeMoveStep, items, setItems],
     );
 
     return {
         staticDropdowns,
 
         isEdge,
+        node,
         shapeType,
         positionX,
         positionY,
