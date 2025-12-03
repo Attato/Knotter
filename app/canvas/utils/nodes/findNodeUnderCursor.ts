@@ -1,7 +1,17 @@
+import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position, Node } from '@/canvas/canvas.types';
 import { NODE_SIZE } from '@/canvas/constants';
 
 export function getNodeDimensions(node?: Node) {
+    const editorMode = useCanvasStore.getState().editorMode;
+
+    if (editorMode === 'view') {
+        return {
+            width: NODE_SIZE,
+            height: NODE_SIZE,
+        };
+    }
+
     return {
         width: node?.width ?? NODE_SIZE,
         height: node?.height ?? NODE_SIZE,
