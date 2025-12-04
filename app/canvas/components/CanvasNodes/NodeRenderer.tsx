@@ -49,7 +49,7 @@ function EditMode({ node, isSelected }: NodeProps) {
         <div
             ref={nodeRef}
             className={`
-                relative flex flex-col gap-1 max-w-96 min-w-16 w-full border-1 rounded-lg bg-background text-sm p-1 hover:cursor-move active:cursor-grabbing
+                relative flex flex-col gap-1 max-w-96 min-w-16 w-max border-1 rounded-lg bg-background text-sm p-1 hover:cursor-move active:cursor-grabbing
                 ${isSelected ? 'border-bg-accent' : 'border-depth-4'} 
             `}
         >
@@ -74,7 +74,7 @@ function ViewMode({ node, isSelected }: NodeProps) {
     return (
         <div className="relative w-full h-full flex items-center justify-center">
             <Icon
-                className={`w-full h-full fill-background hover:cursor-move active:cursor-grabbing 
+                className={`w-max fill-background hover:cursor-move active:cursor-grabbing 
                     ${isPoint ? 'stroke-[2px]' : 'stroke-[1.5px]'} 
                     ${isSelected ? 'text-bg-accent' : 'text-foreground'}
                 `}
