@@ -44,7 +44,7 @@ export default function Canvas() {
         <div ref={containerRef} className="flex h-screen relative select-none" onClick={closeMenu}>
             <CanvasControls />
 
-            <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} canvasRef={canvasRef} />
+            <CanvasContextMenu isOpen={isOpen} position={position} closeMenu={closeMenu} />
 
             <canvas ref={canvasRef} className="absolute w-full h-full" onContextMenu={handleContextMenu} />
 

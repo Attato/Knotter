@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, memo, RefObject } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { ContextMenu } from '@/components/UI/ContextMenu';
 import { ContextMenuItem } from '@/components/UI/ContextMenuItem';
 
@@ -11,7 +11,6 @@ type CanvasContextMenuProps = {
     isOpen: boolean;
     position: { x: number; y: number };
     closeMenu: () => void;
-    canvasRef?: RefObject<HTMLCanvasElement | null>;
 };
 
 export const CanvasContextMenu = memo(function CanvasContextMenu({ isOpen, position, closeMenu }: CanvasContextMenuProps) {
