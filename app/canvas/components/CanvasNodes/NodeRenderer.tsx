@@ -8,8 +8,6 @@ import { NODE_SIZE } from '@/canvas/constants';
 
 import { EditorMode, Node } from '@/canvas/canvas.types';
 
-import { PropertyParameters } from '@/canvas/components/Property/PropertyParameters';
-
 interface NodeRendererProps {
     node: Node;
     isSelected: boolean;
@@ -60,8 +58,6 @@ function EditMode({ node, isSelected }: NodeProps) {
                     {node.description}
                 </div>
             )}
-
-            <PropertyParameters node={node} />
         </div>
     );
 }
