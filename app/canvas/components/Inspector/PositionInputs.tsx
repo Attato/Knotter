@@ -19,6 +19,7 @@ export const PositionInputs = memo(function PositionInputs({ positionX, position
                 step={NODE_MOVE_MIN_STEP}
                 onChange={(v) => onMove('x', v)}
             />
+
             <InfiniteSliderInput
                 label="Положение Y"
                 value={positionY}
