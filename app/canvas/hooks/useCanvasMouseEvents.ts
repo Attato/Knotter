@@ -54,9 +54,10 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
 
             const target = e.target as HTMLElement;
 
-            const isInteractiveElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+            const isStandardInteractive = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+            const isCustomInteractive = target.closest('[data-interactive-element="true"]');
 
-            if (isInteractiveElement) {
+            if (isStandardInteractive || isCustomInteractive) {
                 return;
             }
 
