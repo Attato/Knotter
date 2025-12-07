@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+import { NodeProperties } from '@/canvas/components/CanvasNodes/NodeProperties';
+
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
 import { getShape } from '@/canvas/utils/nodes/getShape';
@@ -58,6 +60,8 @@ function EditMode({ node, isSelected }: NodeProps) {
                     {node.description}
                 </div>
             )}
+
+            {node.properties.length > 0 && <NodeProperties node={node} />}
         </div>
     );
 }
