@@ -9,21 +9,23 @@ import { Checkbox } from '@/components/UI/Checkbox';
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 
 import { isNumberValue, isStringValue, isBooleanValue } from '@/canvas/hooks/Parameters/useParametersItem';
+import { ParameterValue } from '@/canvas/canvas.types';
 
 import { X } from 'lucide-react';
-
-type BaseParameterValue = number | string | boolean;
 
 interface BaseParameterContentProps {
     parameterId: string;
     parameterName: string;
     parameterType: string;
-    parameterValue: BaseParameterValue;
+    parameterValue: ParameterValue;
 
     updateParameterName: (name: string) => void;
-    updateParameter: (value: BaseParameterValue) => void;
-    handleNumberInput: (value: string) => void;
-    getDisplayValue: () => string;
+    updateParameter: (value: ParameterValue) => void;
+
+    handleBaseNumberInput: (value: string) => void;
+    handleMinNumberInput: (value: string) => void;
+    handleMaxNumberInput: (value: string) => void;
+    getDisplayValue: (field: 'base' | 'min' | 'max') => string;
 
     onRemove: () => void;
 }
@@ -36,7 +38,10 @@ export const BaseParameterContent = memo(function BaseParameterContent({
 
     updateParameterName,
     updateParameter,
-    handleNumberInput,
+
+    handleBaseNumberInput,
+    handleMinNumberInput,
+    handleMaxNumberInput,
     getDisplayValue,
 
     onRemove,
@@ -52,45 +57,85 @@ export const BaseParameterContent = memo(function BaseParameterContent({
                 e.dataTransfer.setData('application/parameter-type', parameterType);
             }}
         >
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 h-8">
                 <Icon size={16} className="min-w-4" />
 
                 <EditableName name={parameterName} onChange={updateParameterName} className="w-full" />
 
-                {isNumberValue(parameterValue) && (
-                    <Input
-                        value={getDisplayValue()}
-                        onChange={handleNumberInput}
-                        className="bg-depth-3 border border-depth-4"
-                        max={16}
-                        type="text"
-                        inputMode="decimal"
-                    />
-                )}
-
-                {isStringValue(parameterValue) && (
-                    <Input
-                        value={parameterValue}
-                        onChange={(val) => updateParameter(val)}
-                        className="bg-depth-3 border border-depth-4"
-                        max={16}
-                        placeholder="Введите текст..."
-                    />
-                )}
-
-                {isBooleanValue(parameterValue) && (
-                    <div className="w-full">
-                        <Checkbox
-                            checked={parameterValue}
-                            onChange={(checked) => updateParameter(checked)}
-                            className="bg-depth-3 border border-depth-4"
-                        />
-                    </div>
-                )}
-
                 <button onClick={onRemove} className="ml-auto text-gray cursor-pointer">
                     <X size={16} />
                 </button>
+            </div>
+
+            <div className="flex items-center gap-1">
+                {isNumberValue(parameterValue) && (
+                    <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2">
+                            <p className="truncate w-full text-right">Базовое значение</p>
+
+                            <Input
+                                value={getDisplayValue('base')}
+                                onChange={handleBaseNumberInput}
+                                className="bg-depth-3 border border-depth-4"
+                                max={16}
+                                type="text"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <p className="truncate w-full text-right">Минимальное значение</p>
+
+                            <Input
+                                value={getDisplayValue('min')}
+                                onChange={handleMinNumberInput}
+                                className="bg-depth-3 border border-depth-4"
+                                max={16}
+                                type="text"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <p className="truncate w-full text-right">Максимальное значение</p>
+                            <Input
+                                value={getDisplayValue('max')}
+                                onChange={handleMaxNumberInput}
+                                className="bg-depth-3 border border-depth-4"
+                                max={16}
+                                type="text"
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {isStringValue(parameterValue) && (
+                    <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2">
+                            <p className="truncate w-full text-right">Базовое значение</p>
+
+                            <Input
+                                value={parameterValue}
+                                onChange={(val) => updateParameter(val)}
+                                className="bg-depth-3 border border-depth-4"
+                                max={16}
+                                placeholder="Введите текст..."
+                            />
+                        </div>
+                    </div>
+                )}
+                {isBooleanValue(parameterValue) && (
+                    <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2">
+                            <p className="truncate w-full text-right">Базовое значение</p>
+                            <div className="w-full">
+                                <Checkbox
+                                    checked={parameterValue}
+                                    onChange={(checked) => updateParameter(checked)}
+                                    className="bg-depth-3 border border-depth-4"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
