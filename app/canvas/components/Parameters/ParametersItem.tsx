@@ -19,8 +19,12 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         parameterType,
         updateParameter,
         updateParameterName,
-        handleNumberInput,
+
+        handleBaseNumberInput,
+        handleMinNumberInput,
+        handleMaxNumberInput,
         getDisplayValue,
+
         handleDropToEnum,
         handleDropToArray,
         handleDropToArrayEnum,
@@ -70,7 +74,9 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
             parameterValue={parameterValue}
             updateParameterName={updateParameterName}
             updateParameter={updateParameter}
-            handleNumberInput={handleNumberInput}
+            handleBaseNumberInput={handleBaseNumberInput}
+            handleMinNumberInput={handleMinNumberInput}
+            handleMaxNumberInput={handleMaxNumberInput}
             getDisplayValue={getDisplayValue}
             onRemove={() => onRemoveParameter(parameter.id)}
         />
