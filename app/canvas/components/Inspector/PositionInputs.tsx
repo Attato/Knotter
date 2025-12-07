@@ -1,8 +1,12 @@
 'use client';
 
 import { memo } from 'react';
-import { NODE_MOVE_MIN_STEP } from '@/canvas/constants';
+
 import { InfiniteSliderInput } from '@/components/UI/InfiniteSliderInput';
+
+import { useCanvasStore } from '@/canvas/store/canvasStore';
+
+import { NODE_MOVE_MAX_STEP, NODE_MOVE_MIN_STEP } from '@/canvas/constants';
 
 interface PositionInputsProps {
     positionX: number;
@@ -11,20 +15,26 @@ interface PositionInputsProps {
 }
 
 export const PositionInputs = memo(function PositionInputs({ positionX, positionY, onMove }: PositionInputsProps) {
+    const isMagnet = useCanvasStore((state) => state.isMagnet);
+
     return (
         <>
             <InfiniteSliderInput
-                label="Положение X"
+                name="Положение X"
+                min={-Infinity}
+                max={Infinity}
                 value={positionX}
-                step={NODE_MOVE_MIN_STEP}
-                onChange={(v) => onMove('x', v)}
+                step={isMagnet ? NODE_MOVE_MAX_STEP : NODE_MOVE_MIN_STEP}
+                onChange={(value) => onMove('x', value)}
             />
 
             <InfiniteSliderInput
-                label="Положение Y"
+                name="Положение Y"
+                min={-Infinity}
+                max={Infinity}
                 value={positionY}
-                step={NODE_MOVE_MIN_STEP}
-                onChange={(v) => onMove('y', v)}
+                step={isMagnet ? NODE_MOVE_MAX_STEP : NODE_MOVE_MIN_STEP}
+                onChange={(value) => onMove('y', value)}
             />
         </>
     );
