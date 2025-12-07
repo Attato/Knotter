@@ -21,9 +21,9 @@ export const InfiniteSliderInput = memo(function InfiniteSliderInput({
     step = 1,
     min = DEFAULT_MIN,
     max = DEFAULT_MAX,
-    onChange,
     name,
     showFill = false,
+    onChange,
 }: InfiniteSliderInputProps) {
     const draggingRef = useRef(false);
     const startXRef = useRef(0);
