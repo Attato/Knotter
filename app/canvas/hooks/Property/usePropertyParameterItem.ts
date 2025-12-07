@@ -73,10 +73,25 @@ export const usePropertyParameterItem = ({ parameter, handleUpdateParameter }: u
 
     const handleNumber = useCallback(
         (text: string) => {
-            const number = parseFloat(text);
-            updateValue(isNaN(number) ? 0 : number);
+            const newBaseValue = parseFloat(text);
+
+            const validBaseValue = isNaN(newBaseValue) ? 0 : newBaseValue;
+
+            if (isNumberValue(parameter.value)) {
+                const newConfig = {
+                    ...parameter.value,
+                    base: validBaseValue,
+                };
+                updateValue(newConfig);
+            } else {
+                updateValue({
+                    base: validBaseValue,
+                    min: validBaseValue,
+                    max: validBaseValue,
+                });
+            }
         },
-        [updateValue],
+        [updateValue, parameter.value],
     );
 
     const handleString = useCallback(
