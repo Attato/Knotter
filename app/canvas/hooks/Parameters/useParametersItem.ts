@@ -1,23 +1,53 @@
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { ParameterValue, Enum, ArrayItem, ParameterType } from '@/canvas/canvas.types';
+import { ParameterValue, Enum, ArrayItem, ParameterType, NumberConfig } from '@/canvas/canvas.types';
 
 import { v4 as uuid } from 'uuid';
 
-const NUMBER_LIMITS = {
+export const NUMBER_LIMITS = {
     MIN: -999999999,
     MAX: 999999999,
 };
 
-const isObject = (value: unknown): value is object => value !== null && typeof value === 'object';
-const hasSelectedId = (value: object): value is { selectedId: unknown } => 'selectedId' in value;
-const isValidEnum = (value: unknown): value is Enum => isObject(value) && hasSelectedId(value);
+const isObject = (value: unknown): value is object => {
+    return value !== null && typeof value === 'object';
+};
 
-export const isNumberValue = (value: ParameterValue): value is number => typeof value === 'number';
-export const isStringValue = (value: ParameterValue): value is string => typeof value === 'string';
-export const isBooleanValue = (value: ParameterValue): value is boolean => typeof value === 'boolean';
-export const isEnumValue = (value: ParameterValue): value is Enum => isValidEnum(value);
-export const isArrayValue = (value: ParameterValue): value is ArrayItem[] => Array.isArray(value);
+const hasSelectedId = (value: object): value is { selectedId: unknown } => {
+    return 'selectedId' in value;
+};
+
+const isValidEnum = (value: unknown): value is Enum => {
+    return isObject(value) && hasSelectedId(value);
+};
+
+const isNumberObject = (value: unknown): value is object => {
+    return value !== null && typeof value === 'object';
+};
+
+const hasNumberFields = (value: object): value is NumberConfig => {
+    return 'base' in value && 'min' in value && 'max' in value;
+};
+
+export const isNumberValue = (value: ParameterValue): value is NumberConfig => {
+    return isNumberObject(value) && hasNumberFields(value);
+};
+
+export const isStringValue = (value: ParameterValue): value is string => {
+    return typeof value === 'string';
+};
+
+export const isBooleanValue = (value: ParameterValue): value is boolean => {
+    return typeof value === 'boolean';
+};
+
+export const isEnumValue = (value: ParameterValue): value is Enum => {
+    return isValidEnum(value);
+};
+
+export const isArrayValue = (value: ParameterValue): value is ArrayItem[] => {
+    return Array.isArray(value);
+};
 
 export const useParametersItem = (parameterId: string) => {
     const parameters = useCanvasStore((state) => state.parameters);
@@ -30,46 +60,97 @@ export const useParametersItem = (parameterId: string) => {
     }
 
     const updateParameter = (value: ParameterValue) => {
-        setParameters(parameters.map((parameter) => (parameter.id === parameterId ? { ...parameter, value } : parameter)));
+        setParameters(parameters.map((p) => (p.id === parameterId ? { ...p, value } : p)));
     };
 
     const updateParameterName = (newName: string) => {
-        setParameters(
-            parameters.map((parameter) => (parameter.id === parameterId ? { ...parameter, name: newName } : parameter)),
-        );
+        setParameters(parameters.map((p) => (p.id === parameterId ? { ...p, name: newName } : p)));
     };
 
     const getParameterType = (): ParameterType => {
-        const { value } = parameter;
-
-        if (isNumberValue(value)) return 'number';
-        if (isStringValue(value)) return 'string';
-        if (isBooleanValue(value)) return 'boolean';
-        if (isArrayValue(value)) return 'array';
-        if (isEnumValue(value)) return 'enum';
-
-        return 'string';
+        return parameter.type;
     };
 
-    const handleNumberInput = (value: string) => {
+    const handleBaseNumberInput = (value: string) => {
         if (!isNumberValue(parameter.value)) return;
         const numValue = parseFloat(value);
+
         if (!isNaN(numValue) && numValue >= NUMBER_LIMITS.MIN && numValue <= NUMBER_LIMITS.MAX) {
-            updateParameter(numValue);
+            const clampedValue = Math.max(parameter.value.min, Math.min(numValue, parameter.value.max));
+
+            const newValue: NumberConfig = {
+                ...parameter.value,
+                base: clampedValue,
+            };
+            updateParameter(newValue);
         }
     };
 
-    const getDisplayValue = (): string => {
+    const handleMinNumberInput = (value: string) => {
+        if (!isNumberValue(parameter.value)) return;
+        const numValue = parseFloat(value);
+
+        if (!isNaN(numValue) && numValue >= NUMBER_LIMITS.MIN) {
+            const newMin = Math.min(numValue, parameter.value.max);
+
+            const newBase = Math.max(newMin, parameter.value.base);
+
+            const newValue: NumberConfig = {
+                ...parameter.value,
+                min: newMin,
+                base: newBase,
+            };
+            updateParameter(newValue);
+        }
+    };
+
+    const handleMaxNumberInput = (value: string) => {
+        if (!isNumberValue(parameter.value)) return;
+        const numValue = parseFloat(value);
+
+        if (!isNaN(numValue) && numValue <= NUMBER_LIMITS.MAX) {
+            const newMax = Math.max(numValue, parameter.value.min);
+
+            const newBase = Math.min(newMax, parameter.value.base);
+
+            const newValue: NumberConfig = {
+                ...parameter.value,
+                max: newMax,
+                base: newBase,
+            };
+            updateParameter(newValue);
+        }
+    };
+
+    const validateAndFixNumberConfig = (config: NumberConfig): NumberConfig => {
+        let { min, max, base } = config;
+
+        if (min > max) {
+            [min, max] = [max, min];
+        }
+
+        base = Math.max(min, Math.min(base, max));
+
+        return { ...config, min, max, base };
+    };
+
+    const updateNumberConfig = (config: NumberConfig) => {
+        const validatedConfig = validateAndFixNumberConfig(config);
+        updateParameter(validatedConfig);
+    };
+
+    const getDisplayValue = (field: 'base' | 'min' | 'max'): string => {
         const { value } = parameter;
 
         if (isNumberValue(value)) {
-            return value.toString();
+            return value[field].toString();
         }
 
         if (isEnumValue(value)) {
             const selectedOption = value.options.find((opt) => opt.id === value.selectedId);
             return selectedOption?.name || selectedOption?.value || 'Не выбрано';
         }
+
         return String(value);
     };
 
@@ -80,15 +161,18 @@ export const useParametersItem = (parameterId: string) => {
             ...parameter.value,
             options: parameter.value.options.map((item) => (item.id === itemId ? { ...item, value: newValue } : item)),
         };
+
         updateParameter(updated);
     };
 
     const updateEnumOptionName = (index: number, newName: string) => {
         if (!isEnumValue(parameter.value)) return;
+
         const updated: Enum = {
             ...parameter.value,
             options: parameter.value.options.map((o, i) => (i === index ? { ...o, name: newName } : o)),
         };
+
         updateParameter(updated);
     };
 
@@ -149,11 +233,15 @@ export const useParametersItem = (parameterId: string) => {
 
         switch (droppedParam.type) {
             case 'number':
+                const numericValue = isNumberValue(droppedParam.value)
+                    ? droppedParam.value.base
+                    : (droppedParam.value as unknown as number);
+
                 newItem = {
                     id: uuid(),
                     name: droppedParam.name,
                     type: 'number',
-                    value: droppedParam.value as number,
+                    value: numericValue,
                 };
                 break;
             case 'string':
@@ -186,6 +274,7 @@ export const useParametersItem = (parameterId: string) => {
 
         const updatedArray = [...parameter.value, newItem];
         const filtered = parameters.filter((p) => p.id !== droppedId);
+
         setParameters(filtered.map((p) => (p.id === parameter.id ? { ...parameter, value: updatedArray } : p)));
     };
 
@@ -353,7 +442,9 @@ export const useParametersItem = (parameterId: string) => {
         updateEnumOption,
         updateEnumOptionName,
         getEnumOptionName,
-        handleNumberInput,
+        handleBaseNumberInput,
+        handleMinNumberInput,
+        handleMaxNumberInput,
         getDisplayValue,
         handleDropToEnum,
         handleDropToArray,
@@ -365,5 +456,7 @@ export const useParametersItem = (parameterId: string) => {
         getArrayItemDisplayValue,
         updateArrayEnumOption,
         removeArrayEnumItem,
+        validateAndFixNumberConfig,
+        updateNumberConfig,
     };
 };
