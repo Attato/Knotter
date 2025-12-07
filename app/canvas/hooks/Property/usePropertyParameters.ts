@@ -19,6 +19,7 @@ export const usePropertyParameters = (node: Node | null) => {
             if (!node) return;
 
             const originalParameter = parameters.find((p) => p.id === parameterId);
+
             if (!originalParameter) return;
 
             const property: PropertyType = {
