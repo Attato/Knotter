@@ -43,6 +43,8 @@ export const ArrayContent = memo(function ArrayContent({
     const Icon = getDynamicIcon(iconType);
     const [isArrayDragOver, setIsArrayDragOver] = useState(false);
 
+    const DATA_TYPES = ['number', 'string', 'boolean', 'enum'] as const;
+
     return (
         <div className="flex flex-col gap-1 px-3 py-2 bg-depth-2 text-sm rounded-md">
             <div className="flex items-center gap-1 h-8">
@@ -93,7 +95,6 @@ export const ArrayContent = memo(function ArrayContent({
                                     }}
                                     className="bg-depth-3 border border-depth-4"
                                     type="text"
-                                    inputMode="decimal"
                                     placeholder="0"
                                 />
                             )}
@@ -126,9 +127,10 @@ export const ArrayContent = memo(function ArrayContent({
             </div>
 
             <div
-                className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-depth-6 ${
-                    isArrayDragOver && 'bg-bg-accent/10 border-text-accent'
-                } ${arrayValue.length > 0 && 'mt-2'}`}
+                className={`flex flex-col gap-2 rounded-md p-2 border border-dashed border-depth-6 
+                    ${isArrayDragOver && 'bg-bg-accent/10 border-text-accent'} 
+                    ${arrayValue.length > 0 && 'mt-2'}
+                `}
                 onDragOver={(e) => e.preventDefault()}
                 onDragEnter={() => setIsArrayDragOver(true)}
                 onDragLeave={() => setIsArrayDragOver(false)}
@@ -145,17 +147,17 @@ export const ArrayContent = memo(function ArrayContent({
             >
                 <div className="flex flex-wrap items-center justify-center py-16 gap-2 text-center">
                     Перетащите сюда
-                    {['number', 'string', 'boolean', 'enum'].map((type, idx, arr) => {
+                    {DATA_TYPES.map((type, idx, arr) => {
                         const IconType = getDynamicIcon(type);
 
-                        const label =
-                            type === 'number'
-                                ? 'Число'
-                                : type === 'string'
-                                  ? 'Текст'
-                                  : type === 'boolean'
-                                    ? 'Флаг'
-                                    : 'Список';
+                        const TYPE_LABELS = {
+                            number: 'Число',
+                            string: 'Текст',
+                            boolean: 'Флаг',
+                            enum: 'Список',
+                        };
+
+                        const label = TYPE_LABELS[type];
 
                         return (
                             <div key={type} className="flex items-center gap-2">
