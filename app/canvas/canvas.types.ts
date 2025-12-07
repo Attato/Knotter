@@ -62,7 +62,13 @@ export type ArrayItem =
     | { id: string; name: string; type: 'boolean'; value: boolean }
     | { id: string; name: string; type: 'enum'; value: Enum };
 
-export type ParameterValue = number | string | boolean | Enum | ArrayItem[];
+export type NumberConfig = {
+    base: number;
+    min: number;
+    max: number;
+};
+
+export type ParameterValue = NumberConfig | string | boolean | Enum | ArrayItem[];
 
 export interface Parameter {
     id: string;
