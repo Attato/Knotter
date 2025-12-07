@@ -1,4 +1,4 @@
-import { ParameterType, ParameterValue, Enum } from '@/canvas/canvas.types';
+import { ParameterType, ParameterValue, Enum, NumberConfig } from '@/canvas/canvas.types';
 
 export const getTypeLabel = (type: string): string => {
     switch (type) {
@@ -33,14 +33,25 @@ export const EMPTY_ENUM: Enum = {
 export const createInitialParameterValue = (type: ParameterType): ParameterValue => {
     switch (type) {
         case 'number':
-            return 0;
+            return <NumberConfig>{
+                base: 0,
+                min: 0,
+                max: 100,
+            };
+
         case 'string':
             return '';
+
         case 'boolean':
             return false;
+
         case 'enum':
             return EMPTY_ENUM;
+
         case 'array':
             return [];
+
+        default:
+            return '';
     }
 };
