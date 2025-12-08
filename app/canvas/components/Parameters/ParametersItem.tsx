@@ -25,6 +25,11 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         handleMaxNumberInput,
         getDisplayValue,
 
+        updateEnumOption,
+        updateEnumOptionName,
+        removeEnumItem,
+        handleAddDefaultOption,
+
         handleDropToEnum,
         handleDropToArray,
         handleDropToArrayEnum,
@@ -33,35 +38,37 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
         removeArrayItem,
     } = useParametersItem(parameterId);
 
-    const parameterValue = parameter.value;
-
-    if (isEnumValue(parameterValue)) {
+    if (isEnumValue(parameter.value)) {
         return (
             <EnumContent
-                enumValue={parameterValue}
+                enumValue={parameter.value}
                 name={parameter.name}
                 parameterId={parameter.id}
-                onUpdateName={updateParameterName}
-                onUpdateEnum={updateParameter}
-                onRemove={() => onRemoveParameter(parameter.id)}
-                onDropToEnum={handleDropToEnum}
+                updateParameterName={updateParameterName}
+                onRemoveParameter={() => onRemoveParameter(parameter.id)}
+                handleDropToEnum={handleDropToEnum}
+                updateEnumOption={updateEnumOption}
+                updateEnumOptionName={updateEnumOptionName}
+                removeEnumItem={removeEnumItem}
+                handleAddDefaultOption={handleAddDefaultOption}
             />
         );
     }
 
-    if (isArrayValue(parameterValue)) {
+    if (isArrayValue(parameter.value)) {
         return (
             <ArrayContent
-                arrayValue={parameterValue}
+                arrayValue={parameter.value}
                 name={parameter.name}
                 iconType={parameterType}
-                onUpdateName={updateParameterName}
+                updateParameterName={updateParameterName}
                 onUpdateItemName={updateArrayItemName}
-                onUpdateItemValue={updateArrayItemValue}
-                onRemoveItem={removeArrayItem}
-                onDropToArray={handleDropToArray}
-                onDropToArrayEnum={handleDropToArrayEnum}
-                onRemoveArray={() => onRemoveParameter(parameter.id)}
+                updateArrayItemValue={updateArrayItemValue}
+                removeArrayItem={removeArrayItem}
+                handleDropToArray={handleDropToArray}
+                handleDropToEnum={handleDropToArrayEnum}
+                onRemoveParameter={() => onRemoveParameter(parameter.id)}
+                updateEnumOptionName={updateEnumOptionName}
             />
         );
     }
@@ -71,7 +78,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, onRemo
             parameterId={parameter.id}
             parameterName={parameter.name}
             parameterType={parameterType}
-            parameterValue={parameterValue}
+            parameterValue={parameter.value}
             updateParameterName={updateParameterName}
             updateParameter={updateParameter}
             handleBaseNumberInput={handleBaseNumberInput}
