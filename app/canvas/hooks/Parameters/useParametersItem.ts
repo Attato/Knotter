@@ -122,23 +122,6 @@ export const useParametersItem = (parameterId: string) => {
         }
     };
 
-    const validateAndFixNumberConfig = (config: NumberConfig): NumberConfig => {
-        let { min, max, base } = config;
-
-        if (min > max) {
-            [min, max] = [max, min];
-        }
-
-        base = Math.max(min, Math.min(base, max));
-
-        return { ...config, min, max, base };
-    };
-
-    const updateNumberConfig = (config: NumberConfig) => {
-        const validatedConfig = validateAndFixNumberConfig(config);
-        updateParameter(validatedConfig);
-    };
-
     const getDisplayValue = (field: 'base' | 'min' | 'max'): string => {
         const { value } = parameter;
 
@@ -176,10 +159,19 @@ export const useParametersItem = (parameterId: string) => {
         updateParameter(updated);
     };
 
-    const getEnumOptionName = (index: number): string => {
-        if (!isEnumValue(parameter.value)) return `Опция ${index + 1}`;
+    const removeEnumItem = (itemId: string) => {
+        if (!isEnumValue(parameter.value)) return;
 
-        return parameter.value.options[index]?.name || `Опция ${index + 1}`;
+        const updated: Enum = {
+            ...parameter.value,
+            options: parameter.value.options.filter((item) => item.id !== itemId),
+        };
+
+        if (parameter.value.selectedId === itemId) {
+            updated.selectedId = updated.options[0]?.id || null;
+        }
+
+        updateParameter(updated);
     };
 
     const handleDropToEnum = (droppedId: string) => {
@@ -205,17 +197,21 @@ export const useParametersItem = (parameterId: string) => {
         setParameters(filtered.map((p) => (p.id === parameter.id ? { ...parameter, value: updatedEnum } : p)));
     };
 
-    const removeEnumItem = (itemId: string) => {
+    const handleAddDefaultOption = () => {
         if (!isEnumValue(parameter.value)) return;
+
+        const ordinalNumber = parameter.value.options.length + 1;
+
+        const newOption = {
+            id: uuid(),
+            name: `${ordinalNumber}.`,
+            value: '',
+        };
 
         const updated: Enum = {
             ...parameter.value,
-            options: parameter.value.options.filter((item) => item.id !== itemId),
+            options: [...parameter.value.options, newOption],
         };
-
-        if (parameter.value.selectedId === itemId) {
-            updated.selectedId = updated.options[0]?.id || null;
-        }
 
         updateParameter(updated);
     };
@@ -384,79 +380,27 @@ export const useParametersItem = (parameterId: string) => {
         updateParameter(updated);
     };
 
-    const getArrayItemDisplayValue = (item: ArrayItem): string => {
-        switch (item.type) {
-            case 'number':
-            case 'string':
-            case 'boolean':
-                return String(item.value);
-            case 'enum':
-                const selectedOption = item.value.options.find((opt) => opt.id === item.value.selectedId);
-                return selectedOption?.name || selectedOption?.value || 'Не выбрано';
-        }
-    };
-
-    const updateArrayEnumOption = (arrayItemId: string, optionId: string, newValue: string) => {
-        if (!isArrayValue(parameter.value)) return;
-
-        const updated = parameter.value.map((item) => {
-            if (item.id !== arrayItemId || item.type !== 'enum') return item;
-
-            const updatedEnum: Enum = {
-                ...item.value,
-                options: item.value.options.map((opt) => (opt.id === optionId ? { ...opt, value: newValue } : opt)),
-            };
-
-            return { ...item, value: updatedEnum };
-        });
-
-        updateParameter(updated);
-    };
-
-    const removeArrayEnumItem = (arrayItemId: string, optionId: string) => {
-        if (!isArrayValue(parameter.value)) return;
-
-        const updated = parameter.value.map((item) => {
-            if (item.id !== arrayItemId || item.type !== 'enum') return item;
-
-            const updatedEnum: Enum = {
-                ...item.value,
-                options: item.value.options.filter((opt) => opt.id !== optionId),
-            };
-
-            if (item.value.selectedId === optionId) {
-                updatedEnum.selectedId = updatedEnum.options[0]?.id || null;
-            }
-
-            return { ...item, value: updatedEnum };
-        });
-
-        updateParameter(updated);
-    };
-
     return {
         parameter,
         parameterType,
         updateParameter,
         updateParameterName,
-        updateEnumOption,
-        updateEnumOptionName,
-        getEnumOptionName,
+
         handleBaseNumberInput,
         handleMinNumberInput,
         handleMaxNumberInput,
         getDisplayValue,
+
+        updateEnumOption,
+        updateEnumOptionName,
+        removeEnumItem,
+        handleAddDefaultOption,
+
         handleDropToEnum,
         handleDropToArray,
         handleDropToArrayEnum,
         updateArrayItemValue,
         updateArrayItemName,
         removeArrayItem,
-        removeEnumItem,
-        getArrayItemDisplayValue,
-        updateArrayEnumOption,
-        removeArrayEnumItem,
-        validateAndFixNumberConfig,
-        updateNumberConfig,
     };
 };
