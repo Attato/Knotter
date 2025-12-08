@@ -55,8 +55,12 @@ export function NodeProperties({ node }: NodePropertiesProps) {
     );
 
     const createSliderChangeHandler = (propertyId: string, currentValue: NumberConfig) => (newBase: number) => {
-        const { min = 0, max = 100 } = currentValue;
-        const clampedValue = Math.max(min, Math.min(max, newBase));
+        const { min, max, step } = currentValue;
+
+        if (!step) return 1;
+
+        const steppedValue = Math.round(newBase / step) * step;
+        const clampedValue = Math.max(min, Math.min(max, steppedValue));
 
         const updatedValue: NumberConfig = {
             ...currentValue,
@@ -79,6 +83,7 @@ export function NodeProperties({ node }: NodePropertiesProps) {
                                     value={numberConfig.base}
                                     min={numberConfig.min}
                                     max={numberConfig.max}
+                                    step={numberConfig.step}
                                     name={property.name}
                                     onChange={createSliderChangeHandler(property.id, numberConfig)}
                                     showFill

@@ -66,6 +66,7 @@ export type NumberConfig = {
     base: number;
     min: number;
     max: number;
+    step?: number;
 };
 
 export type ParameterValue = NumberConfig | string | boolean | Enum | ArrayItem[];

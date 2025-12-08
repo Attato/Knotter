@@ -25,7 +25,9 @@ interface BaseParameterContentProps {
     handleBaseNumberInput: (value: string) => void;
     handleMinNumberInput: (value: string) => void;
     handleMaxNumberInput: (value: string) => void;
-    getDisplayValue: (field: 'base' | 'min' | 'max') => string;
+    handleStepNumberInput: (value: string) => void;
+
+    getDisplayValue: (field: 'base' | 'min' | 'max' | 'step') => string;
 
     onRemove: () => void;
 }
@@ -42,6 +44,7 @@ export const BaseParameterContent = memo(function BaseParameterContent({
     handleBaseNumberInput,
     handleMinNumberInput,
     handleMaxNumberInput,
+    handleStepNumberInput,
     getDisplayValue,
 
     onRemove,
@@ -96,12 +99,26 @@ export const BaseParameterContent = memo(function BaseParameterContent({
 
                         <div className="flex items-center gap-2">
                             <p className="truncate w-full text-right">Максимальное значение</p>
+
                             <Input
                                 value={getDisplayValue('max')}
                                 onChange={handleMaxNumberInput}
                                 className="bg-depth-3 border border-depth-4"
                                 max={16}
                                 type="text"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <p className="truncate w-full text-right">Шаг изменения</p>
+
+                            <Input
+                                value={getDisplayValue('step')}
+                                onChange={handleStepNumberInput}
+                                className="bg-depth-3 border border-depth-4"
+                                max={16}
+                                type="text"
+                                placeholder="1"
                             />
                         </div>
                     </div>

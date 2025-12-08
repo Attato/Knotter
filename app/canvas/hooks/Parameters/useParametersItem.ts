@@ -82,12 +82,14 @@ export const useParametersItem = (parameterId: string) => {
                 ...parameter.value,
                 base: clampedValue,
             };
+
             updateParameter(newValue);
         }
     };
 
     const handleMinNumberInput = (value: string) => {
         if (!isNumberValue(parameter.value)) return;
+
         const numValue = parseFloat(value);
 
         if (!isNaN(numValue) && numValue >= NUMBER_LIMITS.MIN) {
@@ -100,15 +102,17 @@ export const useParametersItem = (parameterId: string) => {
                 min: newMin,
                 base: newBase,
             };
+
             updateParameter(newValue);
         }
     };
 
     const handleMaxNumberInput = (value: string) => {
         if (!isNumberValue(parameter.value)) return;
+
         const numValue = parseFloat(value);
 
-        if (!isNaN(numValue) && numValue <= NUMBER_LIMITS.MAX) {
+        if (!isNaN(numValue)) {
             const newMax = Math.max(numValue, parameter.value.min);
 
             const newBase = Math.min(newMax, parameter.value.base);
@@ -118,14 +122,32 @@ export const useParametersItem = (parameterId: string) => {
                 max: newMax,
                 base: newBase,
             };
+
             updateParameter(newValue);
         }
     };
 
-    const getDisplayValue = (field: 'base' | 'min' | 'max'): string => {
+    const handleStepNumberInput = (value: string) => {
+        if (!isNumberValue(parameter.value)) return;
+        const numValue = parseFloat(value);
+
+        if (!isNaN(numValue) && numValue > 0 && numValue <= parameter.value.max - parameter.value.min) {
+            const newValue: NumberConfig = {
+                ...parameter.value,
+                step: numValue,
+            };
+            updateParameter(newValue);
+        }
+    };
+
+    const getDisplayValue = (field: 'base' | 'min' | 'max' | 'step'): string => {
         const { value } = parameter;
 
         if (isNumberValue(value)) {
+            if (field === 'step') {
+                return value.step?.toString() || '1';
+            }
+
             return value[field].toString();
         }
 
@@ -389,6 +411,7 @@ export const useParametersItem = (parameterId: string) => {
         handleBaseNumberInput,
         handleMinNumberInput,
         handleMaxNumberInput,
+        handleStepNumberInput,
         getDisplayValue,
 
         updateEnumOption,
