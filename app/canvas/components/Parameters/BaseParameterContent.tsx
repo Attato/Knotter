@@ -122,6 +122,7 @@ export const BaseParameterContent = memo(function BaseParameterContent({
                         </div>
                     </div>
                 )}
+
                 {isBooleanValue(parameterValue) && (
                     <div className="flex flex-col gap-1 w-full">
                         <div className="flex items-center gap-2">
