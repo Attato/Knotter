@@ -17,14 +17,16 @@ interface ArrayContentProps {
     name: string;
     iconType: string;
 
-    onUpdateName: (name: string) => void;
+    updateParameterName: (name: string) => void;
     onUpdateItemName: (id: string, name: string) => void;
-    onUpdateItemValue: (id: string, value: number | string | boolean | Enum) => void;
-    onRemoveItem: (id: string) => void;
+    updateArrayItemValue: (id: string, value: number | string | boolean | Enum) => void;
+    removeArrayItem: (id: string) => void;
 
-    onDropToArray: (droppedId: string) => void;
-    onDropToArrayEnum: (arrayItemId: string, droppedId: string) => void;
-    onRemoveArray: () => void;
+    handleDropToArray: (droppedId: string) => void;
+    handleDropToEnum: (arrayItemId: string, droppedId: string) => void;
+    onRemoveParameter: () => void;
+
+    updateEnumOptionName: (index: number, newName: string) => void;
 }
 
 export const ArrayContent = memo(function ArrayContent({
@@ -32,13 +34,15 @@ export const ArrayContent = memo(function ArrayContent({
     name,
     iconType,
 
-    onUpdateName,
+    updateParameterName,
     onUpdateItemName,
-    onUpdateItemValue,
-    onRemoveItem,
-    onDropToArray,
-    onDropToArrayEnum,
-    onRemoveArray,
+    updateArrayItemValue,
+    removeArrayItem,
+    handleDropToArray,
+    handleDropToEnum,
+    onRemoveParameter,
+
+    updateEnumOptionName,
 }: ArrayContentProps) {
     const Icon = getDynamicIcon(iconType);
     const [isArrayDragOver, setIsArrayDragOver] = useState(false);
@@ -50,9 +54,9 @@ export const ArrayContent = memo(function ArrayContent({
             <div className="flex items-center gap-1 h-8">
                 <Icon size={16} className="min-w-4" />
 
-                <EditableName name={name} onChange={onUpdateName} className="w-full" />
+                <EditableName name={name} onChange={updateParameterName} className="w-full" />
 
-                <button onClick={onRemoveArray} className="ml-auto text-gray cursor-pointer">
+                <button onClick={onRemoveParameter} className="ml-auto text-gray cursor-pointer">
                     <X size={16} />
                 </button>
             </div>
@@ -67,11 +71,12 @@ export const ArrayContent = memo(function ArrayContent({
                                 key={item.id}
                                 enumValue={item.value as Enum}
                                 name={item.name}
-                                onUpdateName={(newName) => onUpdateItemName(item.id, newName)}
-                                onUpdateEnum={(val) => onUpdateItemValue(item.id, val)}
-                                onRemove={() => onRemoveItem(item.id)}
                                 isInsideArray={true}
-                                onDropToEnum={(dropped) => onDropToArrayEnum(item.id, dropped)}
+                                updateParameterName={(newName) => onUpdateItemName(item.id, newName)}
+                                updateEnumOption={(val) => updateArrayItemValue(item.id, val)}
+                                updateEnumOptionName={(index, newName) => updateEnumOptionName(index, newName)}
+                                removeEnumItem={() => removeArrayItem(item.id)}
+                                handleDropToEnum={(dropped) => handleDropToEnum(item.id, dropped)}
                             />
                         );
                     }
@@ -91,7 +96,7 @@ export const ArrayContent = memo(function ArrayContent({
                                     value={item.value.toString()}
                                     onChange={(val) => {
                                         const num = parseFloat(val);
-                                        if (!isNaN(num)) onUpdateItemValue(item.id, num);
+                                        if (!isNaN(num)) updateArrayItemValue(item.id, num);
                                     }}
                                     className="bg-depth-3 border border-depth-4"
                                     type="text"
@@ -102,7 +107,7 @@ export const ArrayContent = memo(function ArrayContent({
                             {item.type === 'string' && (
                                 <Input
                                     value={item.value as string}
-                                    onChange={(val) => onUpdateItemValue(item.id, val)}
+                                    onChange={(val) => updateArrayItemValue(item.id, val)}
                                     className="bg-depth-3 border border-depth-4"
                                     placeholder="Введите текст..."
                                 />
@@ -112,13 +117,13 @@ export const ArrayContent = memo(function ArrayContent({
                                 <div className="flex items-center w-full h-9">
                                     <Checkbox
                                         checked={item.value as boolean}
-                                        onChange={(checked) => onUpdateItemValue(item.id, checked)}
+                                        onChange={(checked) => updateArrayItemValue(item.id, checked)}
                                         className="bg-depth-3 border border-depth-4"
                                     />
                                 </div>
                             )}
 
-                            <button onClick={() => onRemoveItem(item.id)} className="text-gray cursor-pointer">
+                            <button onClick={() => removeArrayItem(item.id)} className="text-gray cursor-pointer">
                                 <X size={16} />
                             </button>
                         </div>
@@ -141,7 +146,7 @@ export const ArrayContent = memo(function ArrayContent({
                     const droppedType = e.dataTransfer.getData('application/parameter-type');
 
                     if (['string', 'number', 'boolean', 'enum'].includes(droppedType)) {
-                        onDropToArray(droppedId);
+                        handleDropToArray(droppedId);
                     }
                 }}
             >
