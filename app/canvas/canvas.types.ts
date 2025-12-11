@@ -1,5 +1,5 @@
 import { type NodeShapeType } from '@/canvas/utils/nodes/getShape';
-import { ParameterType } from '@/canvas/parameter.types';
+import { Parameter } from '@/canvas/parameter.types';
 
 export type MouseHandler = (e: MouseEvent) => void;
 
@@ -32,7 +32,7 @@ export interface Node {
     height?: number;
     position: Position;
     kind: 'node';
-    parameters: ParameterType[];
+    parameters: Parameter[];
 }
 
 export interface Edge {
@@ -43,5 +43,5 @@ export interface Edge {
     to: string;
     position: Position;
     kind: 'edge';
-    parameters: ParameterType[];
+    parameters: Parameter[];
 }
