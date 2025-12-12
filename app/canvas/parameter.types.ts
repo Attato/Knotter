@@ -1,32 +1,32 @@
-export type ParameterType = 'number' | 'string' | 'boolean' | 'enum' | 'array';
-export type ParameterValue = NumberConfig | string | boolean | Enum | ArrayItem[];
+export type ParameterType = 'number' | 'string' | 'boolean' | 'selection' | 'group';
+
+export type ParameterValue = {
+    type: ParameterType;
+    data: NumberConfig | string | boolean | SelectableOptions | Parameter[];
+};
 
 export interface Parameter {
     id: string;
     name: string;
     type: ParameterType;
     baseValue: ParameterValue;
-    value: ParameterValue;
+    currentValue: ParameterValue;
 }
 
 export type NumberConfig = {
-    base: number;
+    baseValue: number;
     min: number;
     max: number;
     step?: number;
 };
 
-export type Enum = {
-    options: Array<{
-        id: string;
-        name: string;
-        value: string;
-    }>;
-    selectedId: string | null;
+export type SelectableOption = {
+    id: string;
+    name: string;
+    value: string;
 };
 
-export type ArrayItem =
-    | { id: string; name: string; type: 'number'; value: number }
-    | { id: string; name: string; type: 'string'; value: string }
-    | { id: string; name: string; type: 'boolean'; value: boolean }
-    | { id: string; name: string; type: 'enum'; value: Enum };
+export type SelectableOptions = {
+    options: SelectableOption[];
+    selectedId: string | null;
+};
