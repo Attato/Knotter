@@ -9,6 +9,3 @@ export const NODE_MOVE_MIN_STEP = 1;
 export const NODE_MOVE_MAX_STEP = 50;
 
 export const MAX_CANVAS_ITEMS = 250;
-
-export const MAX_INPUT_LENGTH = 36;
-export const MAX_TEXTAREA_LENGTH = 512;
