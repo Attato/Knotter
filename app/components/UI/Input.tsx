@@ -2,7 +2,8 @@
 
 import { memo, useCallback, InputHTMLAttributes } from 'react';
 import { LucideIcon } from 'lucide-react';
-import { MAX_INPUT_LENGTH } from '@/canvas/constants';
+
+const MAX_INPUT_LENGTH = 36;
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'maxLength'> {
     value: string;
