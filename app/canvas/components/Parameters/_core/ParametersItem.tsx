@@ -5,8 +5,8 @@ import { memo } from 'react';
 import { NumberParameter } from '@/canvas/components/Parameters/types/NumberParameter';
 import { StringParameter } from '@/canvas/components/Parameters/types/StringParameter';
 import { BooleanParameter } from '@/canvas/components/Parameters/types/BooleanParameter';
-import { EnumContent } from '@/canvas/components/Parameters/types/EnumParameter';
-import { ArrayContent } from '@/canvas/components/Parameters/types/ArrayParameter';
+import { EnumParameter } from '@/canvas/components/Parameters/types/EnumParameter';
+import { ArrayParameter } from '@/canvas/components/Parameters/types/ArrayParameter';
 
 import { useParametersItem } from '@/canvas/hooks/Parameters/_core/useParametersItem';
 
@@ -86,7 +86,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, remove
 
     if (isEnumValue(parameter)) {
         return (
-            <EnumContent
+            <EnumParameter
                 parameter={parameter}
                 handleAddEnumOption={handleAddEnumOption}
                 handleRemoveEnumOption={handleRemoveEnumOption}
@@ -100,7 +100,7 @@ export const ParametersItem = memo(function ParametersItem({ parameterId, remove
 
     if (isArrayValue(parameter)) {
         return (
-            <ArrayContent
+            <ArrayParameter
                 parameter={parameter}
                 handleAddArrayParameter={handleAddArrayParameter}
                 handleRemoveArrayParameter={handleRemoveArrayParameter}
