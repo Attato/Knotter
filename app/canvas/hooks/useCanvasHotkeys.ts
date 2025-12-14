@@ -1,6 +1,6 @@
 import { useEffect, RefObject } from 'react';
 
-import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
+import { NODE_MOVE_MAX_STEP } from '@/canvas/canvas.constants';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 

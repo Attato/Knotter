@@ -3,7 +3,7 @@ import { CanvasState } from '@/canvas/canvas.types';
 import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
-import { MAX_UNDO_STEPS } from '@/canvas/constants';
+import { MAX_UNDO_STEPS } from '@/canvas/canvas.constants';
 
 export function useCanvasHistory() {
     const historyRef = useRef<CanvasState[]>([]);

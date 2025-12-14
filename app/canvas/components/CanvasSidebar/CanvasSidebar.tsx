@@ -9,7 +9,7 @@ import { SidebarPanels } from '@/canvas/components/CanvasSidebar/SidebarPanels';
 
 import { Hierarchy } from '@/canvas/components/Hierarchy/Hierarchy';
 import { Inspector } from '@/canvas/components/Inspector/Inspector';
-import { Parameters } from '@/canvas/components/Parameters/Parameters';
+import { Parameters } from '@/canvas/components/Parameters/_core/Parameters';
 
 import { ListTree, Info, Variable, type LucideIcon } from 'lucide-react';
 

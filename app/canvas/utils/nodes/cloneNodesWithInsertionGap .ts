@@ -1,6 +1,6 @@
 import { Node } from '@/canvas/canvas.types';
 import { v4 as uuidv4 } from 'uuid';
-import { MAX_CANVAS_ITEMS } from '@/canvas/constants';
+import { MAX_CANVAS_ITEMS } from '@/canvas/canvas.constants';
 
 export const cloneNodesWithInsertionGap = (nodes: Node[], insertionGap: number, existingCount: number): Node[] => {
     const availableSlots = Math.max(0, MAX_CANVAS_ITEMS - existingCount);

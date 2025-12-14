@@ -6,7 +6,7 @@ import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { NodeRenderer } from '@/canvas/components/CanvasNodes/NodeRenderer';
 import { NodeTooltip } from '@/canvas/components/CanvasNodes/NodeTooltip';
 
-import { NODE_SIZE } from '@/canvas/constants';
+import { NODE_SIZE } from '@/canvas/canvas.constants';
 
 interface CanvasNodesProps {
     nodes: Node[];

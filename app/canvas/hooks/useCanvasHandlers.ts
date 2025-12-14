@@ -4,7 +4,7 @@ import { CanvasState, Position } from '@/canvas/canvas.types';
 
 import { NodeShapeType } from '@/canvas/utils/nodes/getShape';
 
-import { NODE_MOVE_MAX_STEP } from '@/canvas/constants';
+import { NODE_MOVE_MAX_STEP } from '@/canvas/canvas.constants';
 
 import { useCanvasHistory } from '@/canvas/hooks/useCanvasHistory';
 
@@ -66,10 +66,11 @@ export function useCanvasHandlers() {
 
             pushHistory();
 
-            const insertionGap = 50;
+            const insertionGap = NODE_MOVE_MAX_STEP;
             const existingCount = items.length;
 
             const newNodes = cloneNodesWithInsertionGap(nodes, insertionGap, existingCount);
+
             if (!newNodes.length) return;
 
             const nodeIdMap = new Map(nodes.slice(0, newNodes.length).map((node, i) => [node.id, newNodes[i].id]));

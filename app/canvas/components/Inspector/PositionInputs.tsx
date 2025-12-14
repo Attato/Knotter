@@ -6,7 +6,7 @@ import { InfiniteSliderInput } from '@/components/UI/InfiniteSliderInput';
 
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
-import { NODE_MOVE_MAX_STEP, NODE_MOVE_MIN_STEP } from '@/canvas/constants';
+import { NODE_MOVE_MAX_STEP, NODE_MOVE_MIN_STEP } from '@/canvas/canvas.constants';
 
 interface PositionInputsProps {
     positionX: number;

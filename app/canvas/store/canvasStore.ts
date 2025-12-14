@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CanvasItem, Position, TooltipMode, Parameter, EditorMode } from '@/canvas/canvas.types';
-import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/constants';
+
+import type { CanvasItem, Position, TooltipMode, EditorMode } from '@/canvas/canvas.types';
+import type { Parameter } from '@/canvas/utils/parameters/parameter.types';
+
+import { NODE_MOVE_MIN_STEP, INITIAL_ZOOM } from '@/canvas/canvas.constants';
 
 export interface CanvasState {
     offset: Position;
