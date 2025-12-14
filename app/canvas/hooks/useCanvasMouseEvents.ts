@@ -4,8 +4,6 @@ import { useCallback, RefObject, useState } from 'react';
 
 import { Position } from '@/canvas/canvas.types';
 
-import { DRAG_THRESHOLD } from '@/canvas/constants';
-
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { useMousePosition } from '@/canvas/hooks/useMousePosition';
 
@@ -109,13 +107,8 @@ export function useCanvasMouseEvents(canvasRef: RefObject<HTMLCanvasElement | nu
             }
 
             if (!isDraggingNodes && pendingClickItemId && dragStartMouse) {
-                const dx = mousePos.x - dragStartMouse.x;
-                const dy = mousePos.y - dragStartMouse.y;
-
-                if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
-                    setIsDraggingNodes(true);
-                    setInitialNodePositions(getSelectedNodesPositions(nodes, selectedItemIds));
-                }
+                setIsDraggingNodes(true);
+                setInitialNodePositions(getSelectedNodesPositions(nodes, selectedItemIds));
             }
 
             if (isDraggingNodes && dragStartMouse) {
