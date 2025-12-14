@@ -10,7 +10,8 @@ import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 import { isArrayValue } from '@/canvas/utils/parameters/parameter.type-guards';
 
 import { X } from 'lucide-react';
-interface ArrayContentProps {
+
+interface ArrayParamterProps {
     parameter: Parameter;
     handleAddArrayParameter: (newParameter: Parameter) => void;
     handleRemoveArrayParameter: (parameterId: string) => void;
@@ -20,11 +21,11 @@ interface ArrayContentProps {
     removeParameter: (parameterId: string) => void;
 }
 
-export const ArrayContent = memo(function ArrayContent({
+export const ArrayParameter = memo(function ArrayParameter({
     parameter,
     handleUpdateArrayParameterName,
     removeParameter,
-}: ArrayContentProps) {
+}: ArrayParamterProps) {
     const ArrayIcon = getDynamicIcon('array');
 
     if (!isArrayValue(parameter)) return null;
