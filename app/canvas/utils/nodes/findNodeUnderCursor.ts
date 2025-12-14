@@ -1,6 +1,6 @@
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 import { Position, Node } from '@/canvas/canvas.types';
-import { NODE_SIZE } from '@/canvas/constants';
+import { NODE_SIZE } from '@/canvas/canvas.constants';
 
 export function getNodeDimensions(node?: Node) {
     const editorMode = useCanvasStore.getState().editorMode;
@@ -37,12 +37,13 @@ export function findNodeUnderCursor(
         const screenX = x * zoomLevel + offset.x;
         const screenY = y * zoomLevel + offset.y;
 
-        if (
+        const isCursorOverNode =
             cursor.x >= screenX - halfWidth &&
             cursor.x <= screenX + halfWidth &&
             cursor.y >= screenY - halfHeight &&
-            cursor.y <= screenY + halfHeight
-        ) {
+            cursor.y <= screenY + halfHeight;
+
+        if (isCursorOverNode) {
             return node;
         }
     }
