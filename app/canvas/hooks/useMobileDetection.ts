@@ -14,6 +14,7 @@ export const useMobileDetection = (): boolean | null => {
         };
 
         window.addEventListener('resize', handleResize);
+
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 

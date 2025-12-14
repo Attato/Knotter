@@ -42,13 +42,16 @@ export const Input = memo(function Input({
                 type="text"
                 value={value}
                 onChange={handleChange}
-                className={`w-full text-foreground placeholder-gray px-3 py-1 text-sm rounded-md focus:outline-none h-8 ${
-                    hasIcon ? 'pr-8' : ''
-                } ${className}`}
+                className={`
+                    w-full text-foreground placeholder-gray px-3 py-1 text-sm rounded-md focus:outline-none h-8 
+                    ${hasIcon && 'pr-8'} 
+                    ${className}
+                `}
                 {...props}
             />
+
             {Icon && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray ">
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray">
                     <Icon size={iconSize} />
                 </div>
             )}

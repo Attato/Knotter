@@ -1,5 +1,7 @@
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
+import { NODE_MOVE_MAX_STEP } from '@/canvas/canvas.constants';
+
 export function drawGrid(
     ctx: CanvasRenderingContext2D,
     canvasWidth: number,
@@ -10,7 +12,7 @@ export function drawGrid(
     const offset = useCanvasStore.getState().offset;
     const zoomLevel = useCanvasStore.getState().zoomLevel;
 
-    const baseGridSize = 50;
+    const baseGridSize = NODE_MOVE_MAX_STEP;
 
     const lineWidth = 1 / zoomLevel;
     ctx.lineWidth = lineWidth;

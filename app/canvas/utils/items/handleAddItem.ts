@@ -58,10 +58,12 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
         const { fromNode, toNode } = params;
 
         const baseName = 'Связь';
+
         let name = baseName;
         let counter = 0;
 
         const existingNames = new Set(edges.map((e) => e.name));
+
         while (existingNames.has(name)) {
             counter++;
             name = `${baseName} (${counter})`;

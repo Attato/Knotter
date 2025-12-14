@@ -90,7 +90,9 @@ export function useCanvasInteraction({
 
             if (isTouchpadPan) {
                 e.preventDefault();
-            } else {
+            }
+
+            if (!isTouchpadPan) {
                 handleScroll.current?.(e);
             }
         };

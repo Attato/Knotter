@@ -9,9 +9,11 @@ export function useInitialCanvasOffset(canvasRef: RefObject<HTMLCanvasElement | 
 
     useLayoutEffect(() => {
         const canvas = canvasRef.current;
+
         if (!canvas || isInitialOffsetSet) return;
 
         const rect = canvas.getBoundingClientRect();
+
         if (rect.width > 0 && rect.height > 0) {
             setOffset({ x: rect.width / 2, y: rect.height / 2 });
         }

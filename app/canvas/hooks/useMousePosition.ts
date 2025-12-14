@@ -16,6 +16,7 @@ export function useMousePosition() {
 
     const trackMousePosition = (position: Position, callback: (pos: Position) => void) => {
         currentPositionRef.current = position;
+
         requestPositionUpdate(callback);
     };
 

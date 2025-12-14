@@ -103,6 +103,7 @@ export const OptionPicker = memo(function OptionPicker({
                                     className="flex items-center gap-2 px-3 py-2 bg-depth-3 hover:bg-depth-4 text-left text-sm rounded-md"
                                 >
                                     {Icon && <Icon size={16} />}
+
                                     {opt.label}
                                 </button>
                             );

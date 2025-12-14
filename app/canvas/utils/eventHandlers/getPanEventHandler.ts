@@ -10,6 +10,7 @@ interface getPanEventHandlerProps {
 export function getPanEventHandler({ isPanningRef, lastMouseRef }: getPanEventHandlerProps) {
     const handleMouseDown = (e: MouseEvent) => {
         if (e.button !== 1) return;
+
         e.preventDefault();
 
         isPanningRef.current = true;
@@ -29,6 +30,7 @@ export function getPanEventHandler({ isPanningRef, lastMouseRef }: getPanEventHa
                     y: state.offset.y + (state.invertY ? -dy : dy),
                 },
             }),
+
             false,
         );
 
@@ -53,6 +55,7 @@ export function getPanEventHandler({ isPanningRef, lastMouseRef }: getPanEventHa
                 }),
                 false,
             );
+
             return true;
         }
 

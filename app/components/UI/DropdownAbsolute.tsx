@@ -33,7 +33,9 @@ export const DropdownAbsolute = memo(function DropdownAbsolute({
                 close();
             }
         };
+
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [close]);
 
@@ -49,18 +51,31 @@ export const DropdownAbsolute = memo(function DropdownAbsolute({
         <div ref={dropdownRef} className="relative w-full">
             <button
                 onClick={toggle}
-                className={`flex justify-between items-center px-3 py-1 h-8 w-full text-sm rounded-md cursor-pointer ${light ? 'bg-depth-3 hover:bg-depth-4' : 'bg-depth-2 hover:bg-border'}`}
+                className={`
+                    flex justify-between items-center px-3 py-1 h-8 w-full text-sm rounded-md cursor-pointer 
+                    ${light ? 'bg-depth-3 hover:bg-depth-4' : 'bg-depth-2 hover:bg-border'}
+                `}
             >
                 <div className="flex items-center gap-2">
                     {Icon && <Icon size={16} />}
+
                     {title}
                 </div>
-                <ChevronDown className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} size={16} />
+                <ChevronDown
+                    className={`
+                        transition-transform 
+                        ${isOpen && 'rotate-180'}
+                    `}
+                    size={16}
+                />
             </button>
 
             {isOpen && (
                 <div
-                    className={`absolute top-full left-0 flex flex-col gap-1 w-full text-sm shadow-md rounded-md mt-1 p-1 z-50 ${light ? 'bg-border' : 'bg-depth-2'}`}
+                    className={`
+                        absolute top-full left-0 flex flex-col gap-1 w-full text-sm shadow-md rounded-md mt-1 p-1 z-50 
+                        ${light ? 'bg-border' : 'bg-depth-2'}
+                    `}
                     onClick={handleContentClick}
                 >
                     {children}

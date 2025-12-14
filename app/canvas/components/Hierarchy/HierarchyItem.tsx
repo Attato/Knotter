@@ -38,11 +38,13 @@ export const HierarchyItem = memo(function HierarchyItem({
     return (
         <li ref={setNodeRef} style={style}>
             <button
-                className={`w-full px-3 h-9 rounded-md outline-none tabular-nums cursor-pointer ${
-                    isSelected
-                        ? 'bg-bg-accent/10 focus-visible:bg-bg-accent/15'
-                        : 'bg-depth-2 hover:bg-depth-3 focus-visible:bg-border'
-                }`}
+                className={`w-full px-3 h-9 rounded-md outline-none tabular-nums cursor-pointer 
+                    ${
+                        isSelected
+                            ? 'bg-bg-accent/10 focus-visible:bg-bg-accent/15'
+                            : 'bg-depth-2 hover:bg-depth-3 focus-visible:bg-border'
+                    }
+                `}
                 onClick={(e) => {
                     e.stopPropagation();
                     onSelect(e);

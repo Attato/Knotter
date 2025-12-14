@@ -25,31 +25,40 @@ export const ContextMenuItem = memo(function ContextMenuItem({
         if (submenu) {
             e.stopPropagation();
             e.preventDefault();
+
             return;
         }
+
         onClick?.(e);
     };
 
     return (
         <div className="relative group">
             <button
-                className={`flex justify-between items-center px-3 py-1 bg-depth-2 hover:bg-depth-3 w-full text-left cursor-pointer ${
-                    disabled ? 'opacity-40 cursor-not-allowed' : ''
-                }`}
+                className={`flex justify-between items-center px-3 py-1 bg-depth-2 hover:bg-depth-3 w-full text-left cursor-pointer 
+                    ${disabled ? 'opacity-40 cursor-not-allowed' : ''}
+                `}
                 onClick={handleClick}
                 disabled={disabled}
             >
                 <div className="flex items-center gap-2">
                     {Icon && <Icon className="w-4 h-4" />}
+
                     <span>{children}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                     {shortcut && (
-                        <span className={`${disabled ? 'opacity-40' : 'text-gray'} ml-2 text-xs select-none`}>
+                        <span
+                            className={` 
+                                ml-2 text-xs select-none
+                                ${disabled ? 'opacity-40' : 'text-gray'}
+                            `}
+                        >
                             {shortcut}
                         </span>
                     )}
+
                     {submenu && (
                         <span className="ml-2 text-gray text-xs select-none">
                             <ChevronRight size={16} />

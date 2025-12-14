@@ -32,6 +32,7 @@ export const EditableName = memo(function EditableName({
 
     const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') finishEditing();
+
         if (e.key === 'Escape') {
             setEditing(false);
             setValue(name);
@@ -45,34 +46,44 @@ export const EditableName = memo(function EditableName({
                 setEditing(true);
             }
         };
+
         document.addEventListener('keydown', handleGlobalKeyDown);
+
         return () => document.removeEventListener('keydown', handleGlobalKeyDown);
     }, [isSelected]);
 
-    return editing ? (
-        <input
-            type="text"
-            autoFocus
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            onBlur={finishEditing}
-            onKeyDown={handleInputKeyDown}
-            className="bg-depth-2 border border-bg-accent rounded px-1 text-foreground text-sm outline-none w-full tabular-nums"
-            onDoubleClick={(e) => e.stopPropagation()}
-            maxLength={maxLength}
-        />
-    ) : (
-        <span
-            className={`block px-[5px] py-[1px] text-sm cursor-pointer text-left overflow-hidden text-ellipsis whitespace-nowrap tabular-nums ${isSelected ? 'text-text-accent' : 'text-foreground'} ${className}`}
-            style={{
-                minWidth: 0,
-            }}
-            onDoubleClick={(e) => {
-                e.stopPropagation();
-                setEditing(true);
-            }}
-        >
-            {name}
-        </span>
-    );
+    if (editing) {
+        return (
+            <input
+                type="text"
+                autoFocus
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onBlur={finishEditing}
+                onKeyDown={handleInputKeyDown}
+                className="bg-depth-2 border border-bg-accent rounded px-1 text-foreground text-sm outline-none w-full tabular-nums"
+                onDoubleClick={(e) => e.stopPropagation()}
+                maxLength={maxLength}
+            />
+        );
+    }
+
+    if (!editing) {
+        return (
+            <span
+                className={`
+                    block px-[5px] py-[1px] text-sm cursor-pointer text-left overflow-hidden text-ellipsis whitespace-nowrap tabular-nums 
+                    ${isSelected ? 'text-text-accent' : 'text-foreground'} 
+                    ${className}
+                `}
+                style={{ minWidth: 0 }}
+                onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    setEditing(true);
+                }}
+            >
+                {name}
+            </span>
+        );
+    }
 });

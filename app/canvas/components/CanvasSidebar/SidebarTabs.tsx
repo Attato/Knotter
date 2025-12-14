@@ -25,11 +25,13 @@ export function SidebarTabs({ tabs }: SidebarTabsProps) {
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(isActive ? null : tab.id)}
-                        className={`flex items-center justify-center p-3 text-gray hover:text-foreground cursor-pointer focus-visible:outline-0 ${
-                            isActive
-                                ? 'text-text-accent hover:text-text-accent focus-visible:text-text-accent'
-                                : 'focus-visible:text-white'
-                        }`}
+                        className={`flex items-center justify-center p-3 text-gray hover:text-foreground cursor-pointer focus-visible:outline-0 
+                            ${
+                                isActive
+                                    ? 'text-text-accent hover:text-text-accent focus-visible:text-text-accent'
+                                    : 'focus-visible:text-white'
+                            }
+                        `}
                     >
                         {Icon && <Icon size={20} />}
                     </button>

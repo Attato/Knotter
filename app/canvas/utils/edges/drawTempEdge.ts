@@ -13,6 +13,7 @@ export function drawTempEdge(
     if (!tempEdge) return;
 
     const fromNode = nodes.find((n) => n.id === tempEdge.from);
+
     if (!fromNode) return;
 
     ctx.strokeStyle = getTempEdgeColor();

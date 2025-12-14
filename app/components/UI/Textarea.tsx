@@ -14,9 +14,11 @@ export const Textarea = memo(function Textarea({ value, onChange, className = ''
     const handleChange = useCallback(
         (e: React.ChangeEvent<HTMLTextAreaElement>) => {
             let newValue = e.target.value;
+
             if (MAX_TEXTAREA_LENGTH && newValue.length > MAX_TEXTAREA_LENGTH) {
                 newValue = newValue.slice(0, MAX_TEXTAREA_LENGTH);
             }
+
             onChange(newValue);
         },
         [onChange],
@@ -27,7 +29,10 @@ export const Textarea = memo(function Textarea({ value, onChange, className = ''
             <textarea
                 value={value}
                 onChange={handleChange}
-                className={`flex items-center w-full bg-depth-2 text-foreground placeholder-gray px-3 py-2 text-sm rounded-md focus:outline-none resize-none field-sizing-content min-h-[3lh] max-h-[12lh] ${className}`}
+                className={`
+                    flex items-center w-full bg-depth-2 text-foreground placeholder-gray px-3 py-2 text-sm rounded-md focus:outline-none resize-none field-sizing-content min-h-[3lh] max-h-[12lh] 
+                    ${className}
+                `}
                 {...props}
             />
         </div>

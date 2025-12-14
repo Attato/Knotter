@@ -17,6 +17,7 @@ export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemP
     const { items = [], selectedIds = [], itemId, event: e } = params;
 
     const item = items.find((i) => i.id === itemId);
+
     if (!item) return [...selectedIds];
 
     const idToIndex = new Map(items.map((i, index) => [i.id, index]));
@@ -28,8 +29,11 @@ export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemP
 
         if (start !== undefined && end !== undefined) {
             const [from, to] = start < end ? [start, end] : [end, start];
+
             const newSelection = new Set(selectedIds);
+
             items.slice(from, to + 1).forEach((i) => newSelection.add(i.id));
+
             return Array.from(newSelection);
         }
 
@@ -41,7 +45,9 @@ export function selectCanvasItem<T extends CanvasItem>(params: SelectCanvasItemP
 
         if (newSelection.has(itemId)) {
             newSelection.delete(itemId);
-        } else {
+        }
+
+        if (!newSelection.has(itemId)) {
             newSelection.add(itemId);
         }
 

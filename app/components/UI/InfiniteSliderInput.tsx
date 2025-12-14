@@ -34,6 +34,7 @@ export const InfiniteSliderInput = memo(function InfiniteSliderInput({
 
     const precision = useMemo(() => {
         const stepStr = step.toString();
+
         return stepStr.includes('.') ? stepStr.length - stepStr.indexOf('.') - 1 : 0;
     }, [step]);
 
@@ -118,12 +119,7 @@ export const InfiniteSliderInput = memo(function InfiniteSliderInput({
                 `}
             >
                 {showFill && (
-                    <div
-                        className="absolute left-0 top-0 h-full bg-bg-accent"
-                        style={{
-                            width: `${fillPercentage}%`,
-                        }}
-                    />
+                    <div className="absolute left-0 top-0 h-full bg-bg-accent" style={{ width: `${fillPercentage}%` }} />
                 )}
 
                 <span className="relative z-10 text-foreground truncate mr-2">{name}</span>

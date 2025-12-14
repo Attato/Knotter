@@ -19,6 +19,7 @@ export default function CanvasPage() {
             <div className="flex h-screen items-center justify-center bg-background w-full">
                 <div className="flex flex-col items-center gap-2">
                     <LoaderCircle size={24} className="animate-spin" />
+
                     <p className="text-text-muted">Проверяем размеры экрана...</p>
                 </div>
             </div>
@@ -46,8 +47,11 @@ export default function CanvasPage() {
                 </div>
 
                 <div className="fixed flex items-center bottom-4 text-xs text-gray text-center">
-                    Размер экрана: {window.innerWidth} <X size={12} className="flex items-center justify-center" />
-                    {window.innerHeight}px
+                    <span>Размер экрана: {window.innerWidth}</span>
+
+                    <X size={12} className="flex items-center justify-center" />
+
+                    <span>{window.innerHeight}px</span>
                 </div>
             </div>
         );

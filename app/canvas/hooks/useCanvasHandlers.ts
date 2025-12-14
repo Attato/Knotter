@@ -15,7 +15,7 @@ import { getNodes } from '@/canvas/utils/nodes/getNodes';
 import { getEdges } from '@/canvas/utils/edges/getEdges';
 import { getSelectedNodes } from '@/canvas/utils/nodes/getSelectedNodes';
 import { getSelectedEdges } from '@/canvas/utils/edges/getSelectedEdges';
-import { cloneNodesWithInsertionGap } from '@/canvas/utils/nodes/cloneNodesWithInsertionGap ';
+import { cloneNodesWithInsertionGap } from '@/canvas/utils/nodes/cloneNodesWithInsertionGap';
 import { cloneEdgesForNewNodes } from '@/canvas/utils/edges/cloneEdgesForNewNodes';
 import { toggleMagnetMode } from '@/canvas/utils/canvas/toggleMagnetMode';
 import { toggleTooltipMode } from '@/canvas/utils/canvas/toggleTooltipMode';

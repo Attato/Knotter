@@ -3,7 +3,8 @@ import Link from 'next/link';
 export default function Footer() {
     return (
         <footer className="w-full p-4 flex items-center justify-center gap-1">
-            Created by
+            <span>Created by</span>
+
             <Link href="https://github.com/Attato" target="_blank" className="text-text-accent">
                 Denis Dolgopolskiy
             </Link>

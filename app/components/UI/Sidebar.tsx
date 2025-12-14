@@ -34,7 +34,10 @@ export const Sidebar = memo(function Sidebar({
     useEffect(() => {
         if (activeTab !== null && !open) {
             openSidebar();
-        } else if (activeTab === null && open) {
+            return;
+        }
+
+        if (activeTab === null && open) {
             closeSidebar();
         }
     }, [activeTab, open, openSidebar, closeSidebar]);
@@ -42,17 +45,19 @@ export const Sidebar = memo(function Sidebar({
     return (
         <aside
             style={{ width: `${width}px` }}
-            className={`h-screen border-l border-depth-3 bg-depth-1 select-none flex-shrink-0 z-50 relative ${
-                !isResizing ? 'transition-width ease-in-out' : ''
-            }`}
+            className={`
+                h-screen border-l border-depth-3 bg-depth-1 select-none flex-shrink-0 z-50 relative 
+                ${!isResizing && 'transition-width ease-in-out'}
+            `}
         >
             <div className="flex flex-col h-full overflow-hidden relative">{children}</div>
 
             <div
                 onMouseDown={startResize}
-                className={`absolute top-0 left-0 h-full w-1 hover:cursor-ew-resize z-50 ${
-                    isResizing ? 'bg-depth-6' : 'hover:bg-depth-6'
-                }`}
+                className={`
+                    absolute top-0 left-0 h-full w-1 hover:cursor-ew-resize z-50 
+                    ${isResizing ? 'bg-depth-6' : 'hover:bg-depth-6'}
+                `}
             />
         </aside>
     );
