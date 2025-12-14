@@ -2,7 +2,8 @@
 
 import { memo, useCallback } from 'react';
 import { TextareaHTMLAttributes } from 'react';
-import { MAX_TEXTAREA_LENGTH } from '@/canvas/constants';
+
+const MAX_TEXTAREA_LENGTH = 512;
 
 interface TextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'maxLength'> {
     value: string;
