@@ -1,6 +1,6 @@
 import { CanvasState, CanvasItem, Node, Edge, Position } from '@/canvas/canvas.types';
 import { v4 as uuidv4 } from 'uuid';
-import { MAX_CANVAS_ITEMS } from '@/canvas/constants';
+import { MAX_CANVAS_ITEMS } from '@/canvas/canvas.constants';
 
 type AddItemParams =
     | { type: 'node'; state: CanvasState; position?: Position }
@@ -48,7 +48,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
             shapeType: 'point',
             position: { x, y },
             kind: 'node',
-            properties: [],
+            parameters: [],
         };
 
         return newNode;
@@ -78,7 +78,7 @@ export function handleAddItem(params: AddItemParams): CanvasItem | null {
                 y: (fromNode.position.y + toNode.position.y) / 2,
             },
             kind: 'edge',
-            properties: [],
+            parameters: [],
         };
 
         return newEdge;
