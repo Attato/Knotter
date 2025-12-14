@@ -8,15 +8,50 @@ import { EmptyState } from '@/components/UI/EmptyState';
 import { Input } from '@/components/UI/Input';
 import { Textarea } from '@/components/UI/Textarea';
 
-import { Property } from '@/canvas/components/Property/Property';
-
 import { getDynamicIcon } from '@/canvas/utils/items/getDynamicIcon';
 import { useCanvasStore } from '@/canvas/store/canvasStore';
 
+import { Dropdown } from '@/components/UI/Dropdown';
+
+import { ShapeButtons } from '@/canvas/components/Inspector/ShapeButtons';
+import { PositionInputs } from '@/canvas/components/Inspector/PositionInputs';
+
+import { useDropdownStore } from '@/canvas/store/dropdownStore';
+import { useParameters } from '@/canvas/hooks/Parameters/_core/useParameters';
+import { NodeParameters } from '../CanvasNodes/NodeParameters';
+import { OptionPicker } from '@/components/UI/OptionPicker';
+
 export const Inspector = memo(function Inspector() {
-    const { handleChangeName, handleChangeDescription } = useInspector();
+    const {
+        staticDropdowns,
+        isEdge,
+        node,
+        shapeType,
+        positionX,
+        positionY,
+        handleChangeName,
+        handleChangeDescription,
+        handleChangeNodeShapeType,
+        handleMove,
+    } = useInspector();
+
+    const { toggleDropdown, isDropdownOpen } = useDropdownStore();
+
+    const { parameters, addParameterToNode } = useParameters();
 
     const selectedItem = useCanvasStore((state) => state.selectedItem);
+
+    const nodeParameters = node?.parameters || [];
+
+    const filteredParameters = parameters.filter(
+        (template) => !nodeParameters.some((nodeParam) => nodeParam.id === template.id),
+    );
+
+    const options = filteredParameters.map((param) => ({
+        value: param.id,
+        label: param.name,
+        icon: getDynamicIcon(param.type),
+    }));
 
     const Icon = getDynamicIcon(selectedItem?.kind || 'bug');
 
@@ -34,10 +69,52 @@ export const Inspector = memo(function Inspector() {
                     icon={Icon}
                     className="bg-depth-2"
                 />
+
                 <Textarea value={selectedItem.description} onChange={handleChangeDescription} placeholder="Описание" />
             </div>
 
-            <Property />
+            <div className="flex flex-col gap-1">
+                <div className="mx-1 flex flex-col gap-1">
+                    {staticDropdowns.map((dd) => (
+                        <Dropdown
+                            key={dd.id}
+                            title={dd.title}
+                            disabled={isEdge}
+                            isOpen={isDropdownOpen(dd.id)}
+                            onToggle={() => toggleDropdown(dd.id)}
+                        >
+                            {dd.id === 1 && !isEdge && (
+                                <ShapeButtons shapeType={shapeType} onTypeChange={handleChangeNodeShapeType} />
+                            )}
+
+                            {dd.id === 2 && !isEdge && (
+                                <PositionInputs positionX={positionX} positionY={positionY} onMove={handleMove} />
+                            )}
+                        </Dropdown>
+                    ))}
+                </div>
+
+                <hr className="border-b-0 border-depth-3" />
+
+                {node && selectedItem.kind === 'node' && (
+                    <div className="mx-1 flex flex-col gap-1">
+                        <div className="flex flex-col gap-1">
+                            <NodeParameters node={node} />
+
+                            {filteredParameters.length > 0 && (
+                                <div className="max-w-sm w-full m-auto">
+                                    <OptionPicker
+                                        options={options}
+                                        onSelect={(parameterId) => addParameterToNode(selectedItem.id, parameterId)}
+                                        placeholder="Выберите параметр"
+                                        className="flex-1"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 });
