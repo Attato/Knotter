@@ -73,9 +73,9 @@
 
     --color-contrast: var(--contrast);
 
-    --color-axis-x: var(--green);
+    --color-green: var(--green);
     --color-yellow: var(--yellow);
-    --color-axis-y: var(--red);
+    --color-red: var(--red);
     --color-gray: var(--gray);
 }
 
