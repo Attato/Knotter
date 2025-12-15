@@ -17,7 +17,7 @@ const HomeLink = memo(function HomeLink() {
     return (
         <Link
             href="/"
-            className="flex items-center justify-between gap-2 bg-depth-2 hover:bg-depth-3 px-3 py-2 rounded-md text-axis-y"
+            className="flex items-center justify-between gap-2 bg-depth-2 hover:bg-depth-3 px-3 py-2 rounded-md text-red"
         >
             На главную
             <Home size={16} />
